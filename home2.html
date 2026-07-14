@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TET Success | Home</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* =========================================================
+   HOME PAGE - FINAL COMPACT SAGE THEME
+========================================================= */
+
+body{
+  background:var(--cream);
+  padding-bottom:0;
+}
+
+.home-page{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  min-height:80vh;
+  padding:14px 14px calc(var(--nav-height) + 4px);
+  background:linear-gradient(180deg,#EEF5F0 0%,#F6F8F7 45%,#FFFFFF 100%);
+}
+
+/* HEADER */
+.home-header{
+  margin:-14px -14px 0;
+  padding:18px 16px 52px;
+  background:
+    radial-gradient(circle at top right,rgba(221,236,225,.45),transparent 35%),
+    linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:var(--white);
+  border-radius:0 0 24px 24px;
+  box-shadow:0 10px 28px rgba(47,58,54,.12);
+}
+
+.home-header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.home-brand h1{
+  margin:0;
+  font-size:28px;
+  line-height:1.1;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.home-brand p{
+  margin:6px 0 0;
+  font-size:14px;
+  opacity:.92;
+}
+
+.home-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:flex-end;
+}
+
+.home-language{
+  min-width:112px;
+  height:40px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  padding:0 10px;
+  font-size:13px;
+  font-weight:700;
+  outline:none;
+}
+
+.home-language option{
+  color:var(--text);
+  background:#fff;
+}
+
+.home-status{
+  min-width:132px;
+  border-radius:14px;
+  padding:8px 10px;
+  background:#FFF8E9;
+  color:#8B641C;
+  border:1px solid #E8D9B5;
+  text-align:center;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 8px 18px rgba(47,58,54,.10);
+}
+
+.home-status small{
+  display:block;
+  margin-top:2px;
+  font-size:10px;
+  font-weight:600;
+  color:#7A6030;
+}
+
+/* GREETING CARD */
+.home-greeting{
+  margin-top:-34px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:13px;
+  box-shadow:0 10px 26px rgba(47,58,54,.10);
+  position:relative;
+  z-index:2;
+}
+
+.greeting-top{
+  display:grid;
+  grid-template-columns:46px 1fr 56px;
+  gap:10px;
+  align-items:center;
+}
+
+.home-avatar{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#EEF5F1,#DDECE1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+}
+
+.greeting-text h2{
+  margin:0;
+  font-size:17px;
+  line-height:1.15;
+  font-weight:800;
+  color:var(--text);
+}
+
+.greeting-text p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.progress-box{
+  text-align:center;
+}
+
+.progress-circle{
+  --progress:0%;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:conic-gradient(var(--primary-dark) var(--progress),#E8EFEB 0);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  font-size:12px;
+  font-weight:800;
+  color:var(--text);
+  margin:0 auto;
+}
+
+.progress-circle::before{
+  content:"";
+  position:absolute;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#fff;
+}
+
+.progress-circle span{
+  position:relative;
+  z-index:1;
+}
+
+.progress-box small{
+  display:block;
+  margin-top:3px;
+  font-size:8px;
+  line-height:1.15;
+  color:var(--muted);
+}
+
+.home-info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:11px;
+}
+
+.home-info-box{
+  background:#FAFBFA;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:9px 10px;
+}
+
+.home-info-box small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:3px;
+}
+
+.home-info-box b{
+  display:block;
+  font-size:13px;
+  color:var(--text);
+}
+
+.home-continue{
+  width:100%;
+  min-height:42px;
+  margin-top:11px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  box-shadow:0 8px 18px rgba(79,111,90,.20);
+}
+
+/* NOTICE BOARD */
+.notice-board{
+  margin-top:16px;
+  background:
+    radial-gradient(circle at top left,rgba(255,255,255,.08),transparent 40%),
+    linear-gradient(135deg,#173826,#224A33);
+  border:5px solid #7A5734;
+  border-radius:16px;
+  padding:12px 14px;
+  color:#fff;
+  text-align:center;
+  box-shadow:0 12px 26px rgba(47,58,54,.14);
+}
+
+.notice-board h3{
+  margin:0 0 8px;
+  color:#F4D57A;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+
+.notice-board p{
+  margin:0;
+  font-size:16px;
+  line-height:1.4;
+}
+
+.notice-board small{
+  display:block;
+  margin-top:9px;
+  color:#E5EAE7;
+  font-size:12px;
+}
+
+/* SUBJECT */
+.home-section-title{
+  margin:18px 0 12px;
+  text-align:left;
+  color:var(--primary-dark);
+  font-size:18px;
+  font-weight:800;
+  padding-left:2px;
+}
+
+.subject-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+/* ================= SUBJECT CARDS ================= */
+
+.subject-card{
+    min-height:66px;
+    background:#ffffff;
+    border:1px solid #EEF2F4;
+    border-radius:18px;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    box-shadow:0 6px 18px rgba(47,58,54,.06);
+    transition:all .22s ease;
+}
+
+.subject-card:active{
+    transform:translateY(2px) scale(.98);
+    box-shadow:0 3px 10px rgba(47,58,54,.08);
+}
+
+.subject-icon{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    background:#F5F8F6;
+    color:var(--primary-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:900;
+    flex:0 0 auto;
+}
+
+.subject-card b{
+    display:block;
+    font-size:15px;
+    font-weight:700;
+    color:var(--text);
+    line-height:1.2;
+}
+
+.subject-card small{
+    display:block;
+    margin-top:4px;
+    color:#8A9792;
+    font-size:12px;
+    line-height:1.2;
+}
+
+.total-card{
+  background:linear-gradient(180deg,#FFFDF6 0%,#FFF8E9 100%);
+  border-color:#E8D9B5;
+}
+
+.total-card .subject-icon{
+  background:#FFF6DF;
+  color:#9A6A18;
+}
+/* TODAY TARGET */
+.today-target-card{
+    margin-top:14px;
+    background:#FFFFFF;
+    border:1px solid #DDECE1;
+    border-radius:18px;
+    padding:11px 14px;
+    box-shadow:0 8px 20px rgba(47,58,54,.08);
+}
+
+.today-target-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.today-target-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.today-target-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:#FFF6DF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.today-target-title h3{
+    margin:0;
+    font-size:16px;
+    color:var(--primary-dark);
+}
+
+.today-target-title p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:var(--muted);
+}
+
+.today-target-count{
+    font-size:15px;
+    font-weight:800;
+    color:var(--primary-dark);
+}
+
+.today-progress-line{
+    margin-top:12px;
+    height:8px;
+    background:#EEF5F1;
+    border-radius:99px;
+    overflow:hidden;
+}
+
+.today-progress-fill{
+    width:0%;
+    height:100%;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border-radius:99px;
+}
+
+.today-target-bottom{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:var(--muted);
+}
+/* MOTIVATION */
+
+.motivation-card{
+    margin-top:12px;
+    margin-bottom:8px;
+    background:#FFFFFF;
+    border:1px solid #CFE1D4;
+    border-radius:20px;
+    padding:14px 14px;
+    min-height:130px;
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    box-shadow:0 10px 24px rgba(47,58,54,.08);
+}
+
+.quote-icon{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    font-weight:700;
+    flex:0 0 auto;
+}
+
+.motivation-card h3{
+    margin:0 0 6px;
+    font-size:19px;
+    font-weight:800;
+    color:var(--primary-dark);
+}
+
+.motivation-card p{
+    margin:0;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--text);
+}
+
+/* FIXED BOTTOM NAV */
+.home-bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:520px;
+    height:58px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    box-shadow:0 -8px 24px rgba(47,58,54,.10);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    z-index:9000;
+    padding:4px 6px;
+}
+
+.home-bottom-nav button{
+  background:transparent;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.home-bottom-nav button span{
+  font-size:20px;
+  line-height:1;
+}
+
+.home-bottom-nav button.active{
+  background:#EEF5F0;
+  color:var(--primary-dark);
+}
+
+/* MOBILE COMPACT */
+@media(max-width:390px){
+  .home-brand h1{font-size:25px}
+  .home-status{min-width:118px;font-size:12px}
+  .home-language{min-width:104px}
+  .greeting-top{grid-template-columns:50px 1fr 60px}
+  .home-avatar{width:50px;height:50px;font-size:25px}
+  .greeting-text h2{font-size:18px}
+  .progress-circle{width:54px;height:54px}
+  .progress-circle::before{width:40px;height:40px}
+  .subject-card{min-height:72px;padding:11px}
+}
+</style>
+</head>
+
+<body>
+
+<main class="home-page">
+
+  <header class="home-header">
+    <div class="home-header-row">
+      <div class="home-brand">
+        <h1>TET Success</h1>
+        <p>Your TET Guru</p>
+      </div>
+
+      <div class="home-actions">
+        <select id="homeLanguage" class="home-language">
+          <option value="english">English</option>
+          <option value="bengali">বাংলা</option>
+          <option value="hindi">हिन्दी</option>
+        </select>
+
+        <div id="homeStatus" class="home-status">
+          Trial Version
+          <small>Loading...</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="home-greeting">
+    <div class="greeting-top">
+      <div class="home-avatar">👤</div>
+
+      <div class="greeting-text">
+        <h2>Hi, <span id="homeUserName">User</span> 👋</h2>
+        <p>Welcome Back</p>
+      </div>
+
+      <div class="progress-box">
+        <div id="homeProgressCircle" class="progress-circle">
+          <span id="homeProgressText">0%</span>
+        </div>
+        <small>Overall<br>Progress</small>
+      </div>
+    </div>
+
+    <div class="home-info-grid">
+      <div class="home-info-box">
+        <small>Current Group</small>
+        <b id="homeCurrentGroup">Primary TET</b>
+      </div>
+
+      <div class="home-info-box">
+        <small>Current Level</small>
+        <b id="homeCurrentLevel">Level 1</b>
+      </div>
+    </div>
+
+    <button id="homeContinueBtn" class="home-continue">
+      📖 Continue Learning →
+    </button>
+  </section>
+
+  <section class="notice-board">
+    <h3 id="noticeTitle">NOTICE</h3>
+    <p id="noticeMessage">Welcome to TET Success</p>
+    <small id="noticeDate">Start your preparation today.</small>
+  </section>
+
+  <h2 class="home-section-title">Subject Quick Access</h2>
+
+  <section class="subject-grid">
+    <button class="subject-card" data-subject="CDP">
+      <div class="subject-icon">🧠</div>
+      <div><b>CDP</b><small>30 Marks</small></div>
+    </button>
+
+    <button class="subject-card" data-subject="Bengali">
+      <div class="subject-icon">অ</div>
+      <div><b>Bengali</b><small>30 Marks</small></div>
+    </button>
+
+    <button class="subject-card" data-subject="English">
+      <div class="subject-icon">ABC</div>
+      <div><b>English</b><small>30 Marks</small></div>
+    </button>
+
+    <button class="subject-card" data-subject="Mathematics">
+      <div class="subject-icon">÷</div>
+      <div><b>Mathematics</b><small>30 Marks</small></div>
+    </button>
+
+    <button class="subject-card" data-subject="EVS">
+      <div class="subject-icon">🌿</div>
+      <div><b>EVS</b><small>30 Marks</small></div>
+    </button>
+
+    <button id="totalMarksBtn" class="subject-card total-card">
+      <div class="subject-icon">🏆</div>
+      <div><b>TOTAL</b><small>150 Marks</small></div>
+    </button>
+  </section>
+<section class="today-target-card">
+
+    <div class="today-target-top">
+
+        <div class="today-target-title">
+            <div class="today-target-icon">🎯</div>
+
+            <div>
+                <h3>Today's Target</h3>
+                <p>Complete 30 Questions</p>
+            </div>
+        </div>
+
+        <div class="today-target-count">
+            <span id="todaySolved">0</span>/30
+        </div>
+
+    </div>
+
+    <div class="today-progress-line">
+        <div id="todayProgressFill" class="today-progress-fill"></div>
+    </div>
+
+    <div class="today-target-bottom">
+        <span>Daily Goal</span>
+        <span>Keep Learning</span>
+    </div>
+
+</section>
+  <section class="motivation-card">
+    <div class="quote-icon">“</div>
+    <div>
+      <h3>Daily Motivation</h3>
+      <p id="motivationText">Every question you solve today brings you closer to success.</p>
+    </div>
+  </section>
+
+</main>
+
+<nav class="home-bottom-nav">
+  <button class="active" type="button"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button type="button" data-page="learn.html"><span>📖</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+
+<script>
+let homeUser = null;
+let homeProgress = null;
+
+function homeTable(key,fallback){
+  return CONFIG.TABLES && CONFIG.TABLES[key] ? CONFIG.TABLES[key] : fallback;
+}
+
+function homeToast(message,type){
+  if(typeof showToast === "function"){
+    showToast(message,type || "info");
+  }
+}
+
+function homeFormatDate(value){
+  if(!value) return "";
+  if(typeof formatDate === "function") return formatDate(value);
+  const d = new Date(value);
+  if(isNaN(d.getTime())) return String(value);
+  return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+function homeSession(){
+  if(typeof getUserSession === "function"){
+    return getUserSession();
+  }
+  try{
+    return JSON.parse(localStorage.getItem("tet_user_session") || "null");
+  }catch(e){
+    return null;
+  }
+}
+
+function homeSaveSession(user){
+  if(typeof saveUserSession === "function"){
+    saveUserSession(user);
+    return;
+  }
+  localStorage.setItem("tet_user_session",JSON.stringify(user));
+}
+
+function homeSaveLanguage(lang){
+  if(typeof saveLanguage === "function"){
+    saveLanguage(lang);
+  }else{
+    localStorage.setItem("tet_language",lang);
+  }
+}
+
+document.addEventListener("DOMContentLoaded",async function(){
+
+  homeUser = homeSession();
+
+  if(!homeUser){
+    window.location.href = CONFIG.LOGIN_PAGE || "index.html";
+    return;
+  }
+
+  bindHomeEvents();
+  renderBasicHome();
+
+  if(typeof initializeBackend === "function"){
+    const ready = await initializeBackend();
+
+    if(!ready){
+      homeToast("App connection failed. Please try again.","error");
+      return;
+    }
+  }
+
+  await loadHomeData();
+
+});
+
+function renderBasicHome(){
+  document.getElementById("homeUserName").textContent =
+    homeUser.full_name || homeUser.name || "User";
+
+  document.getElementById("homeLanguage").value =
+    homeUser.selected_language || localStorage.getItem("tet_language") || "english";
+}
+
+async function loadHomeData(){
+  await loadFreshUser();
+  await loadUserProgress();
+  await loadTrialPremium();
+  await loadNoticeBoard();
+  await loadDailyMotivation();
+}
+
+async function loadFreshUser(){
+  try{
+    const {data} = await supabase
+      .from(homeTable("USERS","tet_users"))
+      .select("*")
+      .eq("id",homeUser.id)
+      .maybeSingle();
+
+    if(data){
+      homeUser = data;
+      homeSaveSession(data);
+      renderBasicHome();
+    }
+  }catch(error){
+    console.error("Home user load error:",error);
+  }
+}
+
+async function loadUserProgress(){
+  try{
+    const {data} = await supabase
+      .from(homeTable("USER_PROGRESS","tet_user_progress"))
+      .select("*")
+      .eq("user_id",homeUser.id)
+      .maybeSingle();
+
+    homeProgress = data || {
+      current_group:"Primary TET",
+      current_level:1,
+      overall_progress:0
+    };
+
+    const progress = Number(homeProgress.overall_progress || 0);
+
+    document.getElementById("homeCurrentGroup").textContent =
+      homeProgress.current_group || "Primary TET";
+
+    document.getElementById("homeCurrentLevel").textContent =
+      "Level " + (homeProgress.current_level || 1);
+
+    document.getElementById("homeProgressText").textContent =
+      progress + "%";
+
+    document.getElementById("homeProgressCircle").style.setProperty(
+      "--progress",
+      progress + "%"
+    );
+
+  }catch(error){
+    console.error("Home progress error:",error);
+  }
+}
+
+async function loadTrialPremium(){
+  try{
+    const {data} = await supabase
+      .from(homeTable("TRIAL_PREMIUM","tet_trial_premium"))
+      .select("*")
+      .eq("user_id",homeUser.id)
+      .maybeSingle();
+
+    const statusBox = document.getElementById("homeStatus");
+
+    if(data && data.status === "premium"){
+      statusBox.innerHTML =
+        "👑 Premium Member<small>Valid Until " +
+        homeFormatDate(data.premium_valid_until || APP.premium_valid_until || "2028-09-30") +
+        "</small>";
+      return;
+    }
+
+    if(data && data.trial_end_date){
+      statusBox.innerHTML =
+        "Trial Version<small>Ends " +
+        homeFormatDate(data.trial_end_date) +
+        "</small>";
+      return;
+    }
+
+    statusBox.innerHTML = "Trial Version<small>7 Days Free Trial</small>";
+
+  }catch(error){
+    console.error("Trial premium error:",error);
+  }
+}
+
+async function loadNoticeBoard(){
+  try{
+    const {data} = await supabase
+      .from(homeTable("NOTICE_BOARD","tet_notice_board"))
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(1)
+      .maybeSingle();
+
+    if(!data) return;
+
+    document.getElementById("noticeTitle").textContent =
+      data.notice_title || data.title || "NOTICE";
+
+    document.getElementById("noticeMessage").textContent =
+      data.notice_message || data.message || data.description || "Welcome to TET Success";
+
+    document.getElementById("noticeDate").textContent =
+      homeFormatDate(data.notice_date || data.created_at) || "Start your preparation today.";
+
+  }catch(error){
+    console.error("Notice load error:",error);
+  }
+}
+
+async function loadDailyMotivation(){
+  try{
+    const {data} = await supabase
+      .from(homeTable("DAILY_MOTIVATION","tet_daily_motivation"))
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(1)
+      .maybeSingle();
+
+    if(!data) return;
+
+    document.getElementById("motivationText").textContent =
+      data.motivation_text || data.quote || data.message ||
+      "Every question you solve today brings you closer to success.";
+
+  }catch(error){
+    console.error("Motivation load error:",error);
+  }
+}
+
+function bindHomeEvents(){
+
+  document.getElementById("homeLanguage").addEventListener("change",async function(){
+    const lang = this.value;
+
+    homeSaveLanguage(lang);
+
+    homeUser.selected_language = lang;
+    homeSaveSession(homeUser);
+
+    homeToast("Language saved","success");
+
+    try{
+      await supabase
+        .from(homeTable("USERS","tet_users"))
+        .update({selected_language:lang})
+        .eq("id",homeUser.id);
+    }catch(error){
+      console.error("Language save error:",error);
+    }
+  });
+
+  document.querySelectorAll("[data-subject]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      homeToast(btn.dataset.subject + " - 30 Marks","info");
+    });
+  });
+
+  document.getElementById("totalMarksBtn").addEventListener("click",function(){
+    homeToast("Total Marks 150 - Our Target 140+","success");
+  });
+
+  document.getElementById("homeContinueBtn").addEventListener("click",function(){
+    const group = encodeURIComponent(homeProgress?.current_group || "Primary TET");
+    const level = encodeURIComponent(homeProgress?.current_level || 1);
+
+    window.location.href = "learn.html?group=" + group + "&level=" + level;
+  });
+
+  document.querySelectorAll(".home-bottom-nav [data-page]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      window.location.href = btn.dataset.page;
+    });
+  });
+}
+</script>
+
+</body>
+</html>

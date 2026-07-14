@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET Success | Info</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+
+<style>
+:root{
+    --primary:#5A7D76;
+    --primary-dark:#2F5A43;
+    --accent:#D9A441;
+    --cream:#EEF5F0;
+    --white:#FFFFFF;
+    --text:#1F2A27;
+    --muted:#6B7772;
+    --border:#DDECE1;
+    --shadow:0 12px 30px rgba(47,58,54,.12);
+    --nav-height:58px;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    min-height:100%;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--cream);
+    color:var(--text);
+}
+
+button{
+    font-family:inherit;
+    border:none;
+    cursor:pointer;
+}
+
+.info-page{
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:0 14px 0;
+    background:linear-gradient(180deg,#EEF5F0 0%,#F8FBF8 55%,#FFFFFF 100%);
+}
+
+/* HEADER */
+.info-header{
+    margin:0 -14px 28px;
+    padding:34px 28px 52px;
+    background:
+        radial-gradient(circle at top right,rgba(255,255,255,.18),transparent 38%),
+        linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border-radius:0 0 30px 30px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 26px rgba(47,58,54,.14);
+}
+
+.info-header::after{
+    content:"";
+    position:absolute;
+    left:-12%;
+    right:-12%;
+    bottom:-38px;
+    height:70px;
+    background:#F8FBF8;
+    border-radius:50% 50% 0 0;
+    opacity:.95;
+}
+
+.info-header-top{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+}
+
+.info-title h1{
+    margin:0;
+    font-size:38px;
+    line-height:1;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+.info-title p{
+    margin:8px 0 0;
+    font-size:14px;
+    opacity:.92;
+}
+
+.status-badge{
+    min-width:138px;
+    background:#FFF8E8;
+    color:#6F4510;
+    border:1px solid #F2DCA7;
+    border-radius:18px;
+    padding:10px 12px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+
+.status-badge b{
+    display:block;
+    font-size:15px;
+    line-height:1.1;
+}
+
+.status-badge small{
+    display:block;
+    margin-top:4px;
+    font-size:11px;
+    color:#7B5A25;
+}
+
+/* RESOURCE CARDS */
+.info-card{
+    background:#fff;
+    border:1px solid rgba(221,236,225,.9);
+    border-radius:26px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+}
+
+.info-card::after{
+    content:"";
+    position:absolute;
+    right:-18px;
+    bottom:-16px;
+    width:130px;
+    height:130px;
+    background:radial-gradient(circle,rgba(90,125,118,.12) 2px,transparent 3px);
+    background-size:14px 14px;
+    opacity:.55;
+}
+
+.info-card.book::after{
+    background:radial-gradient(circle,rgba(217,164,65,.18) 2px,transparent 3px);
+    background-size:14px 14px;
+}
+
+.info-card-inner{
+    position:relative;
+    z-index:2;
+}
+
+.info-card-top{
+    display:grid;
+    grid-template-columns:92px 1fr 38px;
+    gap:14px;
+    align-items:start;
+}
+
+.info-art{
+    width:92px;
+    height:92px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#EEF5F1,#F8FBF8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:46px;
+    box-shadow:inset 0 0 0 1px rgba(221,236,225,.8);
+}
+
+.info-card.book .info-art{
+    background:linear-gradient(135deg,#FFF8E8,#F8FBF8);
+}
+
+.info-card h2{
+    margin:2px 0 12px;
+    font-size:23px;
+    line-height:1.1;
+    color:var(--primary-dark);
+    font-weight:900;
+    letter-spacing:-.3px;
+}
+
+.info-list{
+    display:grid;
+    gap:10px;
+}
+
+.info-list-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text);
+    font-size:14px;
+}
+
+.info-list-item span{
+    width:26px;
+    height:26px;
+    border-radius:9px;
+    background:#EEF5F1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    color:var(--primary-dark);
+    flex:0 0 auto;
+}
+
+.arrow-circle{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#F3F7F3;
+    color:var(--primary-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    font-weight:900;
+}
+
+.info-open-btn{
+    width:100%;
+    height:50px;
+    margin-top:18px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    font-size:17px;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    box-shadow:0 10px 22px rgba(47,90,67,.22);
+}
+
+.info-open-btn:active{
+    transform:scale(.98);
+}
+
+/* HELP CARD */
+.help-card{
+    background:linear-gradient(135deg,#FBFDFB,#F6FAF6);
+    border:1px solid #DCE9D6;
+    border-radius:22px;
+    padding:12px 12px 10px;
+    margin-bottom:58px;
+    box-shadow:0 8px 22px rgba(47,58,54,.08);
+}
+
+.help-card h3{
+    margin:0 0 10px;
+    text-align:center;
+    color:var(--primary-dark);
+    font-size:16px;
+    font-weight:900;
+}
+
+.help-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.help-item{
+    text-align:center;
+    padding:3px 2px;
+}
+
+.help-icon{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    margin:0 auto 5px;
+    background:#EEF5F1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+}
+
+.help-item b{
+    display:block;
+    font-size:12px;
+    color:var(--primary-dark);
+    margin-bottom:1px;
+}
+
+.help-item small{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.15;
+}
+
+/* BOTTOM NAV */
+.home-bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:520px;
+    height:58px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    box-shadow:0 -8px 24px rgba(47,58,54,.10);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    z-index:9000;
+    padding:4px 6px;
+}
+
+.home-bottom-nav button{
+    background:transparent;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1px;
+    border-radius:14px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.home-bottom-nav button span{
+    font-size:20px;
+    line-height:1;
+}
+
+.home-bottom-nav button.active{
+    background:#EEF5F1;
+    color:var(--primary-dark);
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:76px;
+    transform:translateX(-50%) translateY(20px);
+    max-width:420px;
+    width:calc(100% - 32px);
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:12px 16px;
+    border-radius:16px;
+    box-shadow:0 12px 28px rgba(0,0,0,.18);
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s ease;
+    z-index:9999;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:380px){
+    .info-header{
+        padding:28px 20px 46px;
+    }
+
+    .info-title h1{
+        font-size:34px;
+    }
+
+    .status-badge{
+        min-width:126px;
+        padding:9px 10px;
+    }
+
+    .info-card{
+        padding:15px;
+    }
+
+    .info-card-top{
+        grid-template-columns:76px 1fr 34px;
+        gap:12px;
+    }
+
+    .info-art{
+        width:76px;
+        height:76px;
+        font-size:38px;
+    }
+
+    .info-card h2{
+        font-size:20px;
+    }
+
+    .info-list-item{
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="info-page">
+
+    <header class="info-header">
+        <div class="info-header-top">
+            <div class="info-title">
+                <h1>Info</h1>
+                <p>Your TET Guru</p>
+            </div>
+
+            <div id="statusBadge" class="status-badge">
+                <b>Trial Version</b>
+                <small>Ends 09 Jul 2026</small>
+            </div>
+        </div>
+    </header>
+
+    <section class="info-card">
+        <div class="info-card-inner">
+            <div class="info-card-top">
+                <div class="info-art">📖</div>
+
+                <div>
+                    <h2>Previous TET Questions</h2>
+
+                    <div class="info-list">
+                        <div class="info-list-item"><span>▣</span>Year-wise question bank</div>
+                        <div class="info-list-item"><span>⌕</span>Search and bookmark</div>
+                        <div class="info-list-item"><span>☆</span>Important questions</div>
+                    </div>
+                </div>
+
+                <div class="arrow-circle">›</div>
+            </div>
+
+            <button id="openQuestionsBtn" class="info-open-btn" type="button">
+                Open Questions <span>→</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="info-card book">
+        <div class="info-card-inner">
+            <div class="info-card-top">
+                <div class="info-art">📚</div>
+
+                <div>
+                    <h2>Digital Text Book</h2>
+
+                    <div class="info-list">
+                        <div class="info-list-item"><span>📘</span>Subject-wise study notes</div>
+                        <div class="info-list-item"><span>▯</span>Bookmark and continue</div>
+                        <div class="info-list-item"><span>◷</span>Continue reading anytime</div>
+                    </div>
+                </div>
+
+                <div class="arrow-circle">›</div>
+            </div>
+
+            <button id="openTextBookBtn" class="info-open-btn" type="button">
+                Open Text Book <span>→</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="help-card">
+        <h3>How TET Success Helps You</h3>
+
+        <div class="help-grid">
+            <div class="help-item">
+                <div class="help-icon">🔍</div>
+                <b>Search</b>
+                <small>Find topics instantly</small>
+            </div>
+
+            <div class="help-item">
+                <div class="help-icon">🔖</div>
+                <b>Bookmark</b>
+                <small>Save important items</small>
+            </div>
+
+            <div class="help-item">
+                <div class="help-icon">📖</div>
+                <b>Continue</b>
+                <small>Pick up where left</small>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<nav class="home-bottom-nav">
+    <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+    <button class="active" type="button"><span>ℹ️</span>Info</button>
+    <button type="button" data-page="learn.html"><span>📖</span>Learn</button>
+    <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+
+<script>
+(function(){
+    "use strict";
+
+    const DEFAULT_TRIAL_TEXT = "Ends 09 Jul 2026";
+    let toastTimer = null;
+
+    function showToast(message){
+        const toast = document.getElementById("toast");
+        if(!toast) return;
+
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){
+            toast.classList.remove("show");
+        },2500);
+    }
+
+    function getConfigValue(key,fallback){
+        try{
+            return window.CONFIG && CONFIG[key] ? CONFIG[key] : fallback;
+        }catch(e){
+            return fallback;
+        }
+    }
+
+    function getTableName(key,fallback){
+        try{
+            return window.CONFIG && CONFIG.TABLES && CONFIG.TABLES[key] ? CONFIG.TABLES[key] : fallback;
+        }catch(e){
+            return fallback;
+        }
+    }
+
+    function getStoredUser(){
+        try{
+            const keys = ["tet_user","tetUser","TET_USER","user","currentUser"];
+
+            for(const key of keys){
+                const value = localStorage.getItem(key);
+                if(value){
+                    try{
+                        return JSON.parse(value);
+                    }catch(e){
+                        return { phone:value };
+                    }
+                }
+            }
+        }catch(e){}
+
+        return null;
+    }
+
+    function redirectLogin(){
+        window.location.replace(getConfigValue("LOGIN_PAGE","index.html"));
+    }
+
+    async function checkSession(){
+        try{
+            if(window.TETApp && typeof TETApp.getUserSession === "function"){
+                const user = TETApp.getUserSession();
+                if(user) return user;
+            }
+
+            if(typeof getUserSession === "function"){
+                const user = getUserSession();
+                if(user) return user;
+            }
+
+            if(window.supabaseClient && supabaseClient.auth){
+                const result = await supabaseClient.auth.getSession();
+                if(result && result.data && result.data.session){
+                    return result.data.session.user;
+                }
+            }
+
+            const storedUser = getStoredUser();
+            if(storedUser) return storedUser;
+        }catch(error){
+            console.warn("Info session check failed",error);
+        }
+
+        return null;
+    }
+
+    async function loadStatus(user){
+        const badge = document.getElementById("statusBadge");
+        if(!badge) return;
+
+        let isPremium = false;
+        let premiumDate = "";
+        let trialDate = DEFAULT_TRIAL_TEXT;
+
+        try{
+            const tableName = getTableName("TRIAL_PREMIUM","");
+
+            if(window.supabaseClient && tableName){
+                const phone = user && (user.phone || user.mobile || user.user_phone || user.phone_number);
+                const userId = user && (user.id || user.user_id);
+
+                let query = supabaseClient.from(tableName).select("*").limit(1);
+
+                if(userId){
+                    query = query.eq("user_id",userId);
+                }else if(phone){
+                    query = query.eq("phone",phone);
+                }else{
+                    query = null;
+                }
+
+                if(query){
+                    const res = await query.maybeSingle();
+                    if(res && res.data){
+                        const row = res.data;
+                        isPremium = !!(row.is_premium || row.premium || row.status === "premium");
+                        premiumDate = row.premium_valid_until || row.valid_until || row.expiry_date || "";
+                        trialDate = row.trial_end_date || row.trial_valid_until || trialDate;
+                    }
+                }
+            }
+        }catch(error){
+            console.warn("Status load failed",error);
+        }
+
+        if(isPremium){
+            badge.innerHTML = "<b>👑 Premium Member</b><small>Valid Until " + formatDate(premiumDate) + "</small>";
+        }else{
+            badge.innerHTML = "<b>Trial Version</b><small>" + formatTrialText(trialDate) + "</small>";
+        }
+    }
+
+    function formatTrialText(value){
+        if(!value) return DEFAULT_TRIAL_TEXT;
+        if(String(value).toLowerCase().includes("end")) return value;
+        return "Ends " + formatDate(value);
+    }
+
+    function formatDate(value){
+        if(!value) return "09 Jul 2026";
+
+        try{
+            const date = new Date(value);
+            if(!isNaN(date.getTime())){
+                return date.toLocaleDateString("en-GB",{
+                    day:"2-digit",
+                    month:"short",
+                    year:"numeric"
+                }).replace(/ /g," ");
+            }
+        }catch(e){}
+
+        return value;
+    }
+
+    function bindNavigation(){
+        document.querySelectorAll(".home-bottom-nav [data-page]").forEach(function(btn){
+            btn.addEventListener("click",function(){
+                window.location.href = btn.dataset.page;
+            });
+        });
+
+        const questionBtn = document.getElementById("openQuestionsBtn");
+        if(questionBtn){
+            questionBtn.addEventListener("click",function(){
+                const page = getConfigValue("QUESTIONS_PAGE","questions.html");
+                showToast("Previous TET Questions");
+                setTimeout(function(){
+                    window.location.href = page;
+                },250);
+            });
+        }
+
+        const textBookBtn = document.getElementById("openTextBookBtn");
+        if(textBookBtn){
+            textBookBtn.addEventListener("click",function(){
+                const page = getConfigValue("TEXTBOOK_PAGE","textbook.html");
+                showToast("Digital Text Book");
+                setTimeout(function(){
+                    window.location.href = page;
+                },250);
+            });
+        }
+    }
+
+    function setupBackRule(){
+        try{
+            history.pushState(null,"",location.href);
+            window.addEventListener("popstate",function(){
+                history.pushState(null,"",location.href);
+            });
+        }catch(e){}
+    }
+
+    async function initInfoPage(){
+        const user = await checkSession();
+
+        if(!user){
+            redirectLogin();
+            return;
+        }
+
+        await loadStatus(user);
+        bindNavigation();
+        setupBackRule();
+    }
+
+    document.addEventListener("DOMContentLoaded",initInfoPage);
+})();
+</script>
+
+</body>
+</html>

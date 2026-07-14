@@ -16,6 +16,98 @@
 
 <link rel="stylesheet" href="style.css">
 
+<style>
+.welcome-trial-card{
+    overflow:hidden;
+    background:
+        radial-gradient(circle at top left, rgba(255,248,232,.95), transparent 38%),
+        linear-gradient(180deg,#FFFFFF 0%,#F8FBF8 100%);
+    border:1px solid #DDECE1;
+}
+.welcome-trial-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:8px;
+    background:linear-gradient(135deg,#5A7D76,#1F5B3E);
+}
+.welcome-mark{
+    width:78px;
+    height:78px;
+    margin:4px auto 16px;
+    border-radius:24px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#5A7D76,#1F5B3E);
+    color:#fff;
+    font-size:25px;
+    font-weight:950;
+    letter-spacing:0;
+    box-shadow:0 16px 34px rgba(31,91,62,.22);
+}
+.welcome-trial-card .welcome-icon{
+    width:78px;
+    height:78px;
+    margin:4px auto 16px;
+    border-radius:24px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#5A7D76,#1F5B3E);
+    color:#fff;
+    box-shadow:0 16px 34px rgba(31,91,62,.22);
+    font-size:0;
+}
+.welcome-trial-card .welcome-icon::after{
+    content:"TET";
+    font-size:25px;
+    font-weight:950;
+    letter-spacing:0;
+}
+.welcome-trial-card .trial-benefits{
+    display:none;
+}
+.welcome-trial-card h2{
+    color:#1F5B3E;
+    font-size:28px;
+    font-weight:950;
+}
+.welcome-subtext{
+    margin:0 0 14px;
+    font-size:15px;
+}
+.trial-badge-clean{
+    width:max-content;
+    max-width:100%;
+    margin:0 auto 10px;
+    padding:10px 16px;
+    border-radius:999px;
+    background:#FFF8E8;
+    color:#6F4510;
+    border:1px solid #F2E3C4;
+    font-weight:900;
+    text-align:center;
+}
+.trial-note-clean{
+    margin:0 0 14px;
+    text-align:center;
+    color:#1F5B3E;
+    font-weight:900;
+}
+.trial-message-clean{
+    margin:0 0 22px;
+    color:#4B5A52;
+    line-height:1.55;
+}
+.install-card{
+    border:1px solid #DDECE1;
+}
+.install-card .text-button{
+    min-height:44px;
+}
+</style>
+
 </head>
 
 <body class="login-page">
@@ -414,13 +506,31 @@ id="welcomeTrialModal">
 
         <h2>
 
-            Welcome to TET Success!
+            Welcome Sir/Madam
 
         </h2>
 
-        <p class="trial-title">
+        <p class="welcome-subtext">
 
-            You are now on <strong>7 Days Free Trial</strong>
+            Your TET Success learning journey starts now.
+
+        </p>
+
+        <div class="trial-badge-clean">
+
+            7-Day Free Trial Activated
+
+        </div>
+
+        <div class="trial-note-clean">
+
+            No Payment During Trial
+
+        </div>
+
+        <p class="trial-message-clean">
+
+            Start step by step, practice with focus, and track your progress every day and succeed.
 
         </p>
 
@@ -595,6 +705,7 @@ id="installAppModal">
         </button>
 
         <button
+        id="btnInstallLater"
         class="text-button"
         type="button"
         data-close="installAppModal">
@@ -774,6 +885,8 @@ let deferredInstallPrompt = null;
 
 let currentLoginUser = null;
 
+let installRedirectTimer = null;
+
 
 /* =======================================================
 PAGE INIT
@@ -853,6 +966,8 @@ function setupLoginEvents() {
     document.getElementById("btnStartTrial").addEventListener("click", handleStartTrial);
 
     document.getElementById("btnInstallNow").addEventListener("click", handleInstallNow);
+
+    document.getElementById("btnInstallLater").addEventListener("click", handleInstallLater);
 
     document.getElementById("agreeDeclaration").addEventListener("change", handleDeclarationTick);
 
@@ -1134,11 +1249,9 @@ async function handleLogin(event) {
 
         currentLoginUser = user;
 
-        setTimeout(function () {
+        unlockButton(button);
 
-            window.location.href = CONFIG.HOME_PAGE;
-
-        }, 600);
+        openLoginModal("welcomeTrialModal");
 
     } catch (error) {
 
@@ -1422,11 +1535,7 @@ function handleStartTrial(event) {
 
     maybeShowInstallModal();
 
-    setTimeout(function () {
-
-        window.location.href = CONFIG.HOME_PAGE;
-
-    }, 700);
+    scheduleHomeRedirect(3000);
 
 }
 
@@ -1464,15 +1573,42 @@ function maybeShowInstallModal() {
         window.matchMedia("(display-mode: standalone)").matches ||
         window.navigator.standalone === true;
 
-    if (isStandalone) return;
+    if (isStandalone) return false;
 
-    if (!deferredInstallPrompt) return;
+    openLoginModal("installAppModal");
 
-    setTimeout(function () {
+    return true;
 
-        openLoginModal("installAppModal");
+}
 
-    }, 500);
+
+function scheduleHomeRedirect(delay) {
+
+    clearTimeout(installRedirectTimer);
+
+    installRedirectTimer = setTimeout(function () {
+
+        goToHome();
+
+    }, delay);
+
+}
+
+
+function goToHome() {
+
+    clearTimeout(installRedirectTimer);
+
+    window.location.href = CONFIG.HOME_PAGE;
+
+}
+
+
+function handleInstallLater() {
+
+    closeLoginModal("installAppModal");
+
+    goToHome();
 
 }
 
@@ -1502,6 +1638,8 @@ async function handleInstallNow(event) {
         deferredInstallPrompt = null;
 
         closeLoginModal("installAppModal");
+
+        goToHome();
 
     } catch (error) {
 
@@ -1739,4 +1877,3 @@ END SCRIPT
 
 </body>
 </html>
-

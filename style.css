@@ -1019,17 +1019,46 @@ transform:translateY(0) scale(1);
     pointer-events:none;
 }
 
-/* Toast final position and size fix */
-.tet-toast{
-  width:calc(100% - 32px);
-  max-width:520px;
-  min-height:86px;
-  bottom:170px;
+/* Final global toast */
+.tet-toast,
+.tet-toast-success,
+.tet-toast-error,
+.tet-toast-warning,
+.tet-toast-info{
+  position:fixed;
+  left:50%;
+  bottom:94px;
+  transform:translateX(-50%) translateY(18px);
+  width:calc(100% - 44px);
+  max-width:430px;
+  min-height:58px;
+  padding:14px 18px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#5A7D76,#1F5B3E);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 18px 42px rgba(31,91,62,.28);
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:18px;
-  font-weight:700;
-  line-height:1.4;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.35;
+  letter-spacing:0;
+  z-index:10050;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .32s ease, transform .32s ease, visibility .32s ease;
+}
+
+.tet-toast.show,
+.tet-toast-success.show,
+.tet-toast-error.show,
+.tet-toast-warning.show,
+.tet-toast-info.show{
+  opacity:1;
+  visibility:visible;
+  transform:translateX(-50%) translateY(0);
 }

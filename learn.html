@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TET Success | Learn</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="learn.css" />
+</head>
+
+<body>
+
+<main class="learn-page">
+
+  <header class="learn-header">
+    <div class="learn-header-top">
+      <div class="learn-title">
+        <h1>Learn</h1>
+        <p>Your Learning Journey</p>
+      </div>
+
+      <div id="learnStatusBadge" class="learn-status-badge">
+        <b>Trial Version</b>
+        <small>Ends 09 Jul 2026</small>
+      </div>
+    </div>
+  </header>
+
+  <section class="progress-card">
+    <div class="progress-inner">
+      <h2 class="progress-title">Your Current Progress</h2>
+
+      <div class="progress-top">
+        <div class="trophy-art" aria-hidden="true">🏆</div>
+
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <div class="stat-icon">▰</div>
+            <small>Current Group</small>
+            <b id="currentGroupText">PRIMARY</b>
+          </div>
+
+          <div class="progress-stat">
+            <div class="stat-icon">⚙</div>
+            <small>Current Level</small>
+            <b id="currentLevelText">Level 1</b>
+          </div>
+
+          <div class="progress-stat">
+            <div class="stat-icon">▮</div>
+            <small>Questions Completed</small>
+            <b>
+              <span id="completedQuestionsText">0</span> /
+              <span id="totalQuestionsText">25</span>
+            </b>
+          </div>
+        </div>
+      </div>
+
+      <button id="bookmarkedMainBtn" class="bookmark-main-btn" type="button">
+        <span>🔖</span>
+        Bookmarked Question
+        <span>→</span>
+      </button>
+    </div>
+  </section>
+
+  <h2 class="roadmap-title">Learning Roadmap</h2>
+
+  <section class="roadmap-card" id="primaryRoadmapCard">
+    <button class="group-header" type="button" data-group="Primary" data-unlocked="true">
+      <span class="group-icon">📖</span>
+      <span class="group-name">PRIMARY</span>
+      <span class="group-arrow">⌃</span>
+    </button>
+
+    <div class="group-body">
+      <div class="timeline-wrap">
+        <div class="timeline-line" aria-hidden="true"></div>
+
+        <div class="level-list" id="primaryLevelList">
+          <div class="level-row completed" data-group="Primary" data-level="1" data-unlocked="true">
+            <div class="level-dot">✓</div>
+
+            <div class="level-title">
+              <b>Level 1</b>
+              <div class="level-actions">
+                <button type="button" data-action="read" data-group="Primary" data-level="1">📖 Read</button>
+                <span class="divider">|</span>
+                <button type="button" data-action="practice" data-group="Primary" data-level="1">✎ Practice</button>
+              </div>
+            </div>
+
+            <div class="level-status">Completed</div>
+          </div>
+
+          <div class="level-row" data-group="Primary" data-level="2" data-unlocked="false">
+            <div class="level-dot">🔒</div>
+            <div class="level-title"><b>Level 2</b></div>
+            <div class="level-status">Locked</div>
+          </div>
+
+          <div class="level-row" data-group="Primary" data-level="3" data-unlocked="false">
+            <div class="level-dot">🔒</div>
+            <div class="level-title"><b>Level 3</b></div>
+            <div class="level-status">Locked</div>
+          </div>
+
+          <div class="level-row" data-group="Primary" data-level="4" data-unlocked="false">
+            <div class="level-dot">🔒</div>
+            <div class="level-title"><b>Level 4</b></div>
+            <div class="level-status">Locked</div>
+          </div>
+
+          <div class="level-row" data-group="Primary" data-level="5" data-unlocked="false">
+            <div class="level-dot">🔒</div>
+            <div class="level-title"><b>Level 5</b></div>
+            <div class="level-status">Locked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button class="collapsed-group" type="button" data-group="Basic" data-prerequisite="Primary Level 1" data-unlocked="false">
+    <span class="group-icon">▰</span>
+    <b>BASIC</b>
+    <span>⌄</span>
+  </button>
+
+  <button class="collapsed-group" type="button" data-group="Growth" data-prerequisite="Basic Level 1" data-unlocked="false">
+    <span class="group-icon">▟</span>
+    <b>GROWTH</b>
+    <span>⌄</span>
+  </button>
+
+  <button class="collapsed-group" type="button" data-group="Focus" data-prerequisite="Growth Level 1" data-unlocked="false">
+    <span class="group-icon">◎</span>
+    <b>FOCUS</b>
+    <span>⌄</span>
+  </button>
+
+  <button class="collapsed-group" type="button" data-group="Target" data-prerequisite="Focus Level 1" data-unlocked="false">
+    <span class="group-icon">⚑</span>
+    <b>TARGET</b>
+    <span>⌄</span>
+  </button>
+
+  <button class="collapsed-group" type="button" data-group="Advance" data-prerequisite="Target Level 1" data-unlocked="false">
+    <span class="group-icon">🚀</span>
+    <b>ADVANCE</b>
+    <span>⌄</span>
+  </button>
+
+  <button class="collapsed-group" type="button" data-group="Real Exam Test" data-prerequisite="Advance Level 1" data-unlocked="false">
+    <span class="group-icon">☷</span>
+    <b>REAL EXAM TEST</b>
+    <span>⌄</span>
+  </button>
+
+  <section class="daily-card">
+    <div class="daily-trophy">🏆</div>
+    <div>
+      <b>One Level Every Day</b>
+      <small>Consistency beats speed.</small>
+    </div>
+  </section>
+
+</main>
+
+<nav class="home-bottom-nav">
+  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button class="active" type="button"><span>📖</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<div id="learnToast" class="learn-toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+
+<script src="learnData.js"></script>
+<script src="learnSupabase.js"></script>
+
+<script src="learnRoadmap.js"></script>
+<script src="learnProgress.js"></script>
+<script src="learnBookmarks.js"></script>
+<script src="learnRender.js"></script>
+<script src="learnEvents.js"></script>
+<script src="learnApp.js"></script>
+
+</body>
+</html>

@@ -219,11 +219,18 @@ window.TETLearnRoadmap = (function () {
 
         if (!group.prerequisite) return false;
 
-        return isLevelCompleted(
-            safeProgress,
-            group.prerequisite.group,
-            group.prerequisite.level
-        );
+        const requiredGroup = group.prerequisite.group;
+        const requiredLevels = Array.isArray(group.prerequisite.levels)
+            ? group.prerequisite.levels
+            : [group.prerequisite.level];
+
+        return requiredLevels
+            .filter((level) => Number(level) > 0)
+            .every((level) => isLevelCompleted(
+                safeProgress,
+                requiredGroup,
+                level
+            ));
     }
 
     function getGroupLockedMessage(progress, groupId) {

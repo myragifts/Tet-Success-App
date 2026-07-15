@@ -25,6 +25,32 @@
   -webkit-tap-highlight-color:transparent;
 }
 
+body,
+button,
+a,
+.page,
+.login-page,
+.home-page,
+.info-page,
+.learn-page,
+.profile-page,
+.bookmark-page,
+.card,
+.modal-card,
+.home-bottom-nav{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+
+input,
+textarea,
+select{
+  -webkit-user-select:text;
+  user-select:text;
+  -webkit-touch-callout:default;
+}
+
 html{
   scroll-behavior:smooth;
 }

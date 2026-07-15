@@ -49,7 +49,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 
 <header class="practice-header">
   <div class="practice-top">
-    <button id="backBtn" class="back-btn" type="button">‹</button>
+    <button id="backBtn" class="back-btn" type="button">â€¹</button>
     <div class="practice-title">
       <h1>Practice</h1>
       <p>Score 80% to unlock next level</p>
@@ -85,7 +85,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 </section>
 
 <section id="resultBox" class="card result-box">
-  <div id="resultIcon" class="result-icon">🏆</div>
+  <div id="resultIcon" class="result-icon">ðŸ†</div>
   <h2 id="resultTitle">Result</h2>
   <div class="result-score"><span id="scoreText">0</span>%</div>
   <p id="resultNote" class="result-note"></p>
@@ -95,10 +95,10 @@ button{font-family:inherit;border:none;cursor:pointer}
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
-  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+  <button type="button" data-page="home2.html"><span>ðŸ </span>Home</button>
+  <button type="button" data-page="info.html"><span>â„¹ï¸</span>Info</button>
+  <button class="active" type="button" data-page="learn.html"><span>ðŸ“–</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>ðŸ‘¤</span>Profile</button>
 </nav>
 
 <div id="practiceToast" class="practice-toast"></div>
@@ -128,6 +128,29 @@ button{font-family:inherit;border:none;cursor:pointer}
     const el=$("#practiceToast"); if(!el)return;
     el.textContent=msg; el.classList.add("show");
     clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove("show"),2500);
+  }
+
+  function showSmartLoading(message){
+    clearTimeout(showSmartLoading.timer);
+    showSmartLoading.visible=false;
+
+    showSmartLoading.timer=setTimeout(()=>{
+      if(typeof showLoading==="function"){
+        showLoading(message);
+        showSmartLoading.visible=true;
+      }
+    },300);
+  }
+
+  function hideSmartLoading(){
+    clearTimeout(showSmartLoading.timer);
+    showSmartLoading.timer=null;
+
+    if(showSmartLoading.visible&&typeof hideLoading==="function"){
+      hideLoading();
+    }
+
+    showSmartLoading.visible=false;
   }
 
   function getUser(){
@@ -303,7 +326,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     $("#actionCard").style.display="none";
     $("#resultBox").classList.add("show");
     $("#scoreText").textContent=score;
-    $("#resultIcon").textContent=pass?"🏆":"🔁";
+    $("#resultIcon").textContent=pass?"ðŸ†":"ðŸ”";
     $("#resultTitle").textContent=pass?"Level Cleared":"Try Again";
     $("#resultNote").textContent=pass
       ? "Great work. Next level is unlocked."
@@ -330,14 +353,14 @@ button{font-family:inherit;border:none;cursor:pointer}
   async function init(){
     user=requireLogin(); if(!user)return;
     getParams(); renderHeader();
-    if(typeof showLoading==="function")showLoading("Loading practice...");
+    showSmartLoading("Loading practice...");
     try{
       await loadProgress();
       if(!checkAccess())return;
       await loadQuestions();
       renderHeader(); renderQuestion(); bind();
     }catch(e){console.error(e);toast("Practice failed to load","error");}
-    finally{if(typeof hideLoading==="function")hideLoading();}
+    finally{hideSmartLoading();}
   }
 
   document.addEventListener("DOMContentLoaded",init);
@@ -345,3 +368,4 @@ button{font-family:inherit;border:none;cursor:pointer}
 </script>
 </body>
 </html>
+

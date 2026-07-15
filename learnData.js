@@ -25,13 +25,13 @@ window.TETLearnData = {
     {
       id: "Primary",
       title: "PRIMARY",
-      icon: "📖",
+      icon: "ðŸ“–",
       unlockedByDefault: true,
       prerequisite: "",
       levels: [
         { level: 1, totalQuestions: 25, free: true },
         { level: 2, totalQuestions: 25, free: true },
-        { level: 3, totalQuestions: 25, free: true },
+        { level: 3, totalQuestions: 25, premium: true },
         { level: 4, totalQuestions: 25, premium: true },
         { level: 5, totalQuestions: 25, premium: true }
       ]
@@ -39,10 +39,10 @@ window.TETLearnData = {
     {
       id: "Basic",
       title: "BASIC",
-      icon: "▰",
+      icon: "â–°",
       unlockedByDefault: false,
-      prerequisite: { group: "Primary", level: 1 },
-      prerequisiteText: "Primary Level 1",
+      prerequisite: { group: "Primary", levels: [1, 2] },
+      prerequisiteText: "Primary Level",
       levels: [
         { level: 1, totalQuestions: 25, free: true },
         { level: 2, totalQuestions: 25, free: true },
@@ -54,13 +54,13 @@ window.TETLearnData = {
     {
       id: "Growth",
       title: "GROWTH",
-      icon: "▟",
+      icon: "â–Ÿ",
       unlockedByDefault: false,
-      prerequisite: { group: "Basic", level: 1 },
-      prerequisiteText: "Basic Level 1",
+      prerequisite: { group: "Basic", levels: [1, 2] },
+      prerequisiteText: "Basic Level",
       levels: [
         { level: 1, totalQuestions: 30, free: true },
-        { level: 2, totalQuestions: 30, premium: true },
+        { level: 2, totalQuestions: 30, free: true },
         { level: 3, totalQuestions: 30, premium: true },
         { level: 4, totalQuestions: 30, premium: true },
         { level: 5, totalQuestions: 30, premium: true }
@@ -69,13 +69,13 @@ window.TETLearnData = {
     {
       id: "Focus",
       title: "FOCUS",
-      icon: "◎",
+      icon: "â—Ž",
       unlockedByDefault: false,
-      prerequisite: { group: "Growth", level: 1 },
-      prerequisiteText: "Growth Level 1",
+      prerequisite: { group: "Growth", levels: [1, 2] },
+      prerequisiteText: "Growth Level",
       levels: [
-        { level: 1, totalQuestions: 30, premium: true },
-        { level: 2, totalQuestions: 30, premium: true },
+        { level: 1, totalQuestions: 30, free: true },
+        { level: 2, totalQuestions: 30, free: true },
         { level: 3, totalQuestions: 30, premium: true },
         { level: 4, totalQuestions: 30, premium: true },
         { level: 5, totalQuestions: 30, premium: true }
@@ -84,13 +84,13 @@ window.TETLearnData = {
     {
       id: "Target",
       title: "TARGET",
-      icon: "⚑",
+      icon: "âš‘",
       unlockedByDefault: false,
-      prerequisite: { group: "Focus", level: 1 },
-      prerequisiteText: "Focus Level 1",
+      prerequisite: { group: "Focus", levels: [1, 2] },
+      prerequisiteText: "Focus Level",
       levels: [
-        { level: 1, totalQuestions: 40, premium: true },
-        { level: 2, totalQuestions: 40, premium: true },
+        { level: 1, totalQuestions: 40, free: true },
+        { level: 2, totalQuestions: 40, free: true },
         { level: 3, totalQuestions: 40, premium: true },
         { level: 4, totalQuestions: 40, premium: true },
         { level: 5, totalQuestions: 40, premium: true }
@@ -99,13 +99,13 @@ window.TETLearnData = {
     {
       id: "Advance",
       title: "ADVANCE",
-      icon: "🚀",
+      icon: "ðŸš€",
       unlockedByDefault: false,
-      prerequisite: { group: "Target", level: 1 },
-      prerequisiteText: "Target Level 1",
+      prerequisite: { group: "Target", levels: [1, 2] },
+      prerequisiteText: "Target Level",
       levels: [
-        { level: 1, totalQuestions: 50, premium: true },
-        { level: 2, totalQuestions: 50, premium: true },
+        { level: 1, totalQuestions: 50, free: true },
+        { level: 2, totalQuestions: 50, free: true },
         { level: 3, totalQuestions: 50, premium: true },
         { level: 4, totalQuestions: 50, premium: true },
         { level: 5, totalQuestions: 50, premium: true }
@@ -114,14 +114,21 @@ window.TETLearnData = {
     {
       id: "Real Exam Test",
       title: "REAL EXAM TEST",
-      icon: "☷",
+      icon: "â˜·",
       unlockedByDefault: false,
-      prerequisite: { group: "Advance", level: 1 },
-      prerequisiteText: "Advance Level 1",
+      prerequisite: { group: "Advance", levels: [1, 2] },
+      prerequisiteText: "Advance Level",
       levels: [
-        { level: 1, totalQuestions: 150, premium: true },
+        { level: 1, totalQuestions: 150, free: true },
         { level: 2, totalQuestions: 150, premium: true },
-        { level: 3, totalQuestions: 150, premium: true }
+        { level: 3, totalQuestions: 150, premium: true },
+        { level: 4, totalQuestions: 150, premium: true },
+        { level: 5, totalQuestions: 150, premium: true },
+        { level: 6, totalQuestions: 150, premium: true },
+        { level: 7, totalQuestions: 150, premium: true },
+        { level: 8, totalQuestions: 150, premium: true },
+        { level: 9, totalQuestions: 150, premium: true },
+        { level: 10, totalQuestions: 150, premium: true }
       ]
     }
   ],
@@ -192,7 +199,11 @@ window.TETLearnData = {
     const rule = group.prerequisite;
     if (!rule) return false;
 
-    return this.isCompleted(progress, rule.group, rule.level);
+    const requiredLevels = Array.isArray(rule.levels) ? rule.levels : [rule.level];
+
+    return requiredLevels
+      .filter((level) => Number(level) > 0)
+      .every((level) => this.isCompleted(progress, rule.group, level));
   },
 
   isLevelUnlocked(progress, groupId, levelNo, isPremiumUser) {
@@ -232,3 +243,4 @@ window.TETLearnData = {
     return "";
   }
 };
+

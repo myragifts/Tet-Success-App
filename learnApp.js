@@ -52,15 +52,26 @@ window.TETLearnApp = (function () {
     }
 
     function showPageLoading(message = "Loading Learn...") {
-        if (typeof showLoading === "function") {
-            showLoading(message);
-        }
+        clearTimeout(showPageLoading.timer);
+        showPageLoading.visible = false;
+
+        showPageLoading.timer = setTimeout(() => {
+            if (typeof showLoading === "function") {
+                showLoading(message);
+                showPageLoading.visible = true;
+            }
+        }, 300);
     }
 
     function hidePageLoading() {
-        if (typeof hideLoading === "function") {
+        clearTimeout(showPageLoading.timer);
+        showPageLoading.timer = null;
+
+        if (showPageLoading.visible && typeof hideLoading === "function") {
             hideLoading();
         }
+
+        showPageLoading.visible = false;
     }
 
     function getLoginPage() {
@@ -246,3 +257,4 @@ window.TETLearnApp = (function () {
         getState
     };
 })();
+

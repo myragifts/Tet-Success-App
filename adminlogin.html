@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET Success | Admin Login</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+<style>
+:root {
+  --primary: #5A7D76;
+  --primary-dark: #1F5B3E;
+  --secondary: #A8BDB5;
+  --accent: #A26A12;
+  --bg: #EEF5F0;
+  --text: #17231F;
+  --muted: #6B7772;
+  --card: #FFFFFF;
+  --border: #DDECE1;
+  --shadow: 0 18px 42px rgba(47, 58, 54, .12);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #E6F0EA 0%, var(--bg) 52%, #FFFFFF 100%);
+  color: var(--text);
+}
+button, input { font: inherit; }
+.admin-login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+.admin-card {
+  width: min(100%, 430px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: var(--shadow);
+}
+.brand-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-weight: 950;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.admin-card h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+.admin-card p {
+  margin: 8px 0 22px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.field label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 800;
+}
+.field input {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 16px;
+  border: 1px solid #D1D5DB;
+  padding: 0 15px;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(90, 125, 118, .16);
+}
+.primary-btn {
+  width: 100%;
+  min-height: 54px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(47, 90, 67, .22);
+}
+.primary-btn:disabled {
+  opacity: .62;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.admin-foot {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+<main class="admin-login-page">
+  <section class="admin-card" aria-labelledby="adminTitle">
+    <div class="brand-mark">T</div>
+    <h1 id="adminTitle">Admin Dashboard</h1>
+    <p>TET Success seller access for premium approvals, content updates, and app management.</p>
+
+    <form id="adminLoginForm" autocomplete="off">
+      <div class="field">
+        <label for="adminPassword">Admin Password</label>
+        <input
+          id="adminPassword"
+          type="password"
+          inputmode="text"
+          autocomplete="new-password"
+          required
+          aria-label="Admin Password"
+        />
+      </div>
+
+      <button id="loginBtn" class="primary-btn" type="submit">Login</button>
+    </form>
+
+    <div class="admin-foot">TET Success · Your TET Guru</div>
+  </section>
+</main>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+<script>
+"use strict";
+
+(function () {
+  const form = document.getElementById("adminLoginForm");
+  const passwordInput = document.getElementById("adminPassword");
+  const loginBtn = document.getElementById("loginBtn");
+
+  function goDashboard() {
+    window.location.href = CONFIG.ADMIN_PAGE || "admin.html";
+  }
+
+  function getDb() {
+    return window.tetSupabase || window.supabase || null;
+  }
+
+  async function loginAdmin(password) {
+    const db = getDb();
+    if (!db) throw new Error("Supabase client unavailable");
+
+    const { data, error } = await db.rpc("tet_admin_login", {
+      input_password: password
+    });
+
+    if (error) throw error;
+    return Array.isArray(data) && data.length ? data[0] : null;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const password = passwordInput.value.trim();
+    if (!password) {
+      showToast("Please write Admin Password", "warning");
+      passwordInput.focus();
+      return;
+    }
+
+    lockButton(loginBtn, "Checking...");
+
+    try {
+      const admin = await loginAdmin(password);
+      if (!admin) {
+        showToast("Incorrect Admin Password", "error");
+        unlockButton(loginBtn);
+        passwordInput.select();
+        return;
+      }
+
+      saveAdminSession({
+        loggedIn: true,
+        admin_id: admin.admin_id,
+        admin_name: admin.admin_name,
+        session_token: admin.session_token,
+        expires_at: admin.expires_at,
+        login_at: new Date().toISOString()
+      });
+
+      showToast("Admin login successful", "success");
+      setTimeout(goDashboard, 350);
+    } catch (error) {
+      console.error("Admin login failed:", error);
+      showToast("Admin login failed. Please try again.", "error");
+      unlockButton(loginBtn);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    if (getAdminSession()) {
+      goDashboard();
+      return;
+    }
+
+    passwordInput.focus();
+    form.addEventListener("submit", handleSubmit);
+  });
+})();
+</script>
+</body>
+</html>

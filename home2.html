@@ -717,6 +717,46 @@ function homeSaveLanguage(lang){
   }
 }
 
+function homeTodayDate(){
+  try{
+    return new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
+  }catch(e){
+    return new Date().toISOString().slice(0,10);
+  }
+}
+
+function homeDailyTargetKey(){
+  const id = homeUser?.id || homeUser?.phone || "guest";
+  return "tet_success_daily_target_" + id;
+}
+
+function homeReadDailyTarget(){
+  const today = homeTodayDate();
+  let data = {date:today, solved:0, goal:30};
+
+  try{
+    const saved = JSON.parse(localStorage.getItem(homeDailyTargetKey()) || "null");
+    if(saved && saved.date === today){
+      data.solved = Math.max(0,Math.min(30,Number(saved.solved || 0)));
+    }
+  }catch(e){}
+
+  return data;
+}
+
+function renderTodayTarget(){
+  const target = homeReadDailyTarget();
+  const solved = Math.max(0,Math.min(30,Number(target.solved || 0)));
+  const percent = Math.min(100,Math.round((solved / 30) * 100));
+  const solvedBox = document.getElementById("todaySolved");
+  const fill = document.getElementById("todayProgressFill");
+  const bottom = document.querySelector(".today-target-bottom span:last-child");
+
+  if(solvedBox) solvedBox.textContent = solved;
+  if(fill) fill.style.width = percent + "%";
+  if(bottom) bottom.textContent = solved >= 30 ? "Target Completed" : "Keep Learning";
+}
+
 document.addEventListener("DOMContentLoaded",async function(){
 
   homeUser = homeSession();
@@ -728,6 +768,7 @@ document.addEventListener("DOMContentLoaded",async function(){
 
   bindHomeEvents();
   renderBasicHome();
+  renderTodayTarget();
 
   if(typeof initializeBackend === "function"){
     const ready = await initializeBackend();
@@ -756,6 +797,7 @@ async function loadHomeData(){
   await loadTrialPremium();
   await loadNoticeBoard();
   await loadDailyMotivation();
+  renderTodayTarget();
 }
 
 async function loadFreshUser(){
@@ -785,7 +827,7 @@ async function loadUserProgress(){
       .maybeSingle();
 
     homeProgress = data || {
-      current_group:"Primary TET",
+      current_group:"Primary",
       current_level:1,
       overall_progress:0
     };
@@ -793,7 +835,7 @@ async function loadUserProgress(){
     const progress = Number(homeProgress.overall_progress || 0);
 
     document.getElementById("homeCurrentGroup").textContent =
-      homeProgress.current_group || "Primary TET";
+      homeProgress.current_group || "Primary";
 
     document.getElementById("homeCurrentLevel").textContent =
       "Level " + (homeProgress.current_level || 1);
@@ -922,10 +964,12 @@ function bindHomeEvents(){
   });
 
   document.getElementById("homeContinueBtn").addEventListener("click",function(){
-    const group = encodeURIComponent(homeProgress?.current_group || "Primary TET");
+    const rawGroup = homeProgress?.current_group || "Primary";
+    const normalizedGroup = String(rawGroup).trim() === "Primary TET" ? "Primary" : rawGroup;
+    const group = encodeURIComponent(normalizedGroup);
     const level = encodeURIComponent(homeProgress?.current_level || 1);
 
-    window.location.href = "learn.html?group=" + group + "&level=" + level;
+    window.location.href = "learn.html?group=" + group + "&level=" + level + "&focus=1";
   });
 
   document.querySelectorAll(".home-bottom-nav [data-page]").forEach(function(btn){

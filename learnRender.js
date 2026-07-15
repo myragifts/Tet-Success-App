@@ -158,10 +158,10 @@ window.TETLearnRender = (function () {
 
         const totalQuestions = ROADMAP.getTotalQuestions(group, level);
 
-        const completedQuestions = safeNumber(
-       progress.total_questions,
-     totalQuestions
-    );
+        const completedQuestions = Math.min(
+            totalQuestions,
+            safeNumber(progress.completed_questions || progress.completedQuestions, 0)
+        );
 
         setText(DOM.currentGroupText, String(group).toUpperCase());
         setText(DOM.currentLevelText, "Level " + level);

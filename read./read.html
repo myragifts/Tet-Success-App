@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="tet-page-version" content="read-v2" />
+<title>TET Success | Read</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+
+<style>
+:root{
+  --primary:#5A7D76;
+  --primary-dark:#1F5B3E;
+  --gold:#A26A12;
+  --bg:#EEF5F0;
+  --card:#FFFFFF;
+  --text:#17231F;
+  --muted:#6B7772;
+  --border:#DDECE1;
+  --shadow:0 12px 30px rgba(47,58,54,.12);
+  --nav-height:58px;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+}
+
+.read-page{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:0 14px calc(var(--nav-height) + 20px);
+  background:linear-gradient(180deg,#EEF5F0 0%,#F8FBF8 58%,#FFFFFF 100%);
+}
+
+.read-header{
+  margin:0 -14px 18px;
+  padding:28px 22px 44px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-radius:0 0 30px 30px;
+  box-shadow:0 10px 26px rgba(47,58,54,.14);
+}
+
+.read-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.back-btn{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:20px;
+}
+
+.read-title h1{
+  margin:0;
+  font-size:30px;
+  font-weight:900;
+}
+
+.read-title p{
+  margin:6px 0 0;
+  font-size:13px;
+  opacity:.9;
+}
+
+.read-badge{
+  background:#FFF8E8;
+  color:#6F4510;
+  border-radius:16px;
+  padding:9px 12px;
+  min-width:105px;
+  text-align:center;
+  font-weight:900;
+  font-size:13px;
+}
+
+.read-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+
+.level-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.info-box{
+  background:#F8FBF8;
+  border:1px solid #E4EEE7;
+  border-radius:16px;
+  padding:12px;
+}
+
+.info-box small{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.info-box b{
+  display:block;
+  margin-top:4px;
+  color:var(--primary-dark);
+  font-size:16px;
+}
+
+.instruction{
+  line-height:1.55;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.question-card{
+  background:#fff;
+  border:1px solid #E2ECE6;
+  border-radius:20px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:0 8px 22px rgba(47,58,54,.08);
+}
+
+.question-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+  align-items:center;
+}
+
+.q-no{
+  background:#EEF5F1;
+  color:var(--primary-dark);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.q-subject{
+  color:#7B5A25;
+  background:#FFF8E8;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.question-text{
+  margin:0 0 12px;
+  font-size:16px;
+  line-height:1.45;
+  font-weight:800;
+}
+
+.answer-box,
+.explanation-box{
+  border-radius:16px;
+  padding:12px;
+  margin-top:10px;
+}
+
+.answer-box{
+  background:#E6F2EA;
+  border:1px solid #CFE7D5;
+}
+
+.explanation-box{
+  background:#F8FBF8;
+  border:1px solid #E4EEE7;
+}
+
+.answer-box small,
+.explanation-box small{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:4px;
+}
+
+.answer-box b,
+.explanation-box span{
+  font-size:14px;
+  line-height:1.45;
+}
+
+.empty-card{
+  text-align:center;
+  padding:28px 18px;
+}
+
+.empty-card h3{
+  margin:8px 0;
+  color:var(--primary-dark);
+}
+
+.practice-btn{
+  width:100%;
+  min-height:52px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#1E6A48,#145337);
+  color:#fff;
+  border:3px solid #8B5B12;
+  font-size:17px;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(47,90,67,.22);
+}
+
+.practice-btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.read-toast{
+  position:fixed;
+  left:50%;
+  bottom:76px;
+  transform:translateX(-50%) translateY(20px);
+  width:calc(100% - 32px);
+  max-width:420px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  padding:12px 16px;
+  border-radius:16px;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  font-size:14px;
+  font-weight:800;
+  text-align:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s ease;
+  z-index:9999;
+}
+
+.read-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.home-bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:58px;
+  background:#fff;
+  border-top:1px solid var(--border);
+  box-shadow:0 -8px 24px rgba(47,58,54,.10);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  z-index:9000;
+  padding:4px 6px;
+}
+
+.home-bottom-nav button{
+  background:transparent;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  border:none;
+  border-radius:14px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.home-bottom-nav button span{
+  font-size:20px;
+}
+
+.home-bottom-nav button.active{
+  background:#EEF5F1;
+  color:var(--primary-dark);
+}
+</style>
+</head>
+
+<body>
+
+<main class="read-page">
+
+  <header class="read-header">
+    <div class="read-top">
+      <button class="back-btn" id="backBtn" type="button">‹</button>
+
+      <div class="read-title">
+        <h1>Read</h1>
+        <p>Learn answers before practice</p>
+      </div>
+
+      <div class="read-badge" id="readLevelBadge">Level 1</div>
+    </div>
+  </header>
+
+  <section class="read-card">
+    <div class="level-info">
+      <div class="info-box">
+        <small>Group</small>
+        <b id="groupText">Primary</b>
+      </div>
+
+      <div class="info-box">
+        <small>Level</small>
+        <b id="levelText">Level 1</b>
+      </div>
+    </div>
+
+    <p class="instruction">
+      Read every question with correct answer and short explanation. After reading, tap Practice and score 80% or more to unlock the next level.
+    </p>
+  </section>
+
+  <section id="questionList"></section>
+
+  <section class="read-card">
+    <button id="practiceBtn" class="practice-btn" type="button">
+      ✎ Start Practice
+    </button>
+  </section>
+
+</main>
+
+<nav class="home-bottom-nav">
+  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<div id="readToast" class="read-toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+
+<script src="learnData.js"></script>
+<script src="learnSupabase.js"></script>
+<script src="learnRoadmap.js"></script>
+<script src="learnProgress.js"></script>
+
+<script>
+"use strict";
+
+(function(){
+  const DATA = window.TETLearnData;
+  const ROADMAP = window.TETLearnRoadmap;
+  const PROGRESS = window.TETLearnProgress;
+
+  let user = null;
+  let group = "Primary";
+  let level = 1;
+  let questions = [];
+
+  const $ = (s) => document.querySelector(s);
+
+  function toast(message,type="info"){
+    if(typeof showToast === "function"){
+      showToast(message,type);
+      return;
+    }
+
+    const el = $("#readToast");
+    if(!el) return;
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(()=>el.classList.remove("show"),2500);
+  }
+
+  function getUser(){
+    if(typeof getUserSession === "function"){
+      const u = getUserSession();
+      if(u) return u;
+    }
+    return null;
+  }
+
+  function requireLogin(){
+    if(typeof requireUserLogin === "function"){
+      if(!requireUserLogin()) return null;
+    }
+
+    const u = getUser();
+    if(!u){
+      window.location.href = CONFIG.LOGIN_PAGE || "index.html";
+      return null;
+    }
+    return u;
+  }
+
+  function getParams(){
+    const p = new URLSearchParams(location.search);
+    group = p.get("group") || "Primary";
+    level = Number(p.get("level") || 1);
+  }
+
+  async function loadProgress(){
+    PROGRESS.setUser(user);
+    await PROGRESS.loadAll(user);
+  }
+
+  function checkAccess(){
+    const progress = PROGRESS.getProgress();
+    const premium = PROGRESS.getPremiumStatus();
+    const state = ROADMAP.getLevelState(progress,group,level,premium);
+
+    if(!state.unlocked){
+      toast(state.message || "This level is locked","warning");
+      setTimeout(()=>location.href="learn.html",900);
+      return false;
+    }
+
+    return true;
+  }
+
+  async function loadQuestions(){
+    const table = CONFIG.TABLES.LEARN_QUESTIONS;
+    const db = window.tetSupabase || window.supabase;
+
+    if(!db || !table){
+      questions = [];
+      return;
+    }
+    const { data, error } = await db
+      .from(table)
+      .select("*")
+      .eq("group_name",group)
+      .eq("level_no", level)
+      .eq("status", "active")
+      .limit(200);
+
+    if (error) {
+      console.error("Read question load failed:", error);
+      questions = [];
+      return;
+    }
+
+    questions = Array.isArray(data) ? data : [];
+  }
+
+  function getQuestionText(q){
+    return q.question_text || q.question || q.title || "";
+  }
+
+  function getCorrectAnswer(q){
+    return q.correct_answer_text || q.correct_answer || q.answer_text || q[q.correct_option?.toLowerCase()] || "";
+  }
+
+  function getExplanation(q){
+    return q.short_explanation || q.explanation || q.solution || "Explanation not available.";
+  }
+
+  function renderHeader(){
+    $("#groupText").textContent = group.toUpperCase();
+    $("#levelText").textContent = "Level " + level;
+    $("#readLevelBadge").textContent = "Level " + level;
+  }
+
+  function renderQuestions(){
+    const list = $("#questionList");
+
+    if(!questions.length){
+      list.innerHTML = `
+        <section class="read-card empty-card">
+          <div style="font-size:44px">📘</div>
+          <h3>No questions found</h3>
+          <p class="instruction">Please add questions in Supabase for ${group} Level ${level}.</p>
+        </section>
+      `;
+      $("#practiceBtn").disabled = true;
+      return;
+    }
+
+    list.innerHTML = questions.map((q,index)=>`
+      <article class="question-card">
+        <div class="question-meta">
+          <span class="q-no">Question ${index + 1} of ${questions.length}</span>
+          <span class="q-subject">${escapeHTML(q.subject || "General")}</span>
+        </div>
+
+        <p class="question-text">${escapeHTML(getQuestionText(q))}</p>
+
+        <div class="answer-box">
+          <small>Correct Answer</small>
+          <b>${escapeHTML(getCorrectAnswer(q))}</b>
+        </div>
+
+        <div class="explanation-box">
+          <small>Short Explanation</small>
+          <span>${escapeHTML(getExplanation(q))}</span>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  async function markReadOpened(){
+    await PROGRESS.setCurrentLevel(group,level,{
+      action:"read",
+      save:true
+    });
+  }
+
+  function goPractice(){
+    if(!questions.length){
+      toast("Questions not available","warning");
+      return;
+    }
+
+    location.href = `practice.html?group=${encodeURIComponent(group)}&level=${encodeURIComponent(level)}&from=read`;
+  }
+
+  function bindEvents(){
+    $("#backBtn").addEventListener("click",()=>location.href="learn.html");
+    $("#practiceBtn").addEventListener("click",goPractice);
+
+    document.querySelectorAll(".home-bottom-nav [data-page]").forEach(btn=>{
+      btn.addEventListener("click",()=>location.href=btn.dataset.page);
+    });
+  }
+
+  async function init(){
+    user = requireLogin();
+    if(!user) return;
+
+    getParams();
+    renderHeader();
+
+    if(typeof showLoading === "function") showLoading("Loading reading...");
+
+    try{
+      
+      await loadProgress();
+
+      if(!checkAccess()) return;
+
+      await markReadOpened();
+      await loadQuestions();
+
+      renderQuestions();
+      bindEvents();
+    }catch(err){
+      console.error(err);
+      toast("Read page failed to load","error");
+    }finally{
+      if(typeof hideLoading === "function") hideLoading();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>

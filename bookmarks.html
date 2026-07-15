@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET Success | Bookmarks</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+
+<style>
+:root{
+  --p:#5A7D76;
+  --pd:#1F5B3E;
+  --gold:#A26A12;
+  --bg:#EEF5F0;
+  --w:#fff;
+  --t:#17231F;
+  --m:#6B7772;
+  --b:#DDECE1;
+  --s:0 12px 30px rgba(47,58,54,.12);
+  --nav:58px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--t)}
+button,input{font-family:inherit}
+button{border:none;cursor:pointer}
+.bookmark-page{max-width:520px;margin:0 auto;min-height:100vh;padding:0 14px calc(var(--nav) + 18px);background:linear-gradient(180deg,#EEF5F0,#F8FBF8 60%,#fff)}
+.bookmark-header{margin:0 -14px 18px;padding:28px 22px 42px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-radius:0 0 30px 30px;box-shadow:0 10px 26px rgba(47,58,54,.14)}
+.header-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.back-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:20px}
+.title h1{margin:0;font-size:30px;font-weight:900}
+.title p{margin:6px 0 0;font-size:13px;opacity:.9}
+.count-badge{background:#FFF8E8;color:#6F4510;border-radius:16px;padding:9px 12px;min-width:92px;text-align:center;font-weight:900;font-size:13px}
+.card{background:#fff;border:1px solid var(--b);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:var(--s)}
+.search-box{display:grid;grid-template-columns:1fr auto;gap:8px}
+.search-box input{width:100%;height:46px;border-radius:15px;border:1px solid #DDECE1;padding:0 14px;font-size:14px;outline:none;background:#F8FBF8;color:var(--t)}
+.search-box button{height:46px;border-radius:15px;background:#EEF5F1;color:var(--pd);font-weight:900;padding:0 14px}
+.filter-row{display:flex;gap:8px;margin-top:12px;overflow-x:auto;padding-bottom:2px}
+.filter-btn{white-space:nowrap;border-radius:999px;background:#F8FBF8;border:1px solid #E4EEE7;color:var(--m);font-size:13px;font-weight:850;padding:8px 13px}
+.filter-btn.active{background:#1E6A48;color:#fff;border-color:#1E6A48}
+.bookmark-list{display:grid;gap:12px}
+.bookmark-card{background:#fff;border:1px solid #E2ECE6;border-radius:20px;padding:15px;box-shadow:0 8px 22px rgba(47,58,54,.08)}
+.bookmark-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;align-items:center}
+.type-pill{background:#EEF5F1;color:var(--pd);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}
+.date-text{font-size:12px;color:var(--m)}
+.bookmark-card h3{margin:0 0 8px;font-size:17px;color:var(--pd)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.meta span{background:#FFF8E8;color:#6F4510;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800}
+.action-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.action-row button{min-height:42px;border-radius:14px;font-size:14px;font-weight:900}
+.read-btn{background:#EEF5F1;color:var(--pd)}
+.practice-btn{background:linear-gradient(135deg,#1E6A48,#145337);color:#fff}
+.remove-btn{background:#FFF0ED;color:#B42318;padding:0 12px}
+.empty{padding:30px 18px;text-align:center}
+.empty-icon{font-size:54px}
+.empty h2{margin:8px 0;color:var(--pd)}
+.empty p{margin:0;color:var(--m);line-height:1.5}
+.home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--b);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}
+.home-bottom-nav button{background:transparent;color:var(--m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}
+.home-bottom-nav button span{font-size:20px}
+.home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
+.bookmark-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);width:calc(100% - 32px);max-width:420px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.25s;z-index:9999}
+.bookmark-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+
+<body>
+
+<main class="bookmark-page">
+
+<header class="bookmark-header">
+  <div class="header-top">
+    <button id="backBtn" class="back-btn" type="button">‹</button>
+
+    <div class="title">
+      <h1>Bookmarks</h1>
+      <p>Your saved questions</p>
+    </div>
+
+    <div id="countBadge" class="count-badge">0 Saved</div>
+  </div>
+</header>
+
+<section class="card">
+  <div class="search-box">
+    <input id="searchInput" type="search" placeholder="Search subject or chapter..." />
+    <button id="clearBtn" type="button">Clear</button>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" type="button" data-filter="all">All</button>
+    <button class="filter-btn" type="button" data-filter="learn">Learn</button>
+    <button class="filter-btn" type="button" data-filter="read">Read</button>
+    <button class="filter-btn" type="button" data-filter="practice">Practice</button>
+  </div>
+</section>
+
+<section id="bookmarkList" class="bookmark-list"></section>
+
+</main>
+
+<nav class="home-bottom-nav">
+  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<div id="bookmarkToast" class="bookmark-toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+
+<script src="learnData.js"></script>
+<script src="learnSupabase.js"></script>
+<script src="learnBookmarks.js"></script>
+
+<script>
+"use strict";
+
+(function(){
+  const BOOKMARKS = window.TETLearnBookmarks;
+
+  let user = null;
+  let allBookmarks = [];
+  let activeFilter = "all";
+  let searchText = "";
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  function toast(message,type="info"){
+    if(typeof showToast === "function"){
+      showToast(message,type);
+      return;
+    }
+
+    const el = $("#bookmarkToast");
+    if(!el) return;
+
+    el.textContent = message;
+    el.classList.add("show");
+
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(()=>el.classList.remove("show"),2500);
+  }
+
+  function getUser(){
+    if(typeof getUserSession === "function"){
+      const u = getUserSession();
+      if(u) return u;
+    }
+    return null;
+  }
+
+  function requireLogin(){
+    if(typeof requireUserLogin === "function"){
+      if(!requireUserLogin()) return null;
+    }
+
+    const u = getUser();
+    if(!u){
+      location.href = CONFIG.LOGIN_PAGE || "index.html";
+      return null;
+    }
+
+    return u;
+  }
+
+  function escapeSafe(value){
+    if(typeof escapeHTML === "function") return escapeHTML(value);
+
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function formatDate(value){
+    if(!value) return "";
+
+    try{
+      const d = new Date(value);
+      if(!Number.isNaN(d.getTime())){
+        return d.toLocaleDateString("en-IN",{
+          day:"2-digit",
+          month:"short",
+          year:"numeric"
+        });
+      }
+    }catch{}
+
+    return String(value);
+  }
+
+  function getType(bookmark){
+    const ref = String(bookmark.bookmark_ref_id || "").toLowerCase();
+
+    if(ref.includes(":read")) return "read";
+    if(ref.includes(":practice")) return "practice";
+
+    return bookmark.bookmark_type || "learn";
+  }
+
+  function parseRef(bookmark){
+    const ref = String(bookmark.bookmark_ref_id || "");
+    const parts = ref.split(":");
+
+    return {
+      group: parts[0] || bookmark.subject || "Primary",
+      level: Number(parts[1] || 1),
+      action: parts[2] || "practice"
+    };
+  }
+
+  function getFilteredBookmarks(){
+    let list = [...allBookmarks];
+
+    if(activeFilter !== "all"){
+      list = list.filter(item => getType(item) === activeFilter);
+    }
+
+    const q = searchText.trim().toLowerCase();
+
+    if(q){
+      list = list.filter(item => {
+        return (
+          String(item.subject || "").toLowerCase().includes(q) ||
+          String(item.chapter_name || "").toLowerCase().includes(q) ||
+          String(item.bookmark_ref_id || "").toLowerCase().includes(q)
+        );
+      });
+    }
+
+    return list;
+  }
+
+  function renderCount(){
+    $("#countBadge").textContent = allBookmarks.length + " Saved";
+  }
+
+  function renderBookmarks(){
+    const list = $("#bookmarkList");
+    const data = getFilteredBookmarks();
+
+    renderCount();
+
+    if(!data.length){
+      list.innerHTML = `
+        <section class="card empty">
+          <div class="empty-icon">🔖</div>
+          <h2>No bookmarks found</h2>
+          <p>Your saved questions will appear here.</p>
+        </section>
+      `;
+      return;
+    }
+
+    list.innerHTML = data.map(item => {
+      const ref = parseRef(item);
+      const type = getType(item);
+
+      return `
+        <article class="bookmark-card" data-id="${escapeSafe(item.id)}">
+          <div class="bookmark-top">
+            <span class="type-pill">${escapeSafe(type.toUpperCase())}</span>
+            <span class="date-text">${escapeSafe(formatDate(item.created_at))}</span>
+          </div>
+
+          <h3>${escapeSafe(item.chapter_name || "Level " + ref.level)}</h3>
+
+          <div class="meta">
+            <span>${escapeSafe(item.subject || ref.group)}</span>
+            <span>Level ${escapeSafe(ref.level)}</span>
+            ${item.exam_year ? `<span>${escapeSafe(item.exam_year)}</span>` : ""}
+          </div>
+
+          <div class="action-row">
+            <button class="read-btn" type="button" data-open-read data-group="${escapeSafe(ref.group)}" data-level="${escapeSafe(ref.level)}">Read</button>
+            <button class="practice-btn" type="button" data-open-practice data-group="${escapeSafe(ref.group)}" data-level="${escapeSafe(ref.level)}">Practice</button>
+            <button class="remove-btn" type="button" data-remove="${escapeSafe(item.id)}">×</button>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    bindCardEvents();
+  }
+
+  function bindCardEvents(){
+    $$("[data-open-read]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        location.href = `read.html?group=${encodeURIComponent(btn.dataset.group)}&level=${encodeURIComponent(btn.dataset.level)}`;
+      });
+    });
+
+    $$("[data-open-practice]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        location.href = `practice.html?group=${encodeURIComponent(btn.dataset.group)}&level=${encodeURIComponent(btn.dataset.level)}`;
+      });
+    });
+
+    $$("[data-remove]").forEach(btn=>{
+      btn.addEventListener("click",async()=>{
+        const id = btn.dataset.remove;
+        if(!id) return;
+
+        if(typeof showLoading === "function") showLoading("Removing bookmark...");
+
+        try{
+          const result = await BOOKMARKS.removeBookmark(id);
+
+          if(result.ok){
+            toast("Bookmark removed","success");
+            await loadBookmarks();
+          }else{
+            toast(result.message || "Remove failed","error");
+          }
+        }catch(error){
+          console.error(error);
+          toast("Remove failed","error");
+        }finally{
+          if(typeof hideLoading === "function") hideLoading();
+        }
+      });
+    });
+  }
+
+  async function loadBookmarks(){
+    BOOKMARKS.setUser(user);
+    allBookmarks = await BOOKMARKS.load(user);
+    renderBookmarks();
+  }
+
+  function bindEvents(){
+    $("#backBtn").addEventListener("click",()=>location.href="learn.html");
+
+    $("#searchInput").addEventListener("input",function(){
+      searchText = this.value || "";
+      renderBookmarks();
+    });
+
+    $("#clearBtn").addEventListener("click",function(){
+      searchText = "";
+      $("#searchInput").value = "";
+      renderBookmarks();
+    });
+
+    $$(".filter-btn").forEach(btn=>{
+      btn.addEventListener("click",function(){
+        activeFilter = btn.dataset.filter || "all";
+
+        $$(".filter-btn").forEach(item=>item.classList.remove("active"));
+        btn.classList.add("active");
+
+        renderBookmarks();
+      });
+    });
+
+    $$(".home-bottom-nav [data-page]").forEach(btn=>{
+      btn.addEventListener("click",()=>location.href=btn.dataset.page);
+    });
+  }
+
+  async function init(){
+    user = requireLogin();
+    if(!user) return;
+
+    if(typeof showLoading === "function") showLoading("Loading bookmarks...");
+
+    try{
+      bindEvents();
+      await loadBookmarks();
+    }catch(error){
+      console.error(error);
+      toast("Bookmarks failed to load","error");
+    }finally{
+      if(typeof hideLoading === "function") hideLoading();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded",init);
+})();
+</script>
+
+</body>
+</html>

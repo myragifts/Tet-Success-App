@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="tet-page-version" content="practice-v2" />
+<title>TET Success | Practice</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+
+<style>
+:root{
+  --p:#5A7D76;--pd:#1F5B3E;--g:#A26A12;--bg:#EEF5F0;--w:#fff;
+  --t:#17231F;--m:#6B7772;--b:#DDECE1;--s:0 12px 30px rgba(47,58,54,.12);
+  --nav:58px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--t)}
+button{font-family:inherit;border:none;cursor:pointer}
+.practice-page{max-width:520px;margin:0 auto;min-height:100vh;padding:0 14px calc(var(--nav) + 18px);background:linear-gradient(180deg,#EEF5F0,#F8FBF8 60%,#fff)}
+.practice-header{margin:0 -14px 18px;padding:28px 22px 42px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-radius:0 0 30px 30px;box-shadow:0 10px 26px rgba(47,58,54,.14)}
+.practice-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.back-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:20px}
+.practice-title h1{margin:0;font-size:30px;font-weight:900}.practice-title p{margin:6px 0 0;font-size:13px;opacity:.9}
+.badge{background:#FFF8E8;color:#6F4510;border-radius:16px;padding:9px 12px;min-width:100px;text-align:center;font-weight:900;font-size:13px}
+.card{background:#fff;border:1px solid var(--b);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:var(--s)}
+.top-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.info{background:#F8FBF8;border:1px solid #E4EEE7;border-radius:15px;padding:10px;text-align:center}
+.info small{display:block;color:var(--m);font-size:11px}.info b{display:block;margin-top:4px;color:var(--pd);font-size:15px}
+.progress-bar{height:8px;background:#E8EEE9;border-radius:99px;overflow:hidden;margin-top:12px}.progress-bar span{display:block;height:100%;width:0;background:linear-gradient(135deg,var(--p),var(--pd));border-radius:99px}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.pill{background:#EEF5F1;color:var(--pd);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}
+.question{margin:0 0 14px;font-size:17px;line-height:1.45;font-weight:850}
+.options{display:grid;gap:10px}.option-btn{width:100%;text-align:left;background:#F8FBF8;border:1px solid #DFE9E2;border-radius:16px;padding:13px 14px;color:var(--t);font-size:15px;font-weight:750}
+.option-btn.selected{background:#E6F2EA;border-color:#1E6A48;color:#145337;box-shadow:0 6px 16px rgba(47,90,67,.12)}
+.nav-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.nav-actions button,.submit-btn{min-height:50px;border-radius:16px;font-size:16px;font-weight:900}
+.light-btn{background:#EEF5F1;color:var(--pd);border:1px solid #DDECE1}.primary-btn,.submit-btn{background:linear-gradient(135deg,#1E6A48,#145337);color:#fff;border:3px solid #8B5B12}
+.submit-btn{width:100%;display:none}.submit-btn.show{display:block}
+.result-box{text-align:center;display:none}.result-box.show{display:block}.result-icon{font-size:54px}.result-box h2{margin:8px 0;color:var(--pd)}.result-score{font-size:30px;font-weight:950;color:var(--pd)}
+.result-note{color:var(--m);line-height:1.5}.home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--b);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}
+.home-bottom-nav button{background:transparent;color:var(--m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}.home-bottom-nav button span{font-size:20px}.home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
+.practice-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);width:calc(100% - 32px);max-width:420px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.25s;z-index:9999}.practice-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+
+<body>
+<main class="practice-page">
+
+<header class="practice-header">
+  <div class="practice-top">
+    <button id="backBtn" class="back-btn" type="button">‹</button>
+    <div class="practice-title">
+      <h1>Practice</h1>
+      <p>Score 80% to unlock next level</p>
+    </div>
+    <div id="levelBadge" class="badge">Level 1</div>
+  </div>
+</header>
+
+<section class="card">
+  <div class="top-info">
+    <div class="info"><small>Group</small><b id="groupText">Primary</b></div>
+    <div class="info"><small>Level</small><b id="levelText">Level 1</b></div>
+    <div class="info"><small>Question</small><b><span id="qNow">0</span>/<span id="qTotal">0</span></b></div>
+  </div>
+  <div class="progress-bar"><span id="progressFill"></span></div>
+</section>
+
+<section id="questionCard" class="card">
+  <div class="q-meta">
+    <span id="qPill" class="pill">Question 1</span>
+    <span id="subjectPill" class="pill">General</span>
+  </div>
+  <p id="questionText" class="question">Loading question...</p>
+  <div id="optionList" class="options"></div>
+</section>
+
+<section class="card" id="actionCard">
+  <div class="nav-actions">
+    <button id="prevBtn" class="light-btn" type="button">Previous</button>
+    <button id="nextBtn" class="primary-btn" type="button">Next</button>
+  </div>
+  <button id="submitBtn" class="submit-btn" type="button">Submit Test</button>
+</section>
+
+<section id="resultBox" class="card result-box">
+  <div id="resultIcon" class="result-icon">🏆</div>
+  <h2 id="resultTitle">Result</h2>
+  <div class="result-score"><span id="scoreText">0</span>%</div>
+  <p id="resultNote" class="result-note"></p>
+  <button id="backLearnBtn" class="submit-btn show" type="button">Back to Learn</button>
+</section>
+
+</main>
+
+<nav class="home-bottom-nav">
+  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+</nav>
+
+<div id="practiceToast" class="practice-toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+<script src="learnData.js"></script>
+<script src="learnSupabase.js"></script>
+<script src="learnRoadmap.js"></script>
+<script src="learnProgress.js"></script>
+
+<script>
+"use strict";
+(function(){
+  const ROADMAP = window.TETLearnRoadmap;
+  const PROGRESS = window.TETLearnProgress;
+
+  let user=null, group="Primary", level=1, questions=[], index=0, answers={};
+
+  const $=s=>document.querySelector(s);
+
+  function toast(msg,type="info"){
+    if(typeof showToast==="function"){showToast(msg,type);return;}
+    const el=$("#practiceToast"); if(!el)return;
+    el.textContent=msg; el.classList.add("show");
+    clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove("show"),2500);
+  }
+
+  function getUser(){
+    if(typeof getUserSession==="function"){const u=getUserSession(); if(u)return u;}
+    return null;
+  }
+
+  function requireLogin(){
+    if(typeof requireUserLogin==="function"){if(!requireUserLogin())return null;}
+    const u=getUser();
+    if(!u){location.href=CONFIG.LOGIN_PAGE||"index.html";return null;}
+    return u;
+  }
+
+  function getParams(){
+    const p=new URLSearchParams(location.search);
+    group=p.get("group")||"Primary";
+    level=Number(p.get("level")||1);
+  }
+
+  function todayDate(){
+    try{
+      return new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
+    }catch(e){
+      return new Date().toISOString().slice(0,10);
+    }
+  }
+
+  function dailyTargetKey(){
+    const id=user?.id||user?.phone||"guest";
+    return "tet_success_daily_target_"+id;
+  }
+
+  function addToDailyTarget(count){
+    const today=todayDate();
+    const key=dailyTargetKey();
+    let saved={date:today,solved:0,goal:30};
+
+    try{
+      const raw=JSON.parse(localStorage.getItem(key)||"null");
+      if(raw&&raw.date===today){
+        saved.solved=Number(raw.solved||0);
+      }
+    }catch(e){}
+
+    saved.date=today;
+    saved.goal=30;
+    saved.solved=Math.max(0,Math.min(30,saved.solved+Number(count||0)));
+    saved.updated_at=new Date().toISOString();
+
+    try{
+      localStorage.setItem(key,JSON.stringify(saved));
+    }catch(e){}
+
+    return saved;
+  }
+
+  async function loadProgress(){
+    PROGRESS.setUser(user);
+    await PROGRESS.loadAll(user);
+  }
+
+  function checkAccess(){
+    const state=ROADMAP.getLevelState(PROGRESS.getProgress(),group,level,PROGRESS.getPremiumStatus());
+    if(!state.unlocked){
+      toast(state.message||"This level is locked","warning");
+      setTimeout(()=>location.href="learn.html",900);
+      return false;
+    }
+    return true;
+  }
+
+  async function loadQuestions(){
+    const db=window.tetSupabase||window.supabase;
+    const table=CONFIG.TABLES.LEARN_QUESTIONS;
+    if(!db||!table){questions=[];return;}
+
+    const {data,error}=await db.from(table)
+      .select("*")
+      .eq("group_name",group)
+      .eq("level_no", level)
+      .eq("status", "active")
+      .limit(200);
+
+    if(error){console.warn(error);questions=[];return;}
+    questions=Array.isArray(data)?data:[];
+  }
+
+  function qText(q){return q.question_text||q.question||q.title||"";}
+  function subject(q){return q.subject||"General";}
+  function options(q){
+    return [
+      {key:"A",text:q.option_a||q.a||q.option1||""},
+      {key:"B",text:q.option_b||q.b||q.option2||""},
+      {key:"C",text:q.option_c||q.c||q.option3||""},
+      {key:"D",text:q.option_d||q.d||q.option4||""}
+    ].filter(o=>o.text);
+  }
+  function correctKey(q){
+    return String(q.correct_option||q.correct_answer_option||q.answer||"").toUpperCase().trim();
+  }
+
+  function renderHeader(){
+    $("#groupText").textContent=group.toUpperCase();
+    $("#levelText").textContent="Level "+level;
+    $("#levelBadge").textContent="Level "+level;
+    $("#qTotal").textContent=questions.length;
+  }
+
+  function renderQuestion(){
+    if(!questions.length){
+      $("#questionText").textContent=`No questions found for ${group} Level ${level}.`;
+      $("#optionList").innerHTML="";
+      $("#nextBtn").disabled=true; $("#prevBtn").disabled=true;
+      return;
+    }
+
+    const q=questions[index];
+    $("#qNow").textContent=index+1;
+    $("#qTotal").textContent=questions.length;
+    $("#qPill").textContent=`Question ${index+1}`;
+    $("#subjectPill").textContent=subject(q);
+    $("#questionText").textContent=qText(q);
+    $("#progressFill").style.width=((index+1)/questions.length*100)+"%";
+
+    const selected=answers[index];
+    $("#optionList").innerHTML=options(q).map(o=>`
+      <button class="option-btn ${selected===o.key?"selected":""}" type="button" data-key="${o.key}">
+        ${o.key}. ${escapeHTML(o.text)}
+      </button>
+    `).join("");
+
+    document.querySelectorAll(".option-btn").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        answers[index]=btn.dataset.key;
+        renderQuestion();
+      });
+    });
+
+    $("#prevBtn").disabled=index===0;
+    $("#nextBtn").style.display=index===questions.length-1?"none":"block";
+    $("#submitBtn").classList.toggle("show",index===questions.length-1);
+  }
+
+  function next(){
+    if(!answers[index]){toast("Please select an answer","warning");return;}
+    if(index<questions.length-1){index++;renderQuestion();}
+  }
+
+  function prev(){if(index>0){index--;renderQuestion();}}
+
+  async function submit(){
+    if(!questions.length)return;
+    const unanswered=questions.findIndex((_,i)=>!answers[i]);
+    if(unanswered>=0){index=unanswered;renderQuestion();toast("Answer all questions","warning");return;}
+
+    let correct=0;
+    questions.forEach((q,i)=>{if(answers[i]===correctKey(q))correct++;});
+
+    const score=Math.round((correct/questions.length)*100);
+    const pass=score>=80;
+
+    await PROGRESS.markLevelCompleted(group,level,{
+      score,
+      completed_questions:correct,
+      total_questions:questions.length,
+      result:pass?"pass":"retry"
+    });
+
+    const target=addToDailyTarget(questions.length);
+
+    $("#questionCard").style.display="none";
+    $("#actionCard").style.display="none";
+    $("#resultBox").classList.add("show");
+    $("#scoreText").textContent=score;
+    $("#resultIcon").textContent=pass?"🏆":"🔁";
+    $("#resultTitle").textContent=pass?"Level Cleared":"Try Again";
+    $("#resultNote").textContent=pass
+      ? "Great work. Next level is unlocked."
+      : "You need 80% or more to unlock the next level.";
+
+    toast(`Today's Target: ${target.solved}/30`,"success");
+
+    try{
+      localStorage.setItem("tet_success_learn_result",JSON.stringify({
+        group,level,score,completed_questions:correct,total_questions:questions.length,result:pass?"pass":"retry"
+      }));
+    }catch{}
+  }
+
+  function bind(){
+    $("#backBtn").addEventListener("click",()=>location.href="learn.html");
+    $("#prevBtn").addEventListener("click",prev);
+    $("#nextBtn").addEventListener("click",next);
+    $("#submitBtn").addEventListener("click",submit);
+    $("#backLearnBtn").addEventListener("click",()=>location.href=`learn.html?completed=1&group=${encodeURIComponent(group)}&level=${level}&score=${$("#scoreText").textContent}`);
+    document.querySelectorAll(".home-bottom-nav [data-page]").forEach(btn=>btn.addEventListener("click",()=>location.href=btn.dataset.page));
+  }
+
+  async function init(){
+    user=requireLogin(); if(!user)return;
+    getParams(); renderHeader();
+    if(typeof showLoading==="function")showLoading("Loading practice...");
+    try{
+      await loadProgress();
+      if(!checkAccess())return;
+      await loadQuestions();
+      renderHeader(); renderQuestion(); bind();
+    }catch(e){console.error(e);toast("Practice failed to load","error");}
+    finally{if(typeof hideLoading==="function")hideLoading();}
+  }
+
+  document.addEventListener("DOMContentLoaded",init);
+})();
+</script>
+</body>
+</html>

@@ -233,7 +233,10 @@ window.TETLearnRoadmap = (function () {
 
         if (isGroupUnlocked(progress, groupId)) return "";
 
-        return "First clear " + (group.prerequisiteText || "previous level");
+        const prerequisite = String(group.prerequisiteText || "previous level")
+            .replace(/\s+\d+$/,"");
+
+        return "First clear " + prerequisite;
     }
 
     /* =====================================================

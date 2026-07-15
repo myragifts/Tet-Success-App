@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET Success | Admin</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+<style>
+:root{--p:#5A7D76;--pd:#1F5B3E;--s:#A8BDB5;--a:#A26A12;--bg:#EEF5F0;--c:#fff;--t:#17231F;--m:#6B7772;--b:#DDECE1;--r:18px;--sh:0 14px 34px rgba(47,58,54,.10)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:linear-gradient(180deg,#E6F0EA 0%,var(--bg) 48%,#fff 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--t)}
+button,input,select,textarea{font:inherit}
+button{border:0;cursor:pointer}
+.admin-page{max-width:1120px;margin:0 auto;min-height:100vh;padding:16px 14px 36px}
+.topbar{position:sticky;top:0;z-index:20;margin:0 -14px 14px;padding:14px;background:rgba(238,245,240,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--b)}
+.topbar-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand h1{margin:0;font-size:22px}.brand p{margin:3px 0 0;color:var(--m);font-size:13px}
+.logout{background:#FEE2E2;color:#991B1B;border-radius:14px;padding:11px 14px;font-weight:900}
+.overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.metric{background:var(--c);border:1px solid var(--b);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.metric small{display:block;color:var(--m);font-weight:800}.metric b{display:block;margin-top:6px;font-size:24px;color:var(--pd)}
+.grid{display:grid;grid-template-columns:280px 1fr;gap:14px}
+.menu{display:grid;gap:8px;align-self:start;position:sticky;top:92px}
+.menu button{background:#fff;border:1px solid var(--b);border-radius:16px;padding:13px;text-align:left;color:var(--t);font-weight:900;box-shadow:0 8px 18px rgba(17,24,39,.06)}
+.menu button.active{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-color:transparent}
+.section{display:none;background:#fff;border:1px solid var(--b);border-radius:22px;padding:16px;box-shadow:var(--sh)}
+.section.active{display:block}
+.section h2{margin:0 0 4px;font-size:22px}.section>p{margin:0 0 16px;color:var(--m)}
+.form{display:grid;gap:10px;margin-bottom:16px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.field{display:grid;gap:6px}.field label{font-size:12px;color:var(--m);font-weight:900}
+.field input,.field select,.field textarea{width:100%;border:1px solid #D1D5DB;border-radius:14px;padding:12px;background:#fff;color:var(--t);outline:none}
+.field textarea{min-height:96px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);box-shadow:0 0 0 4px rgba(90,125,118,.16)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border-radius:14px;padding:12px 14px;font-weight:900}.primary{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}.green{background:var(--pd);color:#fff}.amber{background:#FFF8E8;color:#7B5A25}.light{background:#EEF5F1;color:var(--pd)}.danger{background:#FEE2E2;color:#991B1B}
+.list{display:grid;gap:10px}.card{background:#F9FAFB;border:1px solid var(--b);border-radius:16px;padding:13px}.card h3{margin:0 0 6px;font-size:16px}.card p{margin:3px 0;color:var(--m);font-size:14px;line-height:1.45}
+.pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;background:#EEF5F1;color:var(--pd);margin:2px 4px 2px 0}.pill.green{background:#E6F2EA;color:#145337}.pill.amber{background:#FFF8E8;color:#7B5A25}
+.tabs{display:flex;gap:8px;margin:8px 0 14px;flex-wrap:wrap}.tabs button{border-radius:999px;padding:9px 12px;background:#F8FBF8;color:#374151;font-weight:900}.tabs button.active{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}
+.empty{padding:20px;text-align:center;color:var(--m);background:#F9FAFB;border:1px dashed #CBD5E1;border-radius:16px}
+@media(max-width:820px){.overview{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.menu{position:static}.row,.row3{grid-template-columns:1fr}.topbar-inner{align-items:flex-start}.brand h1{font-size:20px}}
+</style>
+</head>
+<body>
+<main class="admin-page">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <h1>Admin Dashboard</h1>
+        <p>TET Success · Your TET Guru</p>
+      </div>
+      <button id="logoutBtn" class="logout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <section class="overview">
+    <div class="metric"><small>Total Users</small><b id="totalUsers">0</b></div>
+    <div class="metric"><small>Trial Users</small><b id="trialUsers">0</b></div>
+    <div class="metric"><small>Premium Users</small><b id="premiumUsers">0</b></div>
+    <div class="metric"><small>Pending Issues</small><b id="pendingIssues">0</b></div>
+  </section>
+
+  <div class="grid">
+    <nav class="menu" id="adminMenu"></nav>
+    <div id="sections">
+      <section class="section active" data-section="premium">
+        <h2>Premium Approval</h2><p>Approve trial users and review premium members.</p>
+        <div class="tabs"><button class="active" data-premium-tab="trial">Trial Users</button><button data-premium-tab="premium">Premium Users</button><button data-premium-tab="upgrade">Upgrade User</button></div>
+        <div class="form" id="upgradeSearchBox" style="display:none"><div class="field"><label>Search Name or Phone</label><input id="upgradeSearch" type="search" /></div></div>
+        <div class="list" id="premiumList"></div>
+      </section>
+
+      <section class="section" data-section="notice">
+        <h2>Notice Board</h2><p>Update the Home page blackboard notice.</p>
+        <form class="form" id="noticeForm">
+          <div class="field"><label>Notice Title</label><input id="noticeTitleInput" value="NOTICE" required /></div>
+          <div class="field"><label>Notice Date</label><input id="noticeDateInput" type="date" /></div>
+          <div class="field"><label>Notice Message</label><textarea id="noticeMessageInput" required></textarea></div>
+          <button class="btn primary" type="submit">Update Notice</button>
+        </form>
+      </section>
+
+      <section class="section" data-section="motivation">
+        <h2>Daily Motivation</h2><p>Update the Home page motivation card.</p>
+        <form class="form" id="motivationForm">
+          <div class="field"><label>Motivation Text</label><textarea id="motivationTextInput" required></textarea></div>
+          <button class="btn primary" type="submit">Update Motivation</button>
+        </form>
+      </section>
+
+      <section class="section" data-section="learn">
+        <h2>Learn Page Update</h2><p>Add, update, search, and disable Learn questions.</p>
+        <form class="form" id="learnQuestionForm">
+          <input id="learnQuestionId" type="hidden" />
+          <div class="row3"><div class="field"><label>Group</label><select id="learnGroup"></select></div><div class="field"><label>Level / Mock</label><input id="learnLevel" type="number" min="1" value="1" required /></div><div class="field"><label>Subject</label><select id="learnSubject"></select></div></div>
+          <div class="row3"><div class="field"><label>Language</label><select id="learnLanguage"></select></div><div class="field"><label>Difficulty</label><select id="learnDifficulty"></select></div><div class="field"><label>Status</label><select id="learnStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
+          <div class="row"><div class="field"><label>Chapter</label><input id="learnChapter" required /></div><div class="field"><label>Concept</label><input id="learnConcept" required /></div></div>
+          <div class="field"><label>Question</label><textarea id="learnQuestionText" required></textarea></div>
+          <div class="row"><div class="field"><label>Option A</label><input id="learnA" required /></div><div class="field"><label>Option B</label><input id="learnB" required /></div></div>
+          <div class="row"><div class="field"><label>Option C</label><input id="learnC" required /></div><div class="field"><label>Option D</label><input id="learnD" required /></div></div>
+          <div class="row"><div class="field"><label>Correct Option</label><select id="learnCorrect"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>Correct Answer</label><input id="learnAnswer" required /></div></div>
+          <div class="field"><label>Short Explanation</label><textarea id="learnExplanation" required></textarea></div>
+          <div class="field"><label>Learning Objective</label><input id="learnObjective" required /></div>
+          <div class="actions"><button class="btn primary" type="submit">Save Question</button><button class="btn light" type="button" id="clearLearnForm">Clear Form</button></div>
+        </form>
+        <div class="field"><label>Search Learn Questions</label><input id="learnSearch" type="search" /></div>
+        <div class="list" id="learnList"></div>
+      </section>
+
+      <section class="section" data-section="previous">
+        <h2>Previous TET Update</h2><p>Manage previous TET question bank content.</p>
+        <form class="form" id="previousForm">
+          <input id="previousId" type="hidden" />
+          <div class="row3"><div class="field"><label>TET Year</label><input id="previousYear" type="number" required /></div><div class="field"><label>Exam Date</label><input id="previousDate" type="date" /></div><div class="field"><label>Question Number</label><input id="previousNo" type="number" min="1" required /></div></div>
+          <div class="row3"><div class="field"><label>Subject</label><select id="previousSubject"></select></div><div class="field"><label>Language</label><select id="previousLanguage"></select></div><div class="field"><label>Difficulty</label><select id="previousDifficulty"><option>Easy</option><option selected>Moderate</option><option>Difficult</option></select></div></div>
+          <div class="field"><label>Question</label><textarea id="previousQuestion" required></textarea></div>
+          <div class="field"><label>Correct Answer</label><textarea id="previousAnswer" required></textarea></div>
+          <button class="btn primary" type="submit">Save Previous TET Question</button>
+        </form>
+        <div class="field"><label>Search Previous TET Questions</label><input id="previousSearch" type="search" /></div>
+        <div class="list" id="previousList"></div>
+      </section>
+
+      <section class="section" data-section="textbook">
+        <h2>Digital Text Book Update</h2><p>Manage structured textbook chapters.</p>
+        <form class="form" id="textbookForm">
+          <input id="textbookId" type="hidden" />
+          <div class="row3"><div class="field"><label>Subject</label><select id="textbookSubject"></select></div><div class="field"><label>Language</label><select id="textbookLanguage"></select></div><div class="field"><label>Difficulty</label><select id="textbookDifficulty"><option>Easy</option><option>Moderate</option><option>Difficult</option></select></div></div>
+          <div class="row"><div class="field"><label>Chapter Name</label><input id="textbookChapter" required /></div><div class="field"><label>Reading Time</label><select id="textbookTime"><option value="2">Small Chapter: 2 Minutes</option><option value="5">Medium Chapter: 5 Minutes</option><option value="8">Large Chapter: 8 Minutes</option></select></div></div>
+          <div class="field"><label>Concept</label><textarea id="textbookConcept" required></textarea></div>
+          <div class="field"><label>Important Points</label><textarea id="textbookPoints"></textarea></div>
+          <div class="field"><label>Formula / Rule</label><textarea id="textbookFormula"></textarea></div>
+          <div class="field"><label>Examples</label><textarea id="textbookExamples"></textarea></div>
+          <div class="field"><label>Common Mistakes</label><textarea id="textbookMistakes"></textarea></div>
+          <div class="field"><label>Exam Tips</label><textarea id="textbookTips"></textarea></div>
+          <button class="btn primary" type="submit">Save Chapter</button>
+        </form>
+        <div class="field"><label>Search Chapters</label><input id="textbookSearch" type="search" /></div>
+        <div class="list" id="textbookList"></div>
+      </section>
+
+      <section class="section" data-section="issues">
+        <h2>Issue Reports</h2><p>Review user reports and mark solved or unsolved.</p>
+        <div class="list" id="issueList"></div>
+      </section>
+
+      <section class="section" data-section="settings">
+        <h2>App Settings</h2><p>Update global app settings.</p>
+        <form class="form" id="settingsForm">
+          <div class="field"><label>Admin WhatsApp Number</label><input id="settingsWhatsapp" required /></div>
+          <div class="field"><label>Payment Link</label><input id="settingsPayment" required /></div>
+          <div class="field"><label>App Version</label><input id="settingsVersion" required /></div>
+          <div class="field"><label>GitHub Login Page Link</label><input id="settingsGithub" required /></div>
+          <button class="btn primary" type="submit">Save Settings</button>
+        </form>
+      </section>
+
+      <section class="section" data-section="users">
+        <h2>User Management</h2><p>Search, view, support, upgrade, and reset users.</p>
+        <div class="field"><label>Search User</label><input id="userSearch" type="search" /></div>
+        <div class="list" id="userList"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tet_app_settings.js"></script>
+<script src="common.js"></script>
+<script>
+"use strict";
+(function(){
+  const sections=[
+    ["premium","Premium Approval"],["notice","Notice Board"],["motivation","Daily Motivation"],
+    ["learn","Learn Page Update"],["previous","Previous TET Update"],["textbook","Digital Text Book Update"],
+    ["issues","Issue Reports"],["settings","App Settings"],["users","User Management"]
+  ];
+  const groups=["Primary","Basic","Growth","Focus","Target","Advanced","Real Exam Test"];
+  const subjects=["CDP","Bengali","English","Mathematics","EVS"];
+  const languages=[["english","English"],["bengali","Bengali"],["hindi","Hindi"]];
+  const difficulties=["Foundation","Basic Application","Moderate","Advanced","Exam Level"];
+  let activeSection="premium", premiumTab="trial", users=[], trial=[], progress=[], issues=[];
+  const $=s=>document.querySelector(s);
+  const db=()=>window.tetSupabase||window.supabase;
+  const session=()=>getAdminSession();
+  const token=()=>session()?.session_token||"";
+  const esc=v=>escapeHTML(v??"");
+
+  function opt(el,arr){el.innerHTML=arr.map(x=>Array.isArray(x)?`<option value="${esc(x[0])}">${esc(x[1])}</option>`:`<option>${esc(x)}</option>`).join("")}
+  function table(name){return CONFIG.TABLES[name]}
+  function empty(text){return `<div class="empty">${esc(text)}</div>`}
+  async function rpc(name,args){const {data,error}=await db().rpc(name,args);if(error)throw error;return data}
+  async function select(name){const {data,error}=await db().from(table(name)).select("*").limit(500);if(error)throw error;return data||[]}
+
+  async function validateAdmin(){
+    const s=session();
+    if(!s?.session_token){location.href=CONFIG.ADMIN_LOGIN_PAGE;return false}
+    const ok=await rpc("tet_admin_session_valid",{input_session_token:s.session_token});
+    if(!ok){clearAdminSession();location.href=CONFIG.ADMIN_LOGIN_PAGE;return false}
+    return true;
+  }
+
+  function renderMenu(){
+    $("#adminMenu").innerHTML=sections.map(([id,label])=>`<button class="${id===activeSection?"active":""}" data-open="${id}" type="button">${label}</button>`).join("");
+    document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSection(b.dataset.open));
+  }
+
+  function openSection(id){
+    activeSection=id; renderMenu();
+    document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.dataset.section===id));
+    loadSection(id);
+  }
+
+  async function refreshBase(){
+    users=await select("USERS");
+    trial=await select("TRIAL_PREMIUM");
+    progress=await select("USER_PROGRESS");
+    try{issues=await select("ISSUE_REPORTS")}catch{issues=[]}
+    $("#totalUsers").textContent=users.length;
+    $("#trialUsers").textContent=trial.filter(x=>x.status!=="premium").length || users.filter(x=>x.status==="trial").length;
+    $("#premiumUsers").textContent=trial.filter(x=>x.status==="premium").length || users.filter(x=>x.status==="premium").length;
+    $("#pendingIssues").textContent=issues.filter(x=>x.issue_status!=="solved").length;
+  }
+
+  function userStatus(u){return trial.find(x=>x.user_id===u.id)?.status || u.status || "trial"}
+  function renderPremium(){
+    const q=($("#upgradeSearch")?.value||"").toLowerCase().trim();
+    $("#upgradeSearchBox").style.display=premiumTab==="upgrade"?"grid":"none";
+    let list=users.filter(u=>premiumTab==="premium"?userStatus(u)==="premium":userStatus(u)!=="premium");
+    if(premiumTab==="upgrade"&&q)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q));
+    $("#premiumList").innerHTML=list.length?list.map(u=>`
+      <article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p>
+      <span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial Version"}</span>
+      ${userStatus(u)!=="premium"?`<div class="actions"><button class="btn green" data-upgrade="${u.id}" type="button">Upgrade to Premium</button></div>`:""}
+      </article>`).join(""):empty("No users found");
+    document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>confirmUpgrade(b.dataset.upgrade));
+  }
+
+  function confirmUpgrade(userId){
+    showConfirmModal({title:"Upgrade this user?",message:"This will mark payment approved and premium valid until 30 Sep 2028.",confirmText:"Confirm Upgrade",onConfirm:async()=>{await rpc("tet_admin_upgrade_user",{input_session_token:token(),input_user_id:userId});showToast("User upgraded successfully","success");await refreshBase();renderPremium();}});
+  }
+
+  async function loadSection(id){
+    try{
+      if(id==="premium"){renderPremium()}
+      if(id==="learn"){await renderLearnList()}
+      if(id==="previous"){await renderPreviousList()}
+      if(id==="textbook"){await renderTextbookList()}
+      if(id==="issues"){renderIssues()}
+      if(id==="settings"){await loadSettings()}
+      if(id==="users"){renderUsers()}
+    }catch(e){console.error(e);showToast("Unable to load section","error")}
+  }
+
+  async function renderLearnList(){
+    const q=($("#learnSearch").value||"").toLowerCase();
+    let rows=await select("LEARN_QUESTIONS");
+    if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+    $("#learnList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.group_name)} Level ${esc(r.level_no)} · ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span><div class="actions"><button class="btn light" data-edit-learn="${r.id}">Edit</button><button class="btn danger" data-disable-learn="${r.id}">Disable</button></div></article>`).join(""):empty("No learn questions found");
+    document.querySelectorAll("[data-edit-learn]").forEach(b=>b.onclick=()=>fillLearn(rows.find(r=>r.id===b.dataset.editLearn)));
+    document.querySelectorAll("[data-disable-learn]").forEach(b=>b.onclick=()=>disableLearn(b.dataset.disableLearn));
+  }
+
+  function fillLearn(r){$("#learnQuestionId").value=r.id;$("#learnGroup").value=r.group_name;$("#learnLevel").value=r.level_no;$("#learnSubject").value=r.subject;$("#learnLanguage").value=r.language;$("#learnDifficulty").value=r.difficulty;$("#learnStatus").value=r.status;$("#learnChapter").value=r.chapter||"";$("#learnConcept").value=r.concept||"";$("#learnQuestionText").value=r.question_text||"";$("#learnA").value=r.option_a||"";$("#learnB").value=r.option_b||"";$("#learnC").value=r.option_c||"";$("#learnD").value=r.option_d||"";$("#learnCorrect").value=r.correct_option||"A";$("#learnAnswer").value=r.correct_answer_text||"";$("#learnExplanation").value=r.short_explanation||"";$("#learnObjective").value=r.learning_objective||"";window.scrollTo({top:0,behavior:"smooth"})}
+  async function disableLearn(id){await rpc("tet_admin_disable_learn_question",{input_session_token:token(),input_id:id});showToast("Question disabled","success");renderLearnList()}
+
+  async function renderPreviousList(){
+    const q=($("#previousSearch").value||"").toLowerCase();
+    let rows=await select("PREVIOUS_TET_QUESTIONS"); if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+    $("#previousList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.tet_year)} · Q${esc(r.question_no)} · ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No previous TET questions found");
+  }
+
+  async function renderTextbookList(){
+    const q=($("#textbookSearch").value||"").toLowerCase();
+    let rows=await select("DIGITAL_TEXTBOOK"); if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+    $("#textbookList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.subject)} · ${esc(r.chapter_name)}</h3><p>${esc(r.concept)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No textbook chapters found");
+  }
+
+  function renderIssues(){
+    $("#issueList").innerHTML=issues.length?issues.map(i=>`<article class="card"><h3>${esc(i.issue_category)}</h3><p>${esc(i.full_name)} · ${esc(i.phone)}</p><p>${esc(i.issue_text)}</p><span class="pill ${i.issue_status==="solved"?"green":"amber"}">${esc(i.issue_status)}</span><div class="actions"><button class="btn green" data-issue="${i.id}" data-status="solved">Mark Solved</button><button class="btn amber" data-issue="${i.id}" data-status="unsolved">Mark Unsolved</button></div></article>`).join(""):empty("No issue reports found");
+    document.querySelectorAll("[data-issue]").forEach(b=>b.onclick=async()=>{await rpc("tet_admin_set_issue_status",{input_session_token:token(),input_issue_id:b.dataset.issue,input_status:b.dataset.status});showToast("Issue updated","success");await refreshBase();renderIssues()});
+  }
+
+  async function loadSettings(){
+    const rows=await select("APP_SETTINGS"); const s=rows.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]; if(!s)return;
+    $("#settingsWhatsapp").value=s.admin_whatsapp_number||"";$("#settingsPayment").value=s.payment_link||"";$("#settingsVersion").value=s.app_version||"";$("#settingsGithub").value=s.github_app_link||"";
+  }
+
+  function renderUsers(){
+    const q=($("#userSearch").value||"").toLowerCase().trim();
+    let list=users; if(q)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q));
+    $("#userList").innerHTML=list.length?list.map(u=>{const p=progress.find(x=>x.user_id===u.id)||{};return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p><p>Current: ${esc(p.current_group||"Primary")} Level ${esc(p.current_level||1)} · Best Score ${esc(p.best_score||0)}%</p><span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial Version"}</span><div class="actions"><button class="btn green" data-upgrade="${u.id}">Upgrade</button><button class="btn danger" data-reset="${u.id}">Reset Learn Progress</button></div></article>`}).join(""):empty("No users found");
+    document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>confirmUpgrade(b.dataset.upgrade));
+    document.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>showConfirmModal({title:"Reset Learn Progress?",message:"This keeps account and subscription unchanged.",confirmText:"Confirm Reset",onConfirm:async()=>{await rpc("tet_admin_reset_progress",{input_session_token:token(),input_user_id:b.dataset.reset});showToast("Learn progress reset","success");await refreshBase();renderUsers()}}));
+  }
+
+  function bindForms(){
+    document.querySelectorAll("[data-premium-tab]").forEach(b=>b.onclick=()=>{premiumTab=b.dataset.premiumTab;document.querySelectorAll("[data-premium-tab]").forEach(x=>x.classList.toggle("active",x===b));renderPremium()});
+    $("#upgradeSearch").oninput=renderPremium; $("#learnSearch").oninput=renderLearnList; $("#previousSearch").oninput=renderPreviousList; $("#textbookSearch").oninput=renderTextbookList; $("#userSearch").oninput=renderUsers;
+    $("#noticeForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_update_notice",{input_session_token:token(),input_title:$("#noticeTitleInput").value,input_date:$("#noticeDateInput").value||null,input_message:$("#noticeMessageInput").value});showToast("Notice updated successfully","success");e.target.reset();$("#noticeTitleInput").value="NOTICE"};
+    $("#motivationForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_update_motivation",{input_session_token:token(),input_text:$("#motivationTextInput").value});showToast("Motivation updated successfully","success");e.target.reset()};
+    $("#settingsForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_save_settings",{input_session_token:token(),input_admin_whatsapp:$("#settingsWhatsapp").value,input_payment_link:$("#settingsPayment").value,input_app_version:$("#settingsVersion").value,input_github_link:$("#settingsGithub").value});showToast("Settings saved successfully","success")};
+    $("#learnQuestionForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_upsert_learn_question",{input_session_token:token(),input_id:$("#learnQuestionId").value||null,input_group_name:$("#learnGroup").value,input_level_no:Number($("#learnLevel").value),input_subject:$("#learnSubject").value,input_chapter:$("#learnChapter").value,input_concept:$("#learnConcept").value,input_difficulty:$("#learnDifficulty").value,input_language:$("#learnLanguage").value,input_question_text:$("#learnQuestionText").value,input_option_a:$("#learnA").value,input_option_b:$("#learnB").value,input_option_c:$("#learnC").value,input_option_d:$("#learnD").value,input_correct_option:$("#learnCorrect").value,input_correct_answer_text:$("#learnAnswer").value,input_short_explanation:$("#learnExplanation").value,input_learning_objective:$("#learnObjective").value,input_status:$("#learnStatus").value});showToast("Question saved successfully","success");e.target.reset();$("#learnQuestionId").value="";await renderLearnList()};
+    $("#clearLearnForm").onclick=()=>{$("#learnQuestionForm").reset();$("#learnQuestionId").value=""};
+    $("#previousForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_upsert_previous_question",{input_session_token:token(),input_id:$("#previousId").value||null,input_tet_year:Number($("#previousYear").value),input_exam_date:$("#previousDate").value||null,input_difficulty:$("#previousDifficulty").value,input_subject:$("#previousSubject").value,input_question_no:Number($("#previousNo").value),input_language:$("#previousLanguage").value,input_question_text:$("#previousQuestion").value,input_correct_answer:$("#previousAnswer").value,input_status:"active"});showToast("Previous TET question saved","success");e.target.reset();await renderPreviousList()};
+    $("#textbookForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_upsert_textbook",{input_session_token:token(),input_id:$("#textbookId").value||null,input_subject:$("#textbookSubject").value,input_chapter_name:$("#textbookChapter").value,input_language:$("#textbookLanguage").value,input_difficulty:$("#textbookDifficulty").value,input_reading_time_minutes:Number($("#textbookTime").value),input_concept:$("#textbookConcept").value,input_important_points:$("#textbookPoints").value,input_formula_rule:$("#textbookFormula").value,input_examples:$("#textbookExamples").value,input_common_mistakes:$("#textbookMistakes").value,input_exam_tips:$("#textbookTips").value,input_status:"active"});showToast("Chapter saved successfully","success");e.target.reset();await renderTextbookList()};
+    $("#logoutBtn").onclick=()=>{clearAdminSession();location.href=CONFIG.ADMIN_LOGIN_PAGE};
+  }
+
+  async function init(){
+    if(!await validateAdmin())return;
+    opt($("#learnGroup"),groups); opt($("#learnSubject"),subjects); opt($("#learnLanguage"),languages); opt($("#learnDifficulty"),difficulties);
+    opt($("#previousSubject"),subjects); opt($("#previousLanguage"),languages); opt($("#textbookSubject"),subjects); opt($("#textbookLanguage"),languages);
+    renderMenu(); bindForms(); await refreshBase(); await loadSection(activeSection);
+  }
+  document.addEventListener("DOMContentLoaded",init);
+})();
+</script>
+</body>
+</html>

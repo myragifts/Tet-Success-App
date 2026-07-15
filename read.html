@@ -304,7 +304,7 @@ body{
 
   <header class="read-header">
     <div class="read-top">
-      <button class="back-btn" id="backBtn" type="button">‹</button>
+      <button class="back-btn" id="backBtn" type="button">â€¹</button>
 
       <div class="read-title">
         <h1>Read</h1>
@@ -337,17 +337,17 @@ body{
 
   <section class="read-card">
     <button id="practiceBtn" class="practice-btn" type="button">
-      ✎ Start Practice
+      âœŽ Start Practice
     </button>
   </section>
 
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
-  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+  <button type="button" data-page="home2.html"><span>ðŸ </span>Home</button>
+  <button type="button" data-page="info.html"><span>â„¹ï¸</span>Info</button>
+  <button class="active" type="button" data-page="learn.html"><span>ðŸ“–</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>ðŸ‘¤</span>Profile</button>
 </nav>
 
 <div id="readToast" class="read-toast"></div>
@@ -390,6 +390,29 @@ body{
     el.classList.add("show");
     clearTimeout(toast.timer);
     toast.timer = setTimeout(()=>el.classList.remove("show"),2500);
+  }
+
+  function showSmartLoading(message){
+    clearTimeout(showSmartLoading.timer);
+    showSmartLoading.visible = false;
+
+    showSmartLoading.timer = setTimeout(()=>{
+      if(typeof showLoading === "function"){
+        showLoading(message);
+        showSmartLoading.visible = true;
+      }
+    },300);
+  }
+
+  function hideSmartLoading(){
+    clearTimeout(showSmartLoading.timer);
+    showSmartLoading.timer = null;
+
+    if(showSmartLoading.visible && typeof hideLoading === "function"){
+      hideLoading();
+    }
+
+    showSmartLoading.visible = false;
   }
 
   function getUser(){
@@ -487,7 +510,7 @@ body{
     if(!questions.length){
       list.innerHTML = `
         <section class="read-card empty-card">
-          <div style="font-size:44px">📘</div>
+          <div style="font-size:44px">ðŸ“˜</div>
           <h3>No questions found</h3>
           <p class="instruction">Please add questions in Supabase for ${group} Level ${level}.</p>
         </section>
@@ -550,7 +573,7 @@ body{
     getParams();
     renderHeader();
 
-    if(typeof showLoading === "function") showLoading("Loading reading...");
+    showSmartLoading("Loading reading...");
 
     try{
       
@@ -567,7 +590,7 @@ body{
       console.error(err);
       toast("Read page failed to load","error");
     }finally{
-      if(typeof hideLoading === "function") hideLoading();
+      hideSmartLoading();
     }
   }
 
@@ -576,3 +599,4 @@ body{
 </script>
 </body>
 </html>
+

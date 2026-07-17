@@ -527,9 +527,12 @@ Thank you.`;
             if (btn.dataset.learnNavBound === "true") return;
             btn.dataset.learnNavBound = "true";
 
-            btn.addEventListener("click", function () {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
                 const page = btn.dataset.page;
-                if (page) goToPage(page);
+                if (page) window.location.href = page;
             });
         });
     }

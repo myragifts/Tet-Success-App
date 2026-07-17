@@ -1249,25 +1249,7 @@ async function handleLogin(event) {
 
         currentLoginUser = user;
 
-        let loginStatus = null;
-        try {
-            const statusResult = await supabase
-                .from(CONFIG.TABLES.TRIAL_PREMIUM)
-                .select("*")
-                .eq("user_id", user.id)
-                .maybeSingle();
-            loginStatus = statusResult.data || null;
-        } catch (statusError) {
-            console.warn("Login status check skipped:", statusError);
-        }
-
         unlockButton(button);
-
-        if (typeof isPremiumStatus === "function" && typeof isTrialExpiredStatus === "function" &&
-            (isPremiumStatus(loginStatus, user) || isTrialExpiredStatus(loginStatus, user))) {
-            goToHome();
-            return;
-        }
 
         openLoginModal("welcomeTrialModal");
 

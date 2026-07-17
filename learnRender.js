@@ -245,11 +245,13 @@ window.TETLearnRender = (function () {
 
         const group = escapeSafe(groupId);
         const level = escapeSafe(levelNo);
+        const readUrl = "read.html?group=" + encodeURIComponent(groupId) + "&level=" + encodeURIComponent(levelNo) + "&from=learn";
+        const practiceUrl = "practice.html?group=" + encodeURIComponent(groupId) + "&level=" + encodeURIComponent(levelNo) + "&from=learn";
 
         return [
             '<div class="level-actions">',
-            '<button class="level-action-btn" type="button" data-action="read" data-group="' + group + '" data-level="' + level + '"><span>📖</span> Read</button>',
-            '<button class="level-action-btn" type="button" data-action="practice" data-group="' + group + '" data-level="' + level + '"><span>✎</span> Practice</button>',
+            '<button class="level-action-btn" type="button" data-action="read" data-group="' + group + '" data-level="' + level + '" data-url="' + escapeSafe(readUrl) + '">Read</button>',
+            '<button class="level-action-btn" type="button" data-action="practice" data-group="' + group + '" data-level="' + level + '" data-url="' + escapeSafe(practiceUrl) + '">Practice</button>',
             '</div>'
         ].join("");
     }

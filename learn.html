@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <button id="bookmarkedMainBtn" class="bookmark-main-btn" type="button">
+      <button id="bookmarkedMainBtn" class="bookmark-main-btn" type="button" onclick="window.location.href='bookmarks.html'">
         <span>🔖</span>
         Bookmarked Question
         <span>→</span>
@@ -199,6 +199,43 @@
 <script src="learnRender.js"></script>
 <script src="learnEvents.js"></script>
 <script src="learnApp.js"></script>
+<script>
+(function tetLearnActionFallback() {
+  document.addEventListener("click", function (event) {
+    const actionButton = event.target.closest(".level-action-btn[data-action]");
+    if (!actionButton) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const action = actionButton.getAttribute("data-action") || "read";
+    const group = actionButton.getAttribute("data-group") || "Primary";
+    const level = Number(actionButton.getAttribute("data-level") || 1);
+    const fallbackUrl = actionButton.getAttribute("data-url") || (action + ".html?group=" + encodeURIComponent(group) + "&level=" + encodeURIComponent(level) + "&from=learn");
+
+    if (window.TETLearnEvents && typeof window.TETLearnEvents.openLearning === "function") {
+      Promise.resolve(window.TETLearnEvents.openLearning(action, group, level)).catch(function () {
+        window.location.href = fallbackUrl;
+      });
+      return;
+    }
+
+    window.location.href = fallbackUrl;
+  }, true);
+})();
+</script>
+<script>
+(function tetLearnBookmarkFallback() {
+  document.addEventListener("click", function (event) {
+    const bookmarkButton = event.target.closest("#bookmarkedMainBtn");
+    if (!bookmarkButton) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    window.location.href = "bookmarks.html";
+  }, true);
+})();
+</script>
 <script>
 (function tetLearnNavFallback() {
   document.addEventListener("click", function (event) {

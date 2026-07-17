@@ -160,7 +160,8 @@ window.TETLearnRoadmap = (function () {
         const level = normalizeLevel(levelNo);
 
         const completed = normalizeCompletedLevels(safeProgress.completed_levels);
-        const list = completed[group] || [];
+        const matchingKey = Object.keys(completed).find((key) => String(key).toLowerCase() === String(group).toLowerCase());
+        const list = completed[group] || (matchingKey ? completed[matchingKey] : []) || [];
 
         return list.map(Number).includes(level);
     }
@@ -267,6 +268,11 @@ window.TETLearnRoadmap = (function () {
         if (level.premium && !isPremiumUser) return false;
 
         if (Number(level.level) === 1) return true;
+
+        if (Number(level.level) === 2) {
+            const sameCurrentGroup = String(safeProgress.current_group || "").toLowerCase() === String(groupId || "").toLowerCase();
+            return isLevelCompleted(safeProgress, groupId, 1) || (sameCurrentGroup && Number(safeProgress.current_level || 1) >= 2);
+        }
 
         return isLevelCompleted(
             safeProgress,

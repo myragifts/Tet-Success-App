@@ -125,23 +125,16 @@ window.TETLearnRender = (function () {
         if (!DOM.statusBadge) return;
 
         const status = PROGRESS.getStatus();
-        const premium = PROGRESS.getPremiumStatus();
+        const user = typeof getUserSession === "function" ? getUserSession() : null;
 
-        if (premium) {
-            DOM.statusBadge.classList.add("premium");
-            DOM.statusBadge.dataset.premium = "true";
-            DOM.statusBadge.innerHTML = `
-                <b>👑 Premium Member</b>
-                <small>${escapeSafe(getPremiumText(status))}</small>
-            `;
+        if (typeof renderTrialPremiumBadge === "function") {
+            renderTrialPremiumBadge(DOM.statusBadge,status,user,{mode:"end"});
             return;
         }
 
-        DOM.statusBadge.classList.remove("premium");
-        DOM.statusBadge.dataset.premium = "false";
         DOM.statusBadge.innerHTML = `
             <b>Trial Version</b>
-            <small>${escapeSafe(getTrialText(status))}</small>
+            <small>Ends Today</small>
         `;
     }
 
@@ -219,6 +212,11 @@ window.TETLearnRender = (function () {
 
         if (actions) {
             actions.style.display = state.unlocked ? "flex" : "none";
+        } else if (state.unlocked) {
+            const title = $(".level-title", row);
+            if (title) {
+                title.insertAdjacentHTML("beforeend", getLevelActionsMarkup(row.dataset.group || "Primary", row.dataset.level || 1, true));
+            }
         }
     }
 
@@ -236,33 +234,24 @@ window.TETLearnRender = (function () {
         return "Locked";
     }
 
-    /* =====================================================
-       06. COLLAPSED GROUPS
-    ===================================================== */
+    function getLevelLabel(groupId, levelNo) {
+        return groupId === "Real Exam Test"
+            ? "Test " + levelNo
+            : "Level " + levelNo;
+    }
 
-    function renderCollapsedGroups() {
-        const progress = PROGRESS.getProgress();
-        const premium = PROGRESS.getPremiumStatus();
+    function getLevelActionsMarkup(groupId, levelNo, unlocked) {
+        if (!unlocked) return "";
 
-        $all(".collapsed-group").forEach((btn) => {
-            const groupId = btn.dataset.group;
-            const state = ROADMAP.getGroupState(progress, groupId, premium);
+        const group = escapeSafe(groupId);
+        const level = escapeSafe(levelNo);
 
-            if (!state.exists) return;
-
-            btn.dataset.unlocked = state.unlocked ? "true" : "false";
-            btn.dataset.completed = state.completed ? "true" : "false";
-
-            btn.classList.toggle("unlocked", state.unlocked);
-            btn.classList.toggle("locked", !state.unlocked);
-            btn.classList.toggle("completed", state.completed);
-
-            const icon = $(".group-icon", btn);
-            const arrow = $("span:last-child", btn);
-
-            if (icon) icon.textContent = state.icon || icon.textContent;
-            if (arrow) arrow.textContent = state.unlocked ? "⌄" : "🔒";
-        });
+        return [
+            '<div class="level-actions">',
+            '<button class="level-action-btn" type="button" data-action="read" data-group="' + group + '" data-level="' + level + '"><span>📖</span> Read</button>',
+            '<button class="level-action-btn" type="button" data-action="practice" data-group="' + group + '" data-level="' + level + '"><span>✎</span> Practice</button>',
+            '</div>'
+        ].join("");
     }
 
     /* =====================================================
@@ -328,12 +317,7 @@ window.TETLearnRender = (function () {
             <div class="level-dot">${escapeSafe(getLevelDotText(state))}</div>
 
             <div class="level-title">
-                <b>Level ${escapeSafe(state.levelNo)}</b>
-                <div class="level-actions" style="display:${state.unlocked ? "flex" : "none"}">
-                    <button type="button" data-action="read" data-group="${escapeSafe(state.groupId)}" data-level="${escapeSafe(state.levelNo)}">📖 Read</button>
-                    <span class="divider">|</span>
-                    <button type="button" data-action="practice" data-group="${escapeSafe(state.groupId)}" data-level="${escapeSafe(state.levelNo)}">✎ Practice</button>
-                </div>
+                <b>${escapeSafe(getLevelLabel(state.groupId, state.levelNo))}</b>${getLevelActionsMarkup(state.groupId, state.levelNo, state.unlocked)}
             </div>
 
             <div class="level-status">${escapeSafe(getLevelStatusText(state))}</div>

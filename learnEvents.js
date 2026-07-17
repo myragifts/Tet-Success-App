@@ -123,12 +123,15 @@ window.TETLearnEvents = (function () {
             return;
         }
 
-        await PROGRESS.setCurrentLevel(groupId, levelNo, {
-            action,
-            save: true
-        });
-
-        RENDER.renderAll();
+        try {
+            await PROGRESS.setCurrentLevel(groupId, levelNo, {
+                action,
+                save: true
+            });
+            RENDER.renderAll();
+        } catch (error) {
+            console.warn("Learn action progress save skipped:", error);
+        }
 
         goToPage(buildLearningUrl(action, groupId, levelNo));
     }

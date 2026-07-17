@@ -29,11 +29,11 @@ window.TETLearnData = {
       unlockedByDefault: true,
       prerequisite: "",
       levels: [
-        { level: 1, totalQuestions: 25, free: true },
-        { level: 2, totalQuestions: 25, free: true },
-        { level: 3, totalQuestions: 25, premium: true },
-        { level: 4, totalQuestions: 25, premium: true },
-        { level: 5, totalQuestions: 25, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -44,11 +44,11 @@ window.TETLearnData = {
       prerequisite: { group: "Primary", levels: [1, 2] },
       prerequisiteText: "Primary Level",
       levels: [
-        { level: 1, totalQuestions: 25, free: true },
-        { level: 2, totalQuestions: 25, free: true },
-        { level: 3, totalQuestions: 25, premium: true },
-        { level: 4, totalQuestions: 25, premium: true },
-        { level: 5, totalQuestions: 25, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -59,11 +59,11 @@ window.TETLearnData = {
       prerequisite: { group: "Basic", levels: [1, 2] },
       prerequisiteText: "Basic Level",
       levels: [
-        { level: 1, totalQuestions: 30, free: true },
-        { level: 2, totalQuestions: 30, free: true },
-        { level: 3, totalQuestions: 30, premium: true },
-        { level: 4, totalQuestions: 30, premium: true },
-        { level: 5, totalQuestions: 30, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -74,11 +74,11 @@ window.TETLearnData = {
       prerequisite: { group: "Growth", levels: [1, 2] },
       prerequisiteText: "Growth Level",
       levels: [
-        { level: 1, totalQuestions: 30, free: true },
-        { level: 2, totalQuestions: 30, free: true },
-        { level: 3, totalQuestions: 30, premium: true },
-        { level: 4, totalQuestions: 30, premium: true },
-        { level: 5, totalQuestions: 30, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -89,11 +89,11 @@ window.TETLearnData = {
       prerequisite: { group: "Focus", levels: [1, 2] },
       prerequisiteText: "Focus Level",
       levels: [
-        { level: 1, totalQuestions: 40, free: true },
-        { level: 2, totalQuestions: 40, free: true },
-        { level: 3, totalQuestions: 40, premium: true },
-        { level: 4, totalQuestions: 40, premium: true },
-        { level: 5, totalQuestions: 40, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -104,11 +104,11 @@ window.TETLearnData = {
       prerequisite: { group: "Target", levels: [1, 2] },
       prerequisiteText: "Target Level",
       levels: [
-        { level: 1, totalQuestions: 50, free: true },
-        { level: 2, totalQuestions: 50, free: true },
-        { level: 3, totalQuestions: 50, premium: true },
-        { level: 4, totalQuestions: 50, premium: true },
-        { level: 5, totalQuestions: 50, premium: true }
+        { level: 1, totalQuestions: 10, free: true },
+        { level: 2, totalQuestions: 10, free: true },
+        { level: 3, totalQuestions: 10, premium: true },
+        { level: 4, totalQuestions: 10, premium: true },
+        { level: 5, totalQuestions: 10, premium: true }
       ]
     },
     {
@@ -128,7 +128,17 @@ window.TETLearnData = {
         { level: 7, totalQuestions: 150, premium: true },
         { level: 8, totalQuestions: 150, premium: true },
         { level: 9, totalQuestions: 150, premium: true },
-        { level: 10, totalQuestions: 150, premium: true }
+        { level: 10, totalQuestions: 150, premium: true },
+        { level: 11, totalQuestions: 150, premium: true },
+        { level: 12, totalQuestions: 150, premium: true },
+        { level: 13, totalQuestions: 150, premium: true },
+        { level: 14, totalQuestions: 150, premium: true },
+        { level: 15, totalQuestions: 150, premium: true },
+        { level: 16, totalQuestions: 150, premium: true },
+        { level: 17, totalQuestions: 150, premium: true },
+        { level: 18, totalQuestions: 150, premium: true },
+        { level: 19, totalQuestions: 150, premium: true },
+        { level: 20, totalQuestions: 150, premium: true }
       ]
     }
   ],
@@ -137,7 +147,7 @@ window.TETLearnData = {
     current_group: "Primary",
     current_level: 1,
     completed_questions: 0,
-    total_questions: 25,
+    total_questions: 10,
     completed_levels: {
       Primary: []
     }
@@ -165,7 +175,7 @@ window.TETLearnData = {
 
   getTotalQuestions(groupId, levelNo) {
     const level = this.getLevel(groupId, levelNo);
-    return Number(level?.totalQuestions || 25);
+    return Number(level?.totalQuestions || 10);
   },
 
   normalizeCompletedLevels(value) {

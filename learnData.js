@@ -229,6 +229,11 @@ window.TETLearnData = {
 
     if (Number(levelNo) === 1) return true;
 
+    if (Number(levelNo) === 2) {
+      const sameCurrentGroup = String(progress.current_group || "").toLowerCase() === String(groupId || "").toLowerCase();
+      return this.isCompleted(progress, groupId, 1) || (sameCurrentGroup && Number(progress.current_level || 1) >= 2);
+    }
+
     return this.isCompleted(progress, groupId, Number(levelNo) - 1);
   },
 

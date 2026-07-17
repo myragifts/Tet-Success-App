@@ -491,6 +491,7 @@ id="welcomeTrialModal">
     <div class="modal-card welcome-trial-card">
 
         <button
+        id="btnWelcomeClose"
         class="modal-close"
         data-close="welcomeTrialModal">
 
@@ -635,6 +636,7 @@ id="installAppModal">
     <div class="modal-card install-card">
 
         <button
+        id="btnInstallClose"
         class="modal-close"
         data-close="installAppModal">
 
@@ -964,10 +966,12 @@ function setupLoginEvents() {
     document.getElementById("btnForgotPhone").addEventListener("click", handleForgotPhone);
 
     document.getElementById("btnStartTrial").addEventListener("click", handleStartTrial);
+    document.getElementById("btnWelcomeClose").addEventListener("click", handleStartTrial);
 
     document.getElementById("btnInstallNow").addEventListener("click", handleInstallNow);
 
     document.getElementById("btnInstallLater").addEventListener("click", handleInstallLater);
+    document.getElementById("btnInstallClose").addEventListener("click", handleInstallLater);
 
     document.getElementById("agreeDeclaration").addEventListener("change", handleDeclarationTick);
 
@@ -1249,7 +1253,25 @@ async function handleLogin(event) {
 
         currentLoginUser = user;
 
+        let loginStatus = null;
+        try {
+            const statusResult = await supabase
+                .from(CONFIG.TABLES.TRIAL_PREMIUM)
+                .select("*")
+                .eq("user_id", user.id)
+                .maybeSingle();
+            loginStatus = statusResult.data || null;
+        } catch (statusError) {
+            console.warn("Login status check skipped:", statusError);
+        }
+
         unlockButton(button);
+
+        if (typeof isPremiumStatus === "function" && typeof isTrialExpiredStatus === "function" &&
+            (isPremiumStatus(loginStatus, user) || isTrialExpiredStatus(loginStatus, user))) {
+            goToHome();
+            return;
+        }
 
         openLoginModal("welcomeTrialModal");
 
@@ -1525,11 +1547,7 @@ TRIAL START FLOW
 
 function handleStartTrial(event) {
 
-    const button = event.currentTarget;
-
     if (isDoubleTap()) return;
-
-    lockButton(button);
 
     closeLoginModal("welcomeTrialModal");
 

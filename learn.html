@@ -176,10 +176,10 @@
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
+  <button type="button" data-page="home2.html" onclick="window.location.href='home2.html'"><span>🏠</span>Home</button>
+  <button type="button" data-page="info.html" onclick="window.location.href='info.html'"><span>ℹ️</span>Info</button>
   <button class="active" type="button"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+  <button type="button" data-page="profile.html" onclick="window.location.href='profile.html'"><span>👤</span>Profile</button>
 </nav>
 
 <div id="learnToast" class="learn-toast"></div>
@@ -199,6 +199,20 @@
 <script src="learnRender.js"></script>
 <script src="learnEvents.js"></script>
 <script src="learnApp.js"></script>
+<script>
+(function tetLearnNavFallback() {
+  document.addEventListener("click", function (event) {
+    const navButton = event.target.closest(".home-bottom-nav [data-page]");
+    if (!navButton) return;
 
+    const page = navButton.getAttribute("data-page");
+    if (!page) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    window.location.href = page;
+  }, true);
+})();
+</script>
 </body>
 </html>

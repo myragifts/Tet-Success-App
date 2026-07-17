@@ -162,6 +162,9 @@ window.TETLearnApp = (function () {
 
     function renderAndBind() {
         RENDER.renderAll();
+        if (typeof scheduleExpiredTrialReminder === "function") {
+            scheduleExpiredTrialReminder(PROGRESS.getStatus(), currentUser);
+        }
         EVENTS.bindAll();
         focusContinueTarget();
     }

@@ -163,7 +163,11 @@ window.TETLearnApp = (function () {
     function renderAndBind() {
         RENDER.renderAll();
         if (typeof scheduleExpiredTrialReminder === "function") {
-            scheduleExpiredTrialReminder(PROGRESS.getStatus(), currentUser);
+            try {
+                scheduleExpiredTrialReminder(PROGRESS.getStatus(), currentUser);
+            } catch (error) {
+                console.warn("Expired trial reminder skipped on Learn:", error);
+            }
         }
         EVENTS.bindAll();
         focusContinueTarget();

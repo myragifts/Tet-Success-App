@@ -732,14 +732,22 @@ function isAnimationLocked() {
    18. GLOBAL ERROR HANDLER
 ========================================================= */
 
+function shouldShowGlobalErrorToast() {
+    return window.TET_SHOW_GLOBAL_ERROR_TOAST === true;
+}
+
 window.addEventListener("error", function (event) {
     console.error("Global Error:", event.error || event.message);
-    showToast("Something went wrong. Please try again.", "error");
+    if (shouldShowGlobalErrorToast()) {
+        showToast("Something went wrong. Please try again.", "error");
+    }
 });
 
 window.addEventListener("unhandledrejection", function (event) {
     console.error("Unhandled Promise Error:", event.reason);
-    showToast("Something went wrong. Please try again.", "error");
+    if (shouldShowGlobalErrorToast()) {
+        showToast("Something went wrong. Please try again.", "error");
+    }
 });
 
 /* =========================================================

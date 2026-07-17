@@ -125,6 +125,48 @@ button{
 }
 
 /* RESOURCE CARDS */
+.info-expired-lock{
+    display:none;
+    background:linear-gradient(180deg,#FFFFFF 0%,#FFF8E8 100%);
+    border:1px solid #EACB7A;
+    border-radius:24px;
+    padding:22px 18px;
+    margin:0 0 18px;
+    text-align:center;
+    box-shadow:var(--shadow);
+}
+.info-expired-lock.show{
+    display:block;
+}
+.info-expired-lock h2{
+    margin:0 0 10px;
+    color:var(--primary-dark);
+    font-size:24px;
+}
+.info-expired-lock p{
+    margin:0 0 16px;
+    color:var(--muted);
+    line-height:1.55;
+    font-size:15px;
+}
+.info-expired-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+.info-expired-actions button{
+    min-height:48px;
+    border-radius:14px;
+    font-weight:900;
+}
+.info-expired-actions .primary{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+}
+.info-expired-actions .light{
+    background:#EEF5F1;
+    color:var(--primary-dark);
+}
 .info-card{
     background:#fff;
     border:1px solid rgba(221,236,225,.9);
@@ -424,12 +466,21 @@ button{
 
             <div id="statusBadge" class="status-badge">
                 <b>Trial Version</b>
-                <small>Ends 09 Jul 2026</small>
+                <small>Loading...</small>
             </div>
         </div>
     </header>
 
-    <section class="info-card">
+    <section id="infoExpiredLock" class="info-expired-lock" hidden>
+        <h2>Your free trial has ended.</h2>
+        <p>Go Premium to continue accessing the full WB Primary TET syllabus, subject-wise guidance, previous TET questions, digital textbook, practice support, and all premium learning features.</p>
+        <div class="info-expired-actions">
+            <button id="infoGoPremiumBtn" class="primary" type="button">Go Premium</button>
+            <button id="infoBackHomeBtn" class="light" type="button">Back to Home</button>
+        </div>
+    </section>
+
+    <section class="info-card" data-info-protected>
         <div class="info-card-inner">
             <div class="info-card-top">
                 <div class="info-art">📖</div>
@@ -453,7 +504,7 @@ button{
         </div>
     </section>
 
-    <section class="info-card book">
+    <section class="info-card book" data-info-protected>
         <div class="info-card-inner">
             <div class="info-card-top">
                 <div class="info-art">📚</div>
@@ -477,7 +528,7 @@ button{
         </div>
     </section>
 
-    <section class="help-card">
+    <section class="help-card" data-info-protected>
         <h3>How TET Success Helps You</h3>
 
         <div class="help-grid">
@@ -522,7 +573,7 @@ button{
 (function(){
     "use strict";
 
-    const DEFAULT_TRIAL_TEXT = "Ends 09 Jul 2026";
+    const DEFAULT_TRIAL_TEXT = "Loading...";
     let toastTimer = null;
 
     function showToast(message){
@@ -609,9 +660,7 @@ button{
         const badge = document.getElementById("statusBadge");
         if(!badge) return;
 
-        let isPremium = false;
-        let premiumDate = "";
-        let trialDate = DEFAULT_TRIAL_TEXT;
+        let row = null;
 
         try{
             const tableName = getTableName("TRIAL_PREMIUM","");
@@ -632,22 +681,31 @@ button{
 
                 if(query){
                     const res = await query.maybeSingle();
-                    if(res && res.data){
-                        const row = res.data;
-                        isPremium = !!(row.is_premium || row.premium || row.status === "premium");
-                        premiumDate = row.premium_valid_until || row.valid_until || row.expiry_date || "";
-                        trialDate = row.trial_end_date || row.trial_valid_until || trialDate;
-                    }
+                    if(res && res.data) row = res.data;
                 }
             }
         }catch(error){
             console.warn("Status load failed",error);
         }
 
-        if(isPremium){
-            badge.innerHTML = "<b>👑 Premium Member</b><small>Valid Until " + formatDate(premiumDate) + "</small>";
-        }else{
-            badge.innerHTML = "<b>Trial Version</b><small>" + formatTrialText(trialDate) + "</small>";
+        if(typeof renderTrialPremiumBadge === "function"){
+            renderTrialPremiumBadge(badge,row,user,{mode:"end"});
+            applyInfoTrialLock(row,user);
+            if(typeof scheduleExpiredTrialReminder === "function") scheduleExpiredTrialReminder(row,user);
+            return;
+        }
+
+        badge.innerHTML = "<b>Trial Version</b><small>Ends " + formatDate(user?.created_at) + "</small>";
+        applyInfoTrialLock(row,user);
+    }
+
+    function applyInfoTrialLock(status,user){
+        const locked = typeof isTrialExpiredStatus === "function" && isTrialExpiredStatus(status,user);
+        const lock = document.getElementById("infoExpiredLock");
+        document.querySelectorAll("[data-info-protected]").forEach(function(section){ section.hidden = !!locked; });
+        if(lock){
+            lock.hidden = !locked;
+            lock.classList.toggle("show",!!locked);
         }
     }
 
@@ -658,7 +716,7 @@ button{
     }
 
     function formatDate(value){
-        if(!value) return "09 Jul 2026";
+        if(!value) return "";
 
         try{
             const date = new Date(value);
@@ -680,6 +738,11 @@ button{
                 window.location.href = btn.dataset.page;
             });
         });
+
+        const premiumBtn = document.getElementById("infoGoPremiumBtn");
+        if(premiumBtn){ premiumBtn.addEventListener("click",function(){ if(typeof showGlobalPremiumEntry === "function") showGlobalPremiumEntry(); }); }
+        const backHomeBtn = document.getElementById("infoBackHomeBtn");
+        if(backHomeBtn){ backHomeBtn.addEventListener("click",function(){ window.location.href = "home2.html"; }); }
 
         const questionBtn = document.getElementById("openQuestionsBtn");
         if(questionBtn){

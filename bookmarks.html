@@ -59,7 +59,6 @@ button{border:none;cursor:pointer}
 .empty p{margin:0;color:var(--m);line-height:1.5}
 .home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--b);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}
 .home-bottom-nav button{background:transparent;color:var(--m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}
-.home-bottom-nav button span{font-size:20px}
 .home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
 .bookmark-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);width:calc(100% - 32px);max-width:420px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.25s;z-index:9999}
 .bookmark-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -72,7 +71,7 @@ button{border:none;cursor:pointer}
 
 <header class="bookmark-header">
   <div class="header-top">
-    <button id="backBtn" class="back-btn" type="button">‹</button>
+    <button id="backBtn" class="back-btn" type="button">&lsaquo;</button>
 
     <div class="title">
       <h1>Bookmarks</h1>
@@ -102,10 +101,10 @@ button{border:none;cursor:pointer}
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
-  <button class="active" type="button" data-page="learn.html"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+  <button type="button" data-page="home2.html">Home</button>
+  <button type="button" data-page="info.html">Info</button>
+  <button class="active" type="button" data-page="learn.html">Learn</button>
+  <button type="button" data-page="profile.html">Profile</button>
 </nav>
 
 <div id="bookmarkToast" class="bookmark-toast"></div>
@@ -201,6 +200,8 @@ button{border:none;cursor:pointer}
   }
 
   function getType(bookmark){
+    if(bookmark.source) return bookmark.source;
+
     const ref = String(bookmark.bookmark_ref_id || "").toLowerCase();
 
     if(ref.includes(":read")) return "read";
@@ -210,6 +211,14 @@ button{border:none;cursor:pointer}
   }
 
   function parseRef(bookmark){
+    if(bookmark.local_question){
+      return {
+        group: bookmark.group_name || "Primary",
+        level: Number(bookmark.level_no || 1),
+        action: bookmark.source || "practice"
+      };
+    }
+
     const ref = String(bookmark.bookmark_ref_id || "");
     const parts = ref.split(":");
 
@@ -234,7 +243,8 @@ button{border:none;cursor:pointer}
         return (
           String(item.subject || "").toLowerCase().includes(q) ||
           String(item.chapter_name || "").toLowerCase().includes(q) ||
-          String(item.bookmark_ref_id || "").toLowerCase().includes(q)
+          String(item.bookmark_ref_id || "").toLowerCase().includes(q) ||
+          String(item.question_text || "").toLowerCase().includes(q)
         );
       });
     }
@@ -255,7 +265,7 @@ button{border:none;cursor:pointer}
     if(!data.length){
       list.innerHTML = `
         <section class="card empty">
-          <div class="empty-icon">🔖</div>
+          
           <h2>No bookmarks found</h2>
           <p>Your saved questions will appear here.</p>
         </section>
@@ -274,18 +284,19 @@ button{border:none;cursor:pointer}
             <span class="date-text">${escapeSafe(formatDate(item.created_at))}</span>
           </div>
 
-          <h3>${escapeSafe(item.chapter_name || "Level " + ref.level)}</h3>
+          <h3>${escapeSafe(item.question_text || item.chapter_name || "Level " + ref.level)}</h3>
 
           <div class="meta">
             <span>${escapeSafe(item.subject || ref.group)}</span>
             <span>Level ${escapeSafe(ref.level)}</span>
             ${item.exam_year ? `<span>${escapeSafe(item.exam_year)}</span>` : ""}
+            ${item.local_question && item.chapter_name ? `<span>${escapeSafe(item.chapter_name)}</span>` : ""}
           </div>
 
           <div class="action-row">
             <button class="read-btn" type="button" data-open-read data-group="${escapeSafe(ref.group)}" data-level="${escapeSafe(ref.level)}">Read</button>
             <button class="practice-btn" type="button" data-open-practice data-group="${escapeSafe(ref.group)}" data-level="${escapeSafe(ref.level)}">Practice</button>
-            <button class="remove-btn" type="button" data-remove="${escapeSafe(item.id)}">×</button>
+            <button class="remove-btn" type="button" data-remove="${escapeSafe(item.id)}">Remove</button>
           </div>
         </article>
       `;
@@ -312,6 +323,15 @@ button{border:none;cursor:pointer}
         const id = btn.dataset.remove;
         if(!id) return;
 
+        const bookmark = allBookmarks.find(item => String(item.id) === String(id));
+
+        if(bookmark?.local_question && typeof removeQuestionBookmarkLocal === "function"){
+          const result = removeQuestionBookmarkLocal(user, bookmark.question_id, bookmark.source);
+          toast(result.message || "Bookmark removed", result.ok === false ? "error" : "success");
+          await loadBookmarks();
+          return;
+        }
+
         if(typeof showLoading === "function") showLoading("Removing bookmark...");
 
         try{
@@ -335,8 +355,15 @@ button{border:none;cursor:pointer}
 
   async function loadBookmarks(){
     BOOKMARKS.setUser(user);
-    allBookmarks = await BOOKMARKS.load(user);
+    const localQuestions = typeof loadQuestionBookmarks === "function" ? loadQuestionBookmarks(user) : [];
+    const remoteBookmarks = await BOOKMARKS.load(user);
+    const localRefs = new Set(localQuestions.map(item => item.bookmark_ref_id));
+    allBookmarks = localQuestions.concat(remoteBookmarks.filter(item => !localRefs.has(item.bookmark_ref_id)));
     renderBookmarks();
+
+    if(typeof syncQuestionBookmarkQueue === "function"){
+      syncQuestionBookmarkQueue(user);
+    }
   }
 
   function bindEvents(){

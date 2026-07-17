@@ -232,6 +232,56 @@ body{
   box-shadow:0 8px 18px rgba(79,111,90,.20);
 }
 
+.home-youtube-help{
+  width:100%;
+  min-height:40px;
+  margin-top:10px;
+  border-radius:10px;
+  background:#FFF8E8;
+  border:1px solid #EACB7A;
+  color:#4F3410;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 12px;
+  font-size:12px;
+  font-weight:700;
+  box-shadow:0 4px 12px rgba(111,69,16,.08);
+}
+
+.home-youtube-help.show{
+  display:flex;
+}
+
+.home-youtube-icon{
+  width:25px;
+  height:18px;
+  border-radius:5px;
+  background:#E62117;
+  color:#fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  line-height:1;
+  flex:0 0 auto;
+}
+
+.home-youtube-text{
+  flex:1;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.home-youtube-arrow{
+  color:#4F3410;
+  font-size:20px;
+  line-height:1;
+  flex:0 0 auto;
+}
 /* NOTICE BOARD */
 .notice-board{
   margin-top:16px;
@@ -575,6 +625,11 @@ body{
     <button id="homeContinueBtn" class="home-continue">
       📖 Continue Learning →
     </button>
+    <button id="homeYoutubeHelpBtn" class="home-youtube-help" type="button" hidden>
+      <span class="home-youtube-icon">▶</span>
+      <span class="home-youtube-text">How to Use TET Success</span>
+      <span class="home-youtube-arrow">›</span>
+    </button>
   </section>
 
   <section class="notice-board">
@@ -717,6 +772,32 @@ function homeSaveLanguage(lang){
   }
 }
 
+function getHomeYoutubeHelpLink(){
+  if(typeof getAppSetting === "function"){
+    return String(getAppSetting("youtube_help_link", "") || "").trim();
+  }
+  try{
+    return String(APP?.youtube_help_link || "").trim();
+  }catch(e){
+    return "";
+  }
+}
+
+function renderHomeYoutubeHelp(){
+  const btn = document.getElementById("homeYoutubeHelpBtn");
+  if(!btn) return;
+
+  const link = getHomeYoutubeHelpLink();
+  btn.dataset.link = link;
+
+  if(link){
+    btn.hidden = false;
+    btn.classList.add("show");
+  }else{
+    btn.hidden = true;
+    btn.classList.remove("show");
+  }
+}
 function homeTodayDate(){
   try{
     return new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
@@ -798,6 +879,7 @@ async function loadHomeData(){
   await loadNoticeBoard();
   await loadDailyMotivation();
   renderTodayTarget();
+  renderHomeYoutubeHelp();
 }
 
 async function loadFreshUser(){
@@ -863,28 +945,19 @@ async function loadTrialPremium(){
 
     const statusBox = document.getElementById("homeStatus");
 
-    if(data && data.status === "premium"){
-      statusBox.innerHTML =
-        "👑 Premium Member<small>Valid Until " +
-        homeFormatDate(data.premium_valid_until || APP.premium_valid_until || "2028-09-30") +
-        "</small>";
+    if(typeof renderTrialPremiumBadge === "function"){
+      renderTrialPremiumBadge(statusBox,data,homeUser,{mode:"end"});
+      if(typeof scheduleExpiredTrialReminder === "function") scheduleExpiredTrialReminder(data,homeUser);
       return;
     }
 
-    if(data && data.trial_end_date){
-      statusBox.innerHTML =
-        "Trial Version<small>Ends " +
-        homeFormatDate(data.trial_end_date) +
-        "</small>";
-      return;
-    }
-
-    statusBox.innerHTML = "Trial Version<small>7 Days Free Trial</small>";
+    statusBox.innerHTML = "Trial Version<small>Ends " + homeFormatDate(data?.trial_end_date || homeUser?.created_at) + "</small>";
 
   }catch(error){
     console.error("Trial premium error:",error);
   }
 }
+
 
 async function loadNoticeBoard(){
   try{
@@ -963,6 +1036,18 @@ function bindHomeEvents(){
     homeToast("Total Marks 150 - Our Target 140+","success");
   });
 
+  const youtubeHelpBtn = document.getElementById("homeYoutubeHelpBtn");
+  if(youtubeHelpBtn){
+    youtubeHelpBtn.addEventListener("click",function(){
+      const link = youtubeHelpBtn.dataset.link || getHomeYoutubeHelpLink();
+      if(!link) return;
+      if(typeof openExternalLink === "function"){
+        openExternalLink(link);
+      }else{
+        window.open(link,"_blank","noopener");
+      }
+    });
+  }
   document.getElementById("homeContinueBtn").addEventListener("click",function(){
     const rawGroup = homeProgress?.current_group || "Primary";
     const normalizedGroup = String(rawGroup).trim() === "Primary TET" ? "Primary" : rawGroup;

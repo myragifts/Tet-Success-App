@@ -287,14 +287,14 @@ body{
   font-weight:700;
 }
 
-.home-bottom-nav button span{
-  font-size:20px;
-}
-
 .home-bottom-nav button.active{
   background:#EEF5F1;
   color:var(--primary-dark);
 }
+
+.question-meta-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bookmark-btn{min-width:74px;border:1px solid #D9E6DD;background:#FFF8E8;color:#6B531A;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:850;box-shadow:0 8px 18px rgba(47,58,54,.08)}
+.bookmark-btn.saved{background:#EAF4EF;color:#0F6B43;border-color:#C9DED2}
 </style>
 </head>
 
@@ -304,7 +304,7 @@ body{
 
   <header class="read-header">
     <div class="read-top">
-      <button class="back-btn" id="backBtn" type="button">â€¹</button>
+      <button class="back-btn" id="backBtn" type="button">&lsaquo;</button>
 
       <div class="read-title">
         <h1>Read</h1>
@@ -337,17 +337,17 @@ body{
 
   <section class="read-card">
     <button id="practiceBtn" class="practice-btn" type="button">
-      âœŽ Start Practice
+      Practice Now
     </button>
   </section>
 
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>ðŸ </span>Home</button>
-  <button type="button" data-page="info.html"><span>â„¹ï¸</span>Info</button>
-  <button class="active" type="button" data-page="learn.html"><span>ðŸ“–</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>ðŸ‘¤</span>Profile</button>
+  <button type="button" data-page="home2.html">Home</button>
+  <button type="button" data-page="info.html">Info</button>
+  <button class="active" type="button" data-page="learn.html">Learn</button>
+  <button type="button" data-page="profile.html">Profile</button>
 </nav>
 
 <div id="readToast" class="read-toast"></div>
@@ -462,6 +462,15 @@ body{
   }
 
   async function loadQuestions(){
+    const cached = typeof loadQuestionCache === "function"
+      ? loadQuestionCache(group,level)
+      : null;
+
+    if(cached){
+      questions = cached;
+      return;
+    }
+
     const table = CONFIG.TABLES.LEARN_QUESTIONS;
     const db = window.tetSupabase || window.supabase;
 
@@ -469,6 +478,7 @@ body{
       questions = [];
       return;
     }
+
     const { data, error } = await db
       .from(table)
       .select("*")
@@ -484,8 +494,11 @@ body{
     }
 
     questions = Array.isArray(data) ? data : [];
-  }
 
+    if(typeof saveQuestionCache === "function"){
+      saveQuestionCache(group,level,questions);
+    }
+  }
   function getQuestionText(q){
     return q.question_text || q.question || q.title || "";
   }
@@ -504,13 +517,49 @@ body{
     $("#readLevelBadge").textContent = "Level " + level;
   }
 
+  function getQuestionId(q, index){
+    return String(q.id || q.question_id || q.question_no || q.mock_no || `${group}:${level}:${index + 1}`);
+  }
+
+  function getBookmarkPayload(q, index, source){
+    return {
+      question_id: getQuestionId(q, index),
+      group_name: group,
+      level_no: level,
+      source: source || "read",
+      subject: q.subject || "General",
+      chapter_name: q.chapter || q.chapter_name || q.concept || "Question",
+      question_text: getQuestionText(q),
+      correct_answer: getCorrectAnswer(q),
+      explanation: getExplanation(q)
+    };
+  }
+
+  function isSavedBookmark(q, index, source){
+    return typeof isQuestionBookmarked === "function" && isQuestionBookmarked(user, getQuestionId(q, index), source || "read");
+  }
+
+  function bindQuestionBookmarkButtons(){
+    document.querySelectorAll("[data-bookmark-index]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const i = Number(btn.dataset.bookmarkIndex);
+        const q = questions[i];
+        if(!q || typeof toggleQuestionBookmarkLocal !== "function") return;
+
+        const result = toggleQuestionBookmarkLocal(user, getBookmarkPayload(q, i, "read"));
+        btn.classList.toggle("saved", !!result.saved);
+        btn.textContent = result.saved ? "Saved" : "Save";
+        toast(result.message || (result.saved ? "Bookmark saved" : "Bookmark removed"), result.ok === false ? "error" : "success");
+      });
+    });
+  }
+
   function renderQuestions(){
     const list = $("#questionList");
 
     if(!questions.length){
       list.innerHTML = `
         <section class="read-card empty-card">
-          <div style="font-size:44px">ðŸ“˜</div>
           <h3>No questions found</h3>
           <p class="instruction">Please add questions in Supabase for ${group} Level ${level}.</p>
         </section>
@@ -519,11 +568,17 @@ body{
       return;
     }
 
-    list.innerHTML = questions.map((q,index)=>`
+    list.innerHTML = questions.map((q,index)=>{
+      const saved = isSavedBookmark(q, index, "read");
+
+      return `
       <article class="question-card">
         <div class="question-meta">
-          <span class="q-no">Question ${index + 1} of ${questions.length}</span>
-          <span class="q-subject">${escapeHTML(q.subject || "General")}</span>
+          <div class="question-meta-left">
+            <span class="q-no">Question ${index + 1} of ${questions.length}</span>
+            <span class="q-subject">${escapeHTML(q.subject || "General")}</span>
+          </div>
+          <button class="bookmark-btn ${saved ? "saved" : ""}" type="button" data-bookmark-index="${index}">${saved ? "Saved" : "Save"}</button>
         </div>
 
         <p class="question-text">${escapeHTML(getQuestionText(q))}</p>
@@ -538,7 +593,10 @@ body{
           <span>${escapeHTML(getExplanation(q))}</span>
         </div>
       </article>
-    `).join("");
+    `;
+    }).join("");
+
+    bindQuestionBookmarkButtons();
   }
 
   async function markReadOpened(){
@@ -599,4 +657,5 @@ body{
 </script>
 </body>
 </html>
+
 

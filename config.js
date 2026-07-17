@@ -1,6 +1,7 @@
 const CONFIG = {
   APP_NAME: "TET Success",
   TAGLINE: "Your TET Guru",
+  QUESTION_BANK_VERSION: "2",
 
   SUPABASE_URL: "https://ijclbrwofsgrdnlyzkro.supabase.co",
   SUPABASE_PUBLISHABLE_KEY: "sb_publishable_FzFZFR7qCsSv89mxruHFDQ_Gdfs1Yqx",
@@ -44,3 +45,6 @@ const CONFIG = {
     ADMIN_LOGS: "tet_admin_logs"
   }
 };
+
+
+

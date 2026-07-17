@@ -79,6 +79,7 @@ function getUserSession() {
 }
 
 function clearUserSession() {
+    clearExpiredTrialReminderMemory();
     localStorage.removeItem(TET_SESSION_KEY);
 }
 
@@ -171,6 +172,287 @@ function hideLoading() {
         loadingActive = false;
     }, 250);
 }
+
+/* =========================================================
+   4B. TET QUESTION CACHE
+========================================================= */
+
+const TET_QUESTION_CACHE_PREFIX = "tet_question_cache_";
+const TET_QUESTION_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
+function getQuestionCacheVersion() {
+    try {
+        const fromSettings = typeof getAppSetting === "function"
+            ? getAppSetting("question_bank_version", null)
+            : null;
+
+        return String(
+            fromSettings ||
+            CONFIG?.QUESTION_BANK_VERSION ||
+            CONFIG?.APP_VERSION ||
+            "1"
+        );
+    } catch {
+        return "1";
+    }
+}
+
+function getQuestionCacheKey(groupName, levelNo) {
+    const version = getQuestionCacheVersion();
+    const group = String(groupName || "Primary").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    const level = Number(levelNo || 1);
+    return `${TET_QUESTION_CACHE_PREFIX}${version}_${group}_${level}`;
+}
+
+function loadQuestionCache(groupName, levelNo) {
+    try {
+        const raw = localStorage.getItem(getQuestionCacheKey(groupName, levelNo));
+        if (!raw) return null;
+
+        const cached = JSON.parse(raw);
+        const savedAt = Number(cached?.saved_at || 0);
+        const items = Array.isArray(cached?.questions) ? cached.questions : [];
+
+        if (!items.length) return null;
+        if (Date.now() - savedAt > TET_QUESTION_CACHE_MAX_AGE_MS) return null;
+
+        return items;
+    } catch {
+        return null;
+    }
+}
+
+function saveQuestionCache(groupName, levelNo, questions) {
+    if (!Array.isArray(questions) || !questions.length) return false;
+
+    try {
+        localStorage.setItem(getQuestionCacheKey(groupName, levelNo), JSON.stringify({
+            version: getQuestionCacheVersion(),
+            group_name: groupName,
+            level_no: Number(levelNo || 1),
+            saved_at: Date.now(),
+            questions
+        }));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/* =========================================================
+   4C. CACHE-FIRST QUESTION BOOKMARKS
+========================================================= */
+
+const TET_QUESTION_BOOKMARK_KEY = "tet_question_bookmarks_v1";
+const TET_QUESTION_BOOKMARK_QUEUE_KEY = "tet_question_bookmark_queue_v1";
+
+function getBookmarkUserKey(user) {
+    const value = user?.id || user?.user_id || user?.phone || user?.mobile || "guest";
+    return String(value || "guest");
+}
+
+function getQuestionBookmarkId(user, questionId, source) {
+    return [getBookmarkUserKey(user), source || "read", questionId].map(String).join(":");
+}
+
+function readQuestionBookmarkStore() {
+    try {
+        const raw = localStorage.getItem(TET_QUESTION_BOOKMARK_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+    } catch {
+        return {};
+    }
+}
+
+function writeQuestionBookmarkStore(store) {
+    try {
+        localStorage.setItem(TET_QUESTION_BOOKMARK_KEY, JSON.stringify(store || {}));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function loadQuestionBookmarks(user) {
+    const store = readQuestionBookmarkStore();
+    const userKey = getBookmarkUserKey(user);
+    const list = Array.isArray(store[userKey]) ? store[userKey] : [];
+    return list.map(item => ({ ...item, local_question: true }));
+}
+
+function isQuestionBookmarked(user, questionId, source) {
+    const id = getQuestionBookmarkId(user, questionId, source);
+    return loadQuestionBookmarks(user).some(item => item.id === id);
+}
+
+function readQuestionBookmarkQueue() {
+    try {
+        const raw = localStorage.getItem(TET_QUESTION_BOOKMARK_QUEUE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function writeQuestionBookmarkQueue(queue) {
+    try {
+        localStorage.setItem(TET_QUESTION_BOOKMARK_QUEUE_KEY, JSON.stringify(queue || []));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function queueQuestionBookmarkSync(action, bookmark) {
+    if (!bookmark?.bookmark_ref_id) return;
+
+    const queue = readQuestionBookmarkQueue();
+    const key = action + ":" + bookmark.bookmark_ref_id;
+    const filtered = queue.filter(item => item.key !== key);
+
+    filtered.push({
+        key,
+        action,
+        bookmark: {
+            user_key: bookmark.user_key,
+            question_id: bookmark.question_id,
+            bookmark_ref_id: bookmark.bookmark_ref_id,
+            bookmark_type: "question",
+            source: bookmark.source,
+            group_name: bookmark.group_name,
+            level_no: bookmark.level_no,
+            subject: bookmark.subject,
+            chapter_name: bookmark.chapter_name,
+            created_at: bookmark.created_at || new Date().toISOString()
+        },
+        queued_at: new Date().toISOString()
+    });
+
+    writeQuestionBookmarkQueue(filtered);
+}
+
+function saveQuestionBookmarkLocal(user, payload) {
+    if (!payload?.question_id) return { ok: false, saved: false, message: "Question missing" };
+
+    const userKey = getBookmarkUserKey(user);
+    const source = payload.source || "read";
+    const id = getQuestionBookmarkId(user, payload.question_id, source);
+    const ref = [payload.group_name || "Primary", payload.level_no || 1, source, payload.question_id].map(String).join(":");
+    const store = readQuestionBookmarkStore();
+    const list = Array.isArray(store[userKey]) ? store[userKey] : [];
+    const createdAt = new Date().toISOString();
+
+    const bookmark = {
+        id,
+        user_key: userKey,
+        user_id: user?.id || user?.user_id || null,
+        bookmark_type: "question",
+        bookmark_ref_id: ref,
+        question_id: String(payload.question_id),
+        source,
+        group_name: payload.group_name || "Primary",
+        level_no: Number(payload.level_no || 1),
+        subject: payload.subject || "General",
+        chapter_name: payload.chapter_name || payload.chapter || "Question",
+        question_text: payload.question_text || "",
+        correct_answer: payload.correct_answer || "",
+        explanation: payload.explanation || "",
+        created_at: createdAt,
+        local_question: true
+    };
+
+    store[userKey] = list.filter(item => item.id !== id).concat(bookmark);
+
+    if (!writeQuestionBookmarkStore(store)) {
+        return { ok: false, saved: false, message: "Bookmark storage full" };
+    }
+
+    queueQuestionBookmarkSync("save", bookmark);
+    return { ok: true, saved: true, bookmark, message: "Bookmark saved" };
+}
+
+function removeQuestionBookmarkLocal(user, questionId, source) {
+    if (!questionId) return { ok: false, saved: false, message: "Question missing" };
+
+    const userKey = getBookmarkUserKey(user);
+    const id = getQuestionBookmarkId(user, questionId, source || "read");
+    const store = readQuestionBookmarkStore();
+    const list = Array.isArray(store[userKey]) ? store[userKey] : [];
+    const found = list.find(item => item.id === id);
+
+    store[userKey] = list.filter(item => item.id !== id);
+
+    if (!writeQuestionBookmarkStore(store)) {
+        return { ok: false, saved: true, message: "Bookmark update failed" };
+    }
+
+    if (found) queueQuestionBookmarkSync("remove", found);
+    return { ok: true, saved: false, message: "Bookmark removed" };
+}
+
+function toggleQuestionBookmarkLocal(user, payload) {
+    const source = payload?.source || "read";
+    if (isQuestionBookmarked(user, payload?.question_id, source)) {
+        return removeQuestionBookmarkLocal(user, payload.question_id, source);
+    }
+    return saveQuestionBookmarkLocal(user, payload);
+}
+
+async function syncQuestionBookmarkQueue(user) {
+    const activeUser = user || (typeof getUserSession === "function" ? getUserSession() : null);
+    const userId = activeUser?.id || activeUser?.user_id;
+    if (!userId || !window.tetSupabase || !CONFIG?.TABLES?.BOOKMARKS) return { ok: false, synced: 0 };
+
+    const queue = readQuestionBookmarkQueue();
+    if (!queue.length) return { ok: true, synced: 0 };
+
+    const remaining = [];
+    let synced = 0;
+
+    for (const item of queue) {
+        const bookmark = item.bookmark || {};
+        if (bookmark.user_key && bookmark.user_key !== getBookmarkUserKey(activeUser)) {
+            remaining.push(item);
+            continue;
+        }
+
+        try {
+            if (item.action === "remove") {
+                const { error } = await window.tetSupabase
+                    .from(CONFIG.TABLES.BOOKMARKS)
+                    .delete()
+                    .eq("user_id", userId)
+                    .eq("bookmark_ref_id", bookmark.bookmark_ref_id);
+                if (error) throw error;
+            } else {
+                const { error } = await window.tetSupabase
+                    .from(CONFIG.TABLES.BOOKMARKS)
+                    .insert({
+                        user_id: userId,
+                        bookmark_type: "question",
+                        bookmark_ref_id: bookmark.bookmark_ref_id,
+                        subject: bookmark.subject || "General",
+                        chapter_name: bookmark.chapter_name || "Question",
+                        exam_year: null
+                    });
+                if (error && !String(error.message || "").toLowerCase().includes("duplicate")) throw error;
+            }
+            synced += 1;
+        } catch (error) {
+            console.warn("Question bookmark sync skipped", error);
+            remaining.push(item);
+        }
+    }
+
+    writeQuestionBookmarkQueue(remaining);
+    return { ok: true, synced };
+}
+
+window.addEventListener("online", function () {
+    syncQuestionBookmarkQueue();
+});
 
 /* =========================================================
    5. WHATSAPP HELPER
@@ -473,6 +755,343 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
+
+/* =========================================================
+   GLOBAL TRIAL / PREMIUM FLOW
+========================================================= */
+
+function getPremiumFlowSetting(key, fallback) {
+    try {
+        if (typeof getAppSetting === "function") {
+            const value = getAppSetting(key, null);
+            if (value !== null && value !== undefined && value !== "") return value;
+        }
+    } catch {}
+
+    try {
+        if (window.APP && APP[key] !== undefined && APP[key] !== null && APP[key] !== "") return APP[key];
+    } catch {}
+
+    return fallback;
+}
+
+function parseAppDate(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function addDays(date, days) {
+    const next = new Date(date.getTime());
+    next.setDate(next.getDate() + Number(days || 0));
+    return next;
+}
+
+function formatShortDotDate(value) {
+    const date = value instanceof Date ? value : parseAppDate(value);
+    if (!date) return "";
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yy = String(date.getFullYear()).slice(-2);
+    return dd + "." + mm + "." + yy;
+}
+
+function getTrialStartDate(status, user) {
+    return parseAppDate(
+        status?.trial_start_at ||
+        status?.trial_start_date ||
+        status?.started_at ||
+        status?.created_at ||
+        user?.trial_start_at ||
+        user?.created_at ||
+        user?.createdAt ||
+        new Date().toISOString()
+    );
+}
+
+function getTrialEndDate(status, user) {
+    const fixedEnd = parseAppDate(status?.trial_end_date || status?.trial_valid_until || status?.trialEndDate);
+    if (fixedEnd) return fixedEnd;
+
+    const start = getTrialStartDate(status, user) || new Date();
+    return addDays(start, 7);
+}
+
+function isPremiumStatus(status, user) {
+    if (user?.status === "premium" || user?.isPremium || user?.premium || user?.is_premium) return true;
+    if (!status) return false;
+    if (status.status === "premium" || status.payment_verified === true || status.paymentVerified === true) return true;
+
+    const valid = parseAppDate(status.premium_valid_until || status.valid_until || status.expiry_date || status.premiumValidUntil);
+    return !!(valid && valid.getTime() >= Date.now());
+}
+
+function getTrialDaysLeft(status, user) {
+    const end = getTrialEndDate(status, user);
+    const diff = end.getTime() - Date.now();
+    return Math.max(0, Math.ceil(diff / (24 * 60 * 60 * 1000)));
+}
+
+const TET_EXPIRED_REMINDER_KEY = "tet_expired_trial_later_at";
+const TET_EXPIRED_REMINDER_WAIT_MS = 5 * 60 * 1000;
+const TET_EXPIRED_REMINDER_DELAY_MS = 2000;
+
+function getExpiredTrialReminderKey(user) {
+    const activeUser = user || (window.TETPremiumState && window.TETPremiumState.user) || (typeof getUserSession === "function" ? getUserSession() : null) || {};
+    const userKey = activeUser.id || activeUser.user_id || activeUser.phone || activeUser.mobile || "guest";
+    return TET_EXPIRED_REMINDER_KEY + "_" + String(userKey);
+}
+
+function isTrialExpiredStatus(status, user) {
+    return !isPremiumStatus(status, user) && getTrialDaysLeft(status, user) <= 0;
+}
+
+function markExpiredTrialReminderLater(user) {
+    try {
+        localStorage.setItem(getExpiredTrialReminderKey(user), String(Date.now()));
+    } catch {}
+}
+
+function clearExpiredTrialReminderMemory() {
+    try {
+        Object.keys(localStorage).forEach(function (key) {
+            if (key === TET_EXPIRED_REMINDER_KEY || key.indexOf(TET_EXPIRED_REMINDER_KEY + "_") === 0) {
+                localStorage.removeItem(key);
+            }
+        });
+    } catch {}
+}
+
+function canShowExpiredTrialReminder(status, user) {
+    if (!isTrialExpiredStatus(status, user)) return false;
+    if (document.querySelector(".premium-global-modal")) return false;
+
+    const lastLater = Number(localStorage.getItem(getExpiredTrialReminderKey(user)) || 0);
+    return !lastLater || Date.now() - lastLater >= TET_EXPIRED_REMINDER_WAIT_MS;
+}
+
+function closeGlobalPremiumModalAsLater() {
+    const context = getActivePremiumContext();
+    if (isTrialExpiredStatus(context.status, context.user)) {
+        markExpiredTrialReminderLater(context.user);
+    }
+    removeGlobalPremiumModal();
+}
+
+function scheduleExpiredTrialReminder(status, user, options = {}) {
+    const context = getActivePremiumContext(status, user);
+    if (!isTrialExpiredStatus(context.status, context.user)) return false;
+
+    window.clearTimeout(window.__tetExpiredTrialReminderTimer);
+    window.__tetExpiredTrialReminderTimer = window.setTimeout(function () {
+        const latest = getActivePremiumContext(context.status, context.user);
+        if (canShowExpiredTrialReminder(latest.status, latest.user)) {
+            showGlobalPremiumEntry(latest.status, latest.user);
+        }
+    }, Number(options.delayMs || TET_EXPIRED_REMINDER_DELAY_MS));
+
+    return true;
+}
+function getTrialPremiumModel(status, user, mode) {
+    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const validUntil = status?.premium_valid_until || status?.valid_until || status?.expiry_date || "2028-09-30";
+
+    if (isPremiumStatus(status, user)) {
+        return {
+            state: "premium",
+            title: "Premium Member",
+            small: "Valid Until: " + (formatDate(validUntil) || validText)
+        };
+    }
+
+    const end = getTrialEndDate(status, user);
+    const days = getTrialDaysLeft(status, user);
+
+    if (days <= 0) {
+        return {
+            state: "expired",
+            title: "Go Premium",
+            small: "Unlock all benefits"
+        };
+    }
+
+    if (mode === "days") {
+        return {
+            state: "trial",
+            title: "Trial Version",
+            small: days + (days === 1 ? " Day Left" : " Days Left")
+        };
+    }
+
+    return {
+        state: "trial",
+        title: "Trial Version",
+        small: "Ends " + formatShortDotDate(end)
+    };
+}
+
+function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
+    const el = typeof elementOrId === "string" ? document.getElementById(elementOrId) : elementOrId;
+    if (!el) return null;
+
+    window.TETPremiumState = { status, user };
+
+    const model = getTrialPremiumModel(status, user, options.mode || "end");
+    el.classList.toggle("premium", model.state === "premium");
+    el.classList.toggle("expired", model.state === "expired");
+    el.dataset.subscriptionState = model.state;
+    el.innerHTML = "<b>" + escapeHTML(model.title) + "</b><small>" + escapeHTML(model.small) + "</small>";
+
+    if (model.state === "expired") {
+        el.setAttribute("role", "button");
+        el.tabIndex = 0;
+        el.onclick = function () { showGlobalPremiumEntry(status, user); };
+    } else {
+        el.removeAttribute("role");
+        el.removeAttribute("tabindex");
+        el.onclick = null;
+    }
+
+    return model;
+}
+
+function getPremiumWhatsAppMessage() {
+    const user = typeof getUserSession === "function" ? (getUserSession() || {}) : {};
+    const fee = getPremiumFlowSetting("subscription_fee", 799);
+    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const paymentLink = getPremiumFlowSetting("payment_link", "https://tinyurl.com/Tet-Success-Pay-now");
+    const name = user.full_name || user.name || "Student";
+    const phone = user.phone || user.mobile || "";
+
+    return `Hello,\n\nI want to upgrade to TET Success Premium.\n\nName: ${name}\nPhone: ${phone}\n\nPlan:\nPremium Membership\n\nSubscription Fee:\n₹${fee} (One-Time Payment)\n\nPremium Validity:\n${validText}\n\nAccess:\nFull Premium Access to all features until ${validText}.\n\nSelf Declaration:\nI have read and accepted that TET Success provides educational guidance and learning resources only. I understand that passing the examination depends on my own preparation and performance, and TET Success does not guarantee exam success.\n\nPayment Link:\n${paymentLink}\n\nAfter payment send screenshot for confirmation.\n\nThank you.`;
+}
+
+function removeGlobalPremiumModal() {
+    document.querySelectorAll(".premium-global-modal").forEach(modal => modal.remove());
+}
+
+function getActivePremiumContext(status, user) {
+    const saved = window.TETPremiumState || {};
+    let sessionUser = null;
+    try {
+        sessionUser = typeof getUserSession === "function" ? getUserSession() : null;
+    } catch {
+        sessionUser = null;
+    }
+
+    return {
+        status: status || saved.status || null,
+        user: user || saved.user || sessionUser || null
+    };
+}
+
+function showGlobalPremiumEntry(status, user) {
+    const context = getActivePremiumContext(status, user);
+    if (isPremiumStatus(context.status, context.user)) {
+        showGlobalPremiumUserModal(context.status, context.user);
+        return;
+    }
+
+    showGlobalPremiumModal();
+}
+
+function showGlobalPremiumUserModal(status, user) {
+    removeGlobalPremiumModal();
+
+    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const modal = document.createElement("div");
+    modal.className = "premium-global-modal";
+    modal.innerHTML = `
+        <div class="premium-global-card" role="dialog" aria-modal="true">
+            <button class="premium-global-close" type="button" data-premium-close>&times;</button>
+            <span class="premium-global-badge">Premium Member</span>
+            <h2>Premium User</h2>
+            <p class="premium-global-sub">Enjoy all premium benefits up to ${escapeHTML(validText)}.</p>
+            <div class="premium-global-actions">
+                <button class="premium-global-btn primary" type="button" data-premium-close>Back</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add("show"));
+    modal.querySelectorAll("[data-premium-close]").forEach(btn => btn.addEventListener("click", removeGlobalPremiumModal));
+}
+function showGlobalPremiumModal() {
+    const context = getActivePremiumContext();
+    if (isPremiumStatus(context.status, context.user)) {
+        showGlobalPremiumUserModal(context.status, context.user);
+        return;
+    }
+
+    removeGlobalPremiumModal();
+
+    const fee = getPremiumFlowSetting("subscription_fee", 799);
+    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const modal = document.createElement("div");
+    modal.className = "premium-global-modal";
+    modal.innerHTML = `
+        <div class="premium-global-card" role="dialog" aria-modal="true">
+            <button class="premium-global-close" type="button" data-premium-close>&times;</button>
+            <span class="premium-global-badge">Premium Access</span>
+            <h2>Unlock Premium Access</h2>
+            <p class="premium-global-price">₹${escapeHTML(fee)} Only - One Time Payment</p>
+            <p class="premium-global-sub">Full premium access to all features until ${escapeHTML(validText)}.</p>
+            <p class="premium-global-note">This small one-time amount can support your preparation, confidence, and long-term teaching career.</p>
+            <div class="premium-global-actions">
+                <button class="premium-global-btn light" type="button" data-premium-later>Later</button>
+                <button class="premium-global-btn primary" type="button" data-premium-subscribe>Subscribe Now</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add("show"));
+    modal.querySelectorAll("[data-premium-close]").forEach(btn => btn.addEventListener("click", removeGlobalPremiumModal));
+    modal.querySelectorAll("[data-premium-later]").forEach(btn => btn.addEventListener("click", closeGlobalPremiumModalAsLater));
+    modal.querySelector("[data-premium-subscribe]").addEventListener("click", showGlobalDeclarationModal);
+}
+
+function showGlobalDeclarationModal() {
+    removeGlobalPremiumModal();
+
+    const modal = document.createElement("div");
+    modal.className = "premium-global-modal";
+    modal.innerHTML = `
+        <div class="premium-global-card" role="dialog" aria-modal="true">
+            <button class="premium-global-close" type="button" data-premium-close>&times;</button>
+            <span class="premium-global-badge">Self Declaration</span>
+            <h2>Self Declaration</h2>
+            <p class="premium-global-text">TET Success is an educational learning platform designed to help you prepare for the TET examination through study materials, practice questions, mock tests, and guidance.</p>
+            <p class="premium-global-text">While we are committed to providing high-quality learning resources, we do not guarantee success or selection in any examination. Your result depends on your own preparation, effort, and performance.</p>
+            <label class="premium-global-check"><input id="globalAgreeDeclaration" type="checkbox"> <span>I have read and understood the above declaration and agree to continue.</span></label>
+            <div class="premium-global-actions">
+                <button class="premium-global-btn light" type="button" data-premium-later>Later</button>
+                <button class="premium-global-btn primary" id="globalContinuePayment" type="button" disabled>CONTINUE TO PAYMENT</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add("show"));
+
+    const agree = modal.querySelector("#globalAgreeDeclaration");
+    const continueBtn = modal.querySelector("#globalContinuePayment");
+    modal.querySelectorAll("[data-premium-close]").forEach(btn => btn.addEventListener("click", removeGlobalPremiumModal));
+    modal.querySelectorAll("[data-premium-later]").forEach(btn => btn.addEventListener("click", closeGlobalPremiumModalAsLater));
+    agree.addEventListener("change", () => { continueBtn.disabled = !agree.checked; });
+    continueBtn.addEventListener("click", function () {
+        if (!agree.checked) {
+            showToast("Please agree before continuing", "warning");
+            return;
+        }
+        removeGlobalPremiumModal();
+        const adminPhone = getPremiumFlowSetting("admin_whatsapp_number", getPremiumFlowSetting("admin_whatsapp", "9836697502"));
+        openWhatsApp(adminPhone, getPremiumWhatsAppMessage());
+        showToast("Subscription request opened", "success");
+    });
+}
+
 /* =========================================================
    20. PREMIUM BADGE HELPER
 ========================================================= */
@@ -481,7 +1100,7 @@ function getStatusBadge(status, premiumValidUntil = "") {
     if (status === "premium" || status === "Premium Member") {
         return `
             <div class="tet-badge premium">
-                👑 Premium Member
+                Premium Member
                 <small>Valid Until: ${escapeHTML(formatDate(premiumValidUntil || "2028-09-30"))}</small>
             </div>
         `;
@@ -494,11 +1113,36 @@ function getStatusBadge(status, premiumValidUntil = "") {
     `;
 }
 
+
+function isEditableTarget(target) {
+    if (!target) return false;
+    return !!target.closest('input, textarea, select, [contenteditable="true"]');
+}
+
+function initAppSelectionGuard() {
+    document.addEventListener("selectstart", function (event) {
+        if (!isEditableTarget(event.target)) event.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("contextmenu", function (event) {
+        if (!isEditableTarget(event.target)) event.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("copy", function (event) {
+        if (!isEditableTarget(event.target)) event.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("dragstart", function (event) {
+        event.preventDefault();
+    }, { passive: false });
+}
+
 /* =========================================================
    21. INITIALIZE COMMON
 ========================================================= */
 
 function initializeCommon() {
+    initAppSelectionGuard();
     initInternetDetection();
     restoreScrollPosition();
 
@@ -514,3 +1158,5 @@ function initializeCommon() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeCommon);
+
+

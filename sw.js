@@ -4,7 +4,7 @@
    Production Version
 ========================================================= */
 
-const CACHE_NAME = "tet-success-v2";
+const CACHE_NAME = "tet-success-v35";
 
 const FILES_TO_CACHE = [
 

@@ -39,8 +39,9 @@ button{font-family:inherit;border:none;cursor:pointer}
 .submit-btn{width:100%;display:none}.submit-btn.show{display:block}
 .result-box{text-align:center;display:none}.result-box.show{display:block}.result-icon{font-size:54px}.result-box h2{margin:8px 0;color:var(--pd)}.result-score{font-size:30px;font-weight:950;color:var(--pd)}
 .result-note{color:var(--m);line-height:1.5}.home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--b);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}
-.home-bottom-nav button{background:transparent;color:var(--m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}.home-bottom-nav button span{font-size:20px}.home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
+.home-bottom-nav button{background:transparent;color:var(--m);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}.home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
 .practice-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);width:calc(100% - 32px);max-width:420px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.25s;z-index:9999}.practice-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.q-meta-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.bookmark-btn{min-width:74px;border:1px solid #D9E6DD;background:#FFF8E8;color:#6B531A;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:850;box-shadow:0 8px 18px rgba(47,58,54,.08)}.bookmark-btn.saved{background:#EAF4EF;color:#0F6B43;border-color:#C9DED2}
 </style>
 </head>
 
@@ -49,7 +50,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 
 <header class="practice-header">
   <div class="practice-top">
-    <button id="backBtn" class="back-btn" type="button">â€¹</button>
+    <button id="backBtn" class="back-btn" type="button">&lsaquo;</button>
     <div class="practice-title">
       <h1>Practice</h1>
       <p>Score 80% to unlock next level</p>
@@ -69,8 +70,11 @@ button{font-family:inherit;border:none;cursor:pointer}
 
 <section id="questionCard" class="card">
   <div class="q-meta">
-    <span id="qPill" class="pill">Question 1</span>
-    <span id="subjectPill" class="pill">General</span>
+    <div class="q-meta-left">
+      <span id="qPill" class="pill">Question 1</span>
+      <span id="subjectPill" class="pill">General</span>
+    </div>
+    <button id="bookmarkBtn" class="bookmark-btn" type="button">Save</button>
   </div>
   <p id="questionText" class="question">Loading question...</p>
   <div id="optionList" class="options"></div>
@@ -85,7 +89,7 @@ button{font-family:inherit;border:none;cursor:pointer}
 </section>
 
 <section id="resultBox" class="card result-box">
-  <div id="resultIcon" class="result-icon">ðŸ†</div>
+  <div id="resultIcon" class="result-icon">Result</div>
   <h2 id="resultTitle">Result</h2>
   <div class="result-score"><span id="scoreText">0</span>%</div>
   <p id="resultNote" class="result-note"></p>
@@ -95,10 +99,10 @@ button{font-family:inherit;border:none;cursor:pointer}
 </main>
 
 <nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>ðŸ </span>Home</button>
-  <button type="button" data-page="info.html"><span>â„¹ï¸</span>Info</button>
-  <button class="active" type="button" data-page="learn.html"><span>ðŸ“–</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>ðŸ‘¤</span>Profile</button>
+  <button type="button" data-page="home2.html">Home</button>
+  <button type="button" data-page="info.html">Info</button>
+  <button class="active" type="button" data-page="learn.html">Learn</button>
+  <button type="button" data-page="profile.html">Profile</button>
 </nav>
 
 <div id="practiceToast" class="practice-toast"></div>
@@ -224,6 +228,12 @@ button{font-family:inherit;border:none;cursor:pointer}
   }
 
   async function loadQuestions(){
+    const cached=typeof loadQuestionCache==="function"
+      ? loadQuestionCache(group,level)
+      : null;
+
+    if(cached){questions=cached;return;}
+
     const db=window.tetSupabase||window.supabase;
     const table=CONFIG.TABLES.LEARN_QUESTIONS;
     if(!db||!table){questions=[];return;}
@@ -237,8 +247,11 @@ button{font-family:inherit;border:none;cursor:pointer}
 
     if(error){console.warn(error);questions=[];return;}
     questions=Array.isArray(data)?data:[];
-  }
 
+    if(typeof saveQuestionCache==="function"){
+      saveQuestionCache(group,level,questions);
+    }
+  }
   function qText(q){return q.question_text||q.question||q.title||"";}
   function subject(q){return q.subject||"General";}
   function options(q){
@@ -251,6 +264,42 @@ button{font-family:inherit;border:none;cursor:pointer}
   }
   function correctKey(q){
     return String(q.correct_option||q.correct_answer_option||q.answer||"").toUpperCase().trim();
+  }
+
+
+  function getQuestionId(q, i){
+    return String(q.id || q.question_id || q.question_no || q.mock_no || `${group}:${level}:${i + 1}`);
+  }
+
+  function bookmarkPayload(q, i){
+    return {
+      question_id:getQuestionId(q, i),
+      group_name:group,
+      level_no:level,
+      source:"practice",
+      subject:subject(q),
+      chapter_name:q.chapter || q.chapter_name || q.concept || "Question",
+      question_text:qText(q),
+      correct_answer:q.correct_answer || q.correct_option || q.answer || "",
+      explanation:q.explanation || q.short_explanation || ""
+    };
+  }
+
+  function renderBookmarkButton(q, i){
+    const btn = $("#bookmarkBtn");
+    if(!btn) return;
+    const saved = typeof isQuestionBookmarked === "function" && isQuestionBookmarked(user, getQuestionId(q, i), "practice");
+    btn.classList.toggle("saved", saved);
+    btn.textContent = saved ? "Saved" : "Save";
+  }
+
+  function toggleCurrentBookmark(){
+    const q = questions[index];
+    if(!q || typeof toggleQuestionBookmarkLocal !== "function") return;
+
+    const result = toggleQuestionBookmarkLocal(user, bookmarkPayload(q, index));
+    renderBookmarkButton(q, index);
+    toast(result.message || (result.saved ? "Bookmark saved" : "Bookmark removed"), result.ok === false ? "error" : "success");
   }
 
   function renderHeader(){
@@ -326,7 +375,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     $("#actionCard").style.display="none";
     $("#resultBox").classList.add("show");
     $("#scoreText").textContent=score;
-    $("#resultIcon").textContent=pass?"ðŸ†":"ðŸ”";
+    $("#resultIcon").textContent=pass?"Passed":"Retry";
     $("#resultTitle").textContent=pass?"Level Cleared":"Try Again";
     $("#resultNote").textContent=pass
       ? "Great work. Next level is unlocked."
@@ -346,6 +395,7 @@ button{font-family:inherit;border:none;cursor:pointer}
     $("#prevBtn").addEventListener("click",prev);
     $("#nextBtn").addEventListener("click",next);
     $("#submitBtn").addEventListener("click",submit);
+    $("#bookmarkBtn").addEventListener("click",toggleCurrentBookmark);
     $("#backLearnBtn").addEventListener("click",()=>location.href=`learn.html?completed=1&group=${encodeURIComponent(group)}&level=${level}&score=${$("#scoreText").textContent}`);
     document.querySelectorAll(".home-bottom-nav [data-page]").forEach(btn=>btn.addEventListener("click",()=>location.href=btn.dataset.page));
   }
@@ -368,4 +418,5 @@ button{font-family:inherit;border:none;cursor:pointer}
 </script>
 </body>
 </html>
+
 

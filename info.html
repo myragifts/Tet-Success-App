@@ -161,21 +161,21 @@ button{
 
 .subject-list{
     display:grid;
-    gap:14px;
+    gap:10px;
 }
 
 .subject-card{
     width:100%;
-    min-height:112px;
+    min-height:92px;
     border:1px solid rgba(226,233,228,.95);
-    border-radius:20px;
+    border-radius:18px;
     background:rgba(255,255,255,.96);
-    box-shadow:var(--info-shadow);
+    box-shadow:0 10px 24px rgba(35,54,47,.09);
     display:grid;
-    grid-template-columns:78px 1fr 50px;
+    grid-template-columns:66px 1fr 44px;
     align-items:center;
-    gap:14px;
-    padding:16px 20px;
+    gap:12px;
+    padding:14px 18px;
     color:var(--info-text);
     text-align:left;
     transition:transform .18s ease, box-shadow .18s ease;
@@ -185,7 +185,20 @@ button{
     transform:scale(.985);
 }
 
-.subject-icon,
+.subject-icon{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#EEF5F1,#F8FBF8);
+    color:var(--info-primary-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+    font-weight:800;
+    border:1px solid rgba(226,233,228,.8);
+}
+
 .help-icon{
     width:62px;
     height:62px;
@@ -195,7 +208,7 @@ button{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
+    font-size:21px;
     font-weight:900;
     border:1px solid rgba(226,233,228,.8);
 }
@@ -203,23 +216,23 @@ button{
 .subject-title{
     display:block;
     color:var(--info-primary-dark);
-    font-size:22px;
-    line-height:1.16;
-    font-weight:900;
+    font-size:19px;
+    line-height:1.18;
+    font-weight:800;
     letter-spacing:0;
 }
 
 .subject-count{
     display:block;
-    margin-top:10px;
+    margin-top:6px;
     color:#5E6662;
-    font-size:15px;
+    font-size:14px;
     font-weight:500;
 }
 
 .subject-arrow{
-    width:48px;
-    height:48px;
+    width:42px;
+    height:42px;
     border-radius:50%;
     background:#F2F5F0;
     color:var(--info-primary-dark);
@@ -590,25 +603,25 @@ button{
     }
 
     .subject-card{
-        min-height:96px;
-        grid-template-columns:64px 1fr 42px;
-        padding:14px 16px;
-        gap:12px;
+        min-height:86px;
+        grid-template-columns:56px 1fr 38px;
+        padding:12px 14px;
+        gap:10px;
     }
 
     .subject-icon{
-        width:56px;
-        height:56px;
-        font-size:19px;
+        width:48px;
+        height:48px;
+        font-size:17px;
     }
 
     .subject-title{
-        font-size:18px;
+        font-size:16px;
     }
 
     .subject-count{
-        margin-top:7px;
-        font-size:14px;
+        margin-top:5px;
+        font-size:13px;
     }
 
     .subject-arrow{
@@ -1040,6 +1053,10 @@ button{
 </script>
 </body>
 </html>
+
+
+
+
 
 
 

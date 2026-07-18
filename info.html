@@ -11,27 +11,35 @@
 
 <style>
 :root{
-    --info-primary:#6B8F71;
-    --info-primary-dark:#1F5B3E;
-    --info-gold:#D6AA45;
-    --info-cream:#F8FBF8;
-    --info-soft:#EEF5F1;
-    --info-card:#FFFFFF;
-    --info-text:#1F2A27;
-    --info-muted:#69766F;
-    --info-border:#E2E9E4;
-    --info-shadow:0 14px 34px rgba(47,58,54,.12);
+    --primary:#5A7D76;
+    --primary-dark:#2F5A43;
+    --accent:#D9A441;
+    --cream:#EEF5F0;
+    --white:#FFFFFF;
+    --text:#1F2A27;
+    --muted:#6B7772;
+    --border:#DDECE1;
+    --shadow:0 12px 30px rgba(47,58,54,.12);
+    --nav-height:58px;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
     margin:0;
     min-height:100%;
-    background:#F6F8F7;
-    color:var(--info-text);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--cream);
+    color:var(--text);
 }
 
 button{
     font-family:inherit;
+    border:none;
+    cursor:pointer;
 }
 
 .info-page{
@@ -39,22 +47,22 @@ button{
     max-width:520px;
     min-height:100vh;
     margin:0 auto;
-    padding:0 26px 96px;
-    background:linear-gradient(180deg,#F8FBF8 0%,#FFFDF7 62%,#FFFFFF 100%);
+    padding:0 14px 0;
+    background:linear-gradient(180deg,#EEF5F0 0%,#F8FBF8 55%,#FFFFFF 100%);
 }
 
+/* HEADER */
 .info-header{
-    margin:0 -26px 26px;
-    min-height:166px;
-    padding:22px 16px 44px;
-    color:#FFFFFF;
+    margin:0 -14px 28px;
+    padding:34px 28px 52px;
     background:
-        radial-gradient(circle at 76% 4%,rgba(255,255,255,.16),transparent 34%),
-        linear-gradient(135deg,#6B8F71 0%,#4F6F5A 100%);
-    border-radius:0 0 22px 22px;
+        radial-gradient(circle at top right,rgba(255,255,255,.18),transparent 38%),
+        linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border-radius:0 0 30px 30px;
+    color:#fff;
     position:relative;
     overflow:hidden;
-    box-shadow:0 10px 28px rgba(47,58,54,.16);
+    box-shadow:0 10px 26px rgba(47,58,54,.14);
 }
 
 .info-header::after{
@@ -62,689 +70,447 @@ button{
     position:absolute;
     left:-12%;
     right:-12%;
-    bottom:-34px;
-    height:62px;
-    background:#FFFDF7;
+    bottom:-38px;
+    height:70px;
+    background:#F8FBF8;
     border-radius:50% 50% 0 0;
+    opacity:.95;
 }
 
 .info-header-top{
     position:relative;
     z-index:2;
     display:flex;
-    align-items:flex-start;
     justify-content:space-between;
-    gap:18px;
+    align-items:flex-start;
+    gap:16px;
 }
 
 .info-title h1{
     margin:0;
-    font-size:30px;
+    font-size:38px;
     line-height:1;
     font-weight:900;
-    letter-spacing:0;
-    color:#FFFFFF;
-    text-shadow:0 4px 12px rgba(0,0,0,.12);
+    letter-spacing:-1px;
 }
 
 .info-title p{
     margin:8px 0 0;
-    font-size:13px;
-    line-height:1.25;
-    color:rgba(255,255,255,.92);
+    font-size:14px;
+    opacity:.92;
 }
 
-.info-status-badge{
-    min-width:132px;
-    padding:10px 12px;
-    border-radius:16px;
-    border:1px solid #F0DDAE;
-    background:linear-gradient(180deg,#FFFDF7,#FFF6DF);
+.status-badge{
+    min-width:138px;
+    background:#FFF8E8;
     color:#6F4510;
+    border:1px solid #F2DCA7;
+    border-radius:18px;
+    padding:10px 12px;
     text-align:center;
-    box-shadow:0 14px 28px rgba(17,24,39,.17);
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
 }
 
-.info-status-badge b{
+.status-badge b{
     display:block;
     font-size:15px;
     line-height:1.1;
-    font-weight:900;
 }
 
-.info-status-badge small{
+.status-badge small{
     display:block;
-    margin-top:5px;
+    margin-top:4px;
     font-size:11px;
     color:#7B5A25;
-    line-height:1.1;
 }
 
-.info-status-badge.expired{
-    cursor:pointer;
+/* RESOURCE CARDS */
+.info-card{
+    background:#fff;
+    border:1px solid rgba(221,236,225,.9);
+    border-radius:26px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
 }
 
-.info-section-title{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin:8px 0 18px;
-    color:var(--info-primary-dark);
-}
-
-.info-section-title::before{
+.info-card::after{
     content:"";
-    width:5px;
-    height:26px;
-    border-radius:999px;
-    background:var(--info-gold);
+    position:absolute;
+    right:-18px;
+    bottom:-16px;
+    width:130px;
+    height:130px;
+    background:radial-gradient(circle,rgba(90,125,118,.12) 2px,transparent 3px);
+    background-size:14px 14px;
+    opacity:.55;
 }
 
-.info-section-title h2{
-    margin:0;
-    font-size:27px;
-    line-height:1.1;
-    font-weight:900;
-    letter-spacing:0;
+.info-card.book::after{
+    background:radial-gradient(circle,rgba(217,164,65,.18) 2px,transparent 3px);
+    background-size:14px 14px;
 }
 
-.latest-content-wrap{
-    transition:filter .25s ease, opacity .25s ease;
+.info-card-inner{
+    position:relative;
+    z-index:2;
 }
 
-.info-page.is-expired:not(.is-premium) .latest-content-wrap{
-    filter:blur(3px);
-    opacity:.62;
-    pointer-events:none;
-    user-select:none;
-}
-
-.subject-list{
+.info-card-top{
     display:grid;
+    grid-template-columns:92px 1fr 38px;
     gap:14px;
+    align-items:start;
 }
 
-.subject-card{
-    width:100%;
-    min-height:112px;
-    border:1px solid rgba(226,233,228,.95);
-    border-radius:20px;
-    background:rgba(255,255,255,.96);
-    box-shadow:var(--info-shadow);
-    display:grid;
-    grid-template-columns:78px 1fr 50px;
-    align-items:center;
-    gap:14px;
-    padding:16px 20px;
-    color:var(--info-text);
-    text-align:left;
-    transition:transform .18s ease, box-shadow .18s ease;
-}
-
-.subject-card:active{
-    transform:scale(.985);
-}
-
-.subject-icon,
-.help-icon{
-    width:62px;
-    height:62px;
+.info-art{
+    width:92px;
+    height:92px;
     border-radius:50%;
     background:linear-gradient(135deg,#EEF5F1,#F8FBF8);
-    color:var(--info-primary-dark);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
+    font-size:46px;
+    box-shadow:inset 0 0 0 1px rgba(221,236,225,.8);
+}
+
+.info-card.book .info-art{
+    background:linear-gradient(135deg,#FFF8E8,#F8FBF8);
+}
+
+.info-card h2{
+    margin:2px 0 12px;
+    font-size:23px;
+    line-height:1.1;
+    color:var(--primary-dark);
     font-weight:900;
-    border:1px solid rgba(226,233,228,.8);
+    letter-spacing:-.3px;
 }
 
-.subject-title{
-    display:block;
-    color:var(--info-primary-dark);
-    font-size:22px;
-    line-height:1.16;
-    font-weight:900;
-    letter-spacing:0;
+.info-list{
+    display:grid;
+    gap:10px;
 }
 
-.subject-count{
-    display:block;
-    margin-top:10px;
-    color:#5E6662;
-    font-size:15px;
-    font-weight:500;
+.info-list-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text);
+    font-size:14px;
 }
 
-.subject-arrow{
-    width:48px;
-    height:48px;
+.info-list-item span{
+    width:26px;
+    height:26px;
+    border-radius:9px;
+    background:#EEF5F1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    color:var(--primary-dark);
+    flex:0 0 auto;
+}
+
+.arrow-circle{
+    width:38px;
+    height:38px;
     border-radius:50%;
-    background:#F2F5F0;
-    color:var(--info-primary-dark);
+    background:#F3F7F3;
+    color:var(--primary-dark);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:34px;
-    font-weight:800;
-    line-height:1;
-}
-
-.help-card{
-    margin-top:26px;
-    padding:26px 18px 24px;
-    border-radius:22px;
-    border:1px solid rgba(226,233,228,.95);
-    background:rgba(255,255,255,.96);
-    box-shadow:var(--info-shadow);
-}
-
-.help-card h2{
-    margin:0;
-    text-align:center;
-    color:var(--info-primary-dark);
     font-size:24px;
-    line-height:1.15;
     font-weight:900;
 }
 
-.help-divider{
-    width:40px;
-    height:3px;
-    margin:16px auto 22px;
-    border-radius:999px;
-    background:var(--info-gold);
+.info-open-btn{
+    width:100%;
+    height:50px;
+    margin-top:18px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    font-size:17px;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    box-shadow:0 10px 22px rgba(47,90,67,.22);
+}
+
+.info-open-btn:active{
+    transform:scale(.98);
+}
+
+/* HELP CARD */
+.help-card{
+    background:linear-gradient(135deg,#FBFDFB,#F6FAF6);
+    border:1px solid #DCE9D6;
+    border-radius:22px;
+    padding:12px 12px 10px;
+    margin-bottom:58px;
+    box-shadow:0 8px 22px rgba(47,58,54,.08);
+}
+
+.help-card h3{
+    margin:0 0 10px;
+    text-align:center;
+    color:var(--primary-dark);
+    font-size:16px;
+    font-weight:900;
 }
 
 .help-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:0;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
 }
 
 .help-item{
     text-align:center;
-    padding:0 10px;
-    position:relative;
-}
-
-.help-item + .help-item{
-    border-left:1px solid #E2E9E4;
+    padding:3px 2px;
 }
 
 .help-icon{
-    width:56px;
-    height:56px;
-    margin:0 auto 14px;
-    font-size:19px;
-}
-
-.help-item p{
-    margin:0;
-    color:#1F2A27;
-    font-size:14px;
-    line-height:1.42;
-}
-
-.info-note{
-    margin:20px 0 0;
-    min-height:52px;
-    padding:14px 18px;
-    border:1px solid #E2E9E4;
-    border-radius:16px;
-    background:linear-gradient(135deg,#EEF5F1,#F8FBF8);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    color:#525E57;
-    font-size:15px;
-    line-height:1.4;
-    text-align:center;
-}
-
-.info-note-mark{
-    color:var(--info-gold);
-    font-size:22px;
-    line-height:1;
-}
-
-.info-modal{
-    position:fixed;
-    inset:0;
-    z-index:11900;
-    background:rgba(23,35,31,.52);
-    backdrop-filter:blur(5px);
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
-    padding:0;
-}
-
-.info-modal.show{
-    display:flex;
-}
-
-.info-modal-card{
-    width:100%;
-    max-width:520px;
-    max-height:88vh;
-    background:#FFFDF7;
-    border-radius:26px 26px 0 0;
-    box-shadow:0 -20px 58px rgba(17,24,39,.28);
-    border:1px solid #E2E9E4;
-    overflow:hidden;
-    animation:infoModalUp .24s ease both;
-}
-
-@keyframes infoModalUp{
-    from{ transform:translateY(26px); opacity:.5; }
-    to{ transform:translateY(0); opacity:1; }
-}
-
-.info-modal-head{
-    padding:18px 18px 14px;
-    background:linear-gradient(135deg,#FFFFFF,#FFF8EA);
-    border-bottom:1px solid #E2E9E4;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:14px;
-}
-
-.info-modal-title h2{
-    margin:0;
-    color:var(--info-primary-dark);
-    font-size:22px;
-    line-height:1.15;
-    font-weight:900;
-}
-
-.info-modal-title p{
-    margin:6px 0 0;
-    color:var(--info-muted);
-    font-size:13px;
-}
-
-.info-modal-close{
-    width:42px;
-    height:42px;
-    border-radius:14px;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    margin:0 auto 5px;
     background:#EEF5F1;
-    color:var(--info-primary-dark);
-    font-size:26px;
-    line-height:1;
-}
-
-.info-modal-body{
-    max-height:calc(88vh - 84px);
-    overflow-y:auto;
-    padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));
-}
-
-.info-loading,
-.info-empty{
-    min-height:180px;
     display:flex;
     align-items:center;
     justify-content:center;
-    text-align:center;
-    color:#6B756E;
-    line-height:1.5;
-    font-weight:700;
-}
-
-.question-card{
-    background:#FFFFFF;
-    border:1px solid #E2E9E4;
-    border-radius:18px;
-    padding:16px;
-    margin-bottom:14px;
-    box-shadow:0 8px 22px rgba(47,58,54,.08);
-}
-
-.question-meta{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:12px;
-}
-
-.question-count{
-    display:inline-flex;
-    align-items:center;
-    min-height:30px;
-    padding:6px 12px;
-    border-radius:999px;
-    background:#EEF5F1;
-    color:var(--info-primary-dark);
-    font-size:13px;
-    font-weight:900;
-}
-
-.question-badge{
-    display:inline-flex;
-    min-height:30px;
-    align-items:center;
-    justify-content:center;
-    padding:6px 12px;
-    border-radius:999px;
-    background:#FFF8EA;
-    color:#7B5A25;
-    font-size:12px;
-    font-weight:900;
-    text-align:right;
-}
-
-.question-text{
-    margin:0 0 14px;
-    color:#17211D;
     font-size:17px;
-    line-height:1.48;
-    font-weight:850;
 }
 
-.option-list{
-    display:grid;
-    gap:9px;
-    margin-bottom:14px;
-}
-
-.option-item{
-    display:grid;
-    grid-template-columns:30px 1fr;
-    gap:10px;
-    align-items:start;
-    padding:11px 12px;
-    border-radius:14px;
-    background:#F8FBF8;
-    border:1px solid #E2E9E4;
-    color:#27342E;
-    line-height:1.42;
-}
-
-.option-key{
-    width:30px;
-    height:30px;
-    border-radius:10px;
-    background:#EEF5F1;
-    color:var(--info-primary-dark);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:900;
-}
-
-.answer-box,
-.explanation-box{
-    border-radius:15px;
-    padding:12px 14px;
-    margin-top:10px;
-    line-height:1.48;
-}
-
-.answer-box{
-    background:#EAF5ED;
-    border:1px solid #CFE2D5;
-    color:#1F5B3E;
-}
-
-.explanation-box{
-    background:#FFF8EA;
-    border:1px solid #EAD8A6;
-    color:#60471D;
-}
-
-.answer-box small,
-.explanation-box small{
+.help-item b{
     display:block;
-    margin-bottom:5px;
-    color:#6B756E;
-    font-weight:700;
+    font-size:12px;
+    color:var(--primary-dark);
+    margin-bottom:1px;
 }
 
-.answer-box b,
-.explanation-box span{
-    font-size:15px;
-    font-weight:800;
+.help-item small{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.15;
 }
 
-.info-bottom-nav{
+/* BOTTOM NAV */
+.home-bottom-nav{
     position:fixed;
     left:50%;
-    bottom:max(0px,env(safe-area-inset-bottom));
+    bottom:0;
     transform:translateX(-50%);
     width:100%;
     max-width:520px;
-    height:74px;
-    padding:6px 6px max(8px,env(safe-area-inset-bottom));
-    background:#FFFFFF;
-    border-top:1px solid #E2E9E4;
-    box-shadow:0 -8px 24px rgba(47,58,54,.08);
+    height:58px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    box-shadow:0 -8px 24px rgba(47,58,54,.10);
     display:grid;
     grid-template-columns:repeat(4,1fr);
     z-index:9000;
+    padding:4px 6px;
 }
 
-.info-bottom-nav button{
+.home-bottom-nav button{
     background:transparent;
-    color:#444C48;
+    color:var(--muted);
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:4px;
+    gap:1px;
     border-radius:14px;
-    font-size:12px;
-    font-weight:600;
+    font-size:11px;
+    font-weight:700;
 }
 
-.info-bottom-nav button.active{
-    color:var(--info-primary-dark);
-    background:#EEF5F1;
-}
-
-.nav-icon{
-    width:28px;
-    height:28px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
+.home-bottom-nav button span{
+    font-size:20px;
     line-height:1;
 }
 
-@media(max-width:430px){
-    .info-page{
-        padding:0 16px 96px;
-    }
+.home-bottom-nav button.active{
+    background:#EEF5F1;
+    color:var(--primary-dark);
+}
 
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:76px;
+    transform:translateX(-50%) translateY(20px);
+    max-width:420px;
+    width:calc(100% - 32px);
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:12px 16px;
+    border-radius:16px;
+    box-shadow:0 12px 28px rgba(0,0,0,.18);
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s ease;
+    z-index:9999;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:380px){
     .info-header{
-        margin:0 -16px 24px;
-        min-height:166px;
-        padding:22px 16px 44px;
+        padding:28px 20px 46px;
     }
 
     .info-title h1{
-        font-size:30px;
+        font-size:34px;
     }
 
-    .info-title p{
-        font-size:14px;
+    .status-badge{
+        min-width:126px;
+        padding:9px 10px;
     }
 
-    .info-status-badge{
-        min-width:132px;
-        padding:10px 12px;
-        border-radius:18px;
+    .info-card{
+        padding:15px;
     }
 
-    .info-status-badge b{
-        font-size:15px;
-    }
-
-    .info-status-badge small{
-        font-size:11px;
-        margin-top:5px;
-    }
-
-    .subject-card{
-        min-height:96px;
-        grid-template-columns:64px 1fr 42px;
-        padding:14px 16px;
+    .info-card-top{
+        grid-template-columns:76px 1fr 34px;
         gap:12px;
     }
 
-    .subject-icon{
-        width:56px;
-        height:56px;
-        font-size:19px;
+    .info-art{
+        width:76px;
+        height:76px;
+        font-size:38px;
     }
 
-    .subject-title{
-        font-size:18px;
-    }
-
-    .subject-count{
-        margin-top:7px;
-        font-size:14px;
-    }
-
-    .subject-arrow{
-        width:40px;
-        height:40px;
-        font-size:27px;
-    }
-
-    .help-card{
-        padding:22px 14px 18px;
-    }
-
-    .help-card h2{
+    .info-card h2{
         font-size:20px;
     }
 
-    .help-grid{
-        grid-template-columns:repeat(2,1fr);
-        row-gap:18px;
-    }
-
-    .help-item:nth-child(3){
-        border-left:none;
-    }
-
-    .info-note{
+    .info-list-item{
         font-size:13px;
-    }
-}
-
-@media(max-width:360px){
-    .info-header-top{
-        gap:10px;
-    }
-
-    .info-title h1{
-        font-size:28px;
-    }
-
-    .info-status-badge{
-        min-width:118px;
-    }
-
-    .subject-title{
-        font-size:15px;
     }
 }
 </style>
 </head>
 
 <body>
-<main id="infoPage" class="info-page">
+
+<main class="info-page">
+
     <header class="info-header">
         <div class="info-header-top">
             <div class="info-title">
                 <h1>Info</h1>
                 <p>Your TET Guru</p>
             </div>
-            <div id="infoStatusBadge" class="info-status-badge">
+
+            <div id="statusBadge" class="status-badge">
                 <b>Trial Version</b>
                 <small>Loading...</small>
             </div>
         </div>
     </header>
 
-    <section class="latest-content-wrap" id="latestContentWrap" aria-label="Latest Content">
-        <div class="info-section-title">
-            <h2>Latest Content</h2>
-        </div>
+    <section class="info-card">
+        <div class="info-card-inner">
+            <div class="info-card-top">
+                <div class="info-art">📖</div>
 
-        <div class="subject-list">
-            <button class="subject-card" type="button" data-subject="Bengali">
-                <span class="subject-icon">Bn</span>
-                <span><b class="subject-title">Bengali Latest Content</b><small class="subject-count">30 Questions</small></span>
-                <span class="subject-arrow">&rsaquo;</span>
-            </button>
+                <div>
+                    <h2>Previous TET Questions</h2>
 
-            <button class="subject-card" type="button" data-subject="English">
-                <span class="subject-icon">En</span>
-                <span><b class="subject-title">English Latest Content</b><small class="subject-count">30 Questions</small></span>
-                <span class="subject-arrow">&rsaquo;</span>
-            </button>
+                    <div class="info-list">
+                        <div class="info-list-item"><span>▣</span>Year-wise question bank</div>
+                        <div class="info-list-item"><span>⌕</span>Search and bookmark</div>
+                        <div class="info-list-item"><span>☆</span>Important questions</div>
+                    </div>
+                </div>
 
-            <button class="subject-card" type="button" data-subject="Mathematics">
-                <span class="subject-icon">M</span>
-                <span><b class="subject-title">Mathematics Latest Content</b><small class="subject-count">30 Questions</small></span>
-                <span class="subject-arrow">&rsaquo;</span>
-            </button>
+                <div class="arrow-circle">›</div>
+            </div>
 
-            <button class="subject-card" type="button" data-subject="CDP">
-                <span class="subject-icon">C</span>
-                <span><b class="subject-title">CDP Latest Content</b><small class="subject-count">30 Questions</small></span>
-                <span class="subject-arrow">&rsaquo;</span>
-            </button>
-
-            <button class="subject-card" type="button" data-subject="EVS">
-                <span class="subject-icon">EV</span>
-                <span><b class="subject-title">EVS Latest Content</b><small class="subject-count">30 Questions</small></span>
-                <span class="subject-arrow">&rsaquo;</span>
+            <button id="openQuestionsBtn" class="info-open-btn" type="button">
+                Open Questions <span>→</span>
             </button>
         </div>
     </section>
 
-    <section class="help-card" aria-label="How Latest Content Helps You">
-        <h2>How Latest Content Helps You</h2>
-        <div class="help-divider" aria-hidden="true"></div>
+    <section class="info-card book">
+        <div class="info-card-inner">
+            <div class="info-card-top">
+                <div class="info-art">📚</div>
+
+                <div>
+                    <h2>Digital Text Book</h2>
+
+                    <div class="info-list">
+                        <div class="info-list-item"><span>📘</span>Subject-wise study notes</div>
+                        <div class="info-list-item"><span>▯</span>Bookmark and continue</div>
+                        <div class="info-list-item"><span>◷</span>Continue reading anytime</div>
+                    </div>
+                </div>
+
+                <div class="arrow-circle">›</div>
+            </div>
+
+            <button id="openTextBookBtn" class="info-open-btn" type="button">
+                Open Text Book <span>→</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="help-card">
+        <h3>How TET Success Helps You</h3>
+
         <div class="help-grid">
-            <div class="help-item"><div class="help-icon">R</div><p>Read updated subject-wise questions</p></div>
-            <div class="help-item"><div class="help-icon">T</div><p>Revise important exam topics</p></div>
-            <div class="help-item"><div class="help-icon">A</div><p>Practice with clear answers</p></div>
-            <div class="help-item"><div class="help-icon">S</div><p>Cover all subjects and chapters</p></div>
+            <div class="help-item">
+                <div class="help-icon">🔍</div>
+                <b>Search</b>
+                <small>Find topics instantly</small>
+            </div>
+
+            <div class="help-item">
+                <div class="help-icon">🔖</div>
+                <b>Bookmark</b>
+                <small>Save important items</small>
+            </div>
+
+            <div class="help-item">
+                <div class="help-icon">📖</div>
+                <b>Continue</b>
+                <small>Pick up where left</small>
+            </div>
         </div>
-        <div class="info-note"><span class="info-note-mark">*</span><span>Follow the tasks regularly and prepare for WB TET happily.</span></div>
     </section>
+
 </main>
 
-<nav class="info-bottom-nav" aria-label="Bottom navigation">
-    <button type="button" data-nav-url="home2.html"><span class="nav-icon">🏠</span>Home</button>
-    <button class="active" type="button" aria-current="page"><span class="nav-icon">ℹ️</span>Info</button>
-    <button type="button" data-nav-url="learn.html"><span class="nav-icon">📖</span>Learn</button>
-    <button type="button" data-nav-url="profile.html"><span class="nav-icon">👤</span>Profile</button>
+<nav class="home-bottom-nav">
+    <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
+    <button class="active" type="button"><span>ℹ️</span>Info</button>
+    <button type="button" data-page="learn.html"><span>📖</span>Learn</button>
+    <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
 </nav>
 
-<div id="infoSubjectModal" class="info-modal" aria-hidden="true">
-    <section class="info-modal-card" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
-        <div class="info-modal-head">
-            <div class="info-modal-title">
-                <h2 id="infoModalTitle">Latest Content</h2>
-                <p id="infoModalSubtitle">30 Questions</p>
-            </div>
-            <button id="infoModalClose" class="info-modal-close" type="button" aria-label="Close">&times;</button>
-        </div>
-        <div id="infoModalBody" class="info-modal-body"></div>
-    </section>
-</div>
+<div id="toast" class="toast"></div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -756,292 +522,207 @@ button{
 (function(){
     "use strict";
 
-    const SUBJECTS = ["Bengali","English","Mathematics","CDP","EVS"];
-    const INFO_GROUP = "Info";
-    const INFO_LEVEL = 1;
-    const MAX_QUESTIONS = 30;
+    const DEFAULT_TRIAL_TEXT = "Loading...";
+    let toastTimer = null;
 
-    let currentUser = null;
-    let currentStatus = null;
-    let currentBadgeModel = null;
+    function showToast(message){
+        const toast = document.getElementById("toast");
+        if(!toast) return;
 
-    const page = document.getElementById("infoPage");
-    const badge = document.getElementById("infoStatusBadge");
-    const modal = document.getElementById("infoSubjectModal");
-    const modalTitle = document.getElementById("infoModalTitle");
-    const modalSubtitle = document.getElementById("infoModalSubtitle");
-    const modalBody = document.getElementById("infoModalBody");
-    const modalClose = document.getElementById("infoModalClose");
+        toast.textContent = message;
+        toast.classList.add("show");
 
-    function safeText(value){
-        if (typeof escapeHTML === "function") return escapeHTML(value);
-        return String(value ?? "").replace(/[&<>"']/g, function(char){
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[char];
-        });
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){
+            toast.classList.remove("show");
+        },2500);
     }
 
-    function toast(message,type){
-        if (typeof showToast === "function") showToast(message,type || "info");
-    }
-
-    function normalizeSubject(subject){
-        return String(subject || "").trim().toLowerCase().replace(/[^a-z0-9]+/g,"_");
-    }
-
-    function getInfoCacheVersion(){
-        try {
-            const settingVersion = typeof getAppSetting === "function" ? getAppSetting("question_bank_version", null) : null;
-            return String(settingVersion || CONFIG?.QUESTION_BANK_VERSION || CONFIG?.APP_VERSION || "1");
-        } catch {
-            return "1";
+    function getConfigValue(key,fallback){
+        try{
+            return window.CONFIG && CONFIG[key] ? CONFIG[key] : fallback;
+        }catch(e){
+            return fallback;
         }
     }
 
-    function getInfoCacheKey(subject){
-        return "info_latest_" + getInfoCacheVersion() + "_" + normalizeSubject(subject);
-    }
-
-    function loadInfoCache(subject){
-        try {
-            const raw = localStorage.getItem(getInfoCacheKey(subject));
-            if (!raw) return null;
-            const parsed = JSON.parse(raw);
-            const questions = Array.isArray(parsed?.questions) ? parsed.questions : [];
-            if (!questions.length) return null;
-            return questions;
-        } catch {
-            return null;
+    function getTableName(key,fallback){
+        try{
+            return window.CONFIG && CONFIG.TABLES && CONFIG.TABLES[key] ? CONFIG.TABLES[key] : fallback;
+        }catch(e){
+            return fallback;
         }
     }
 
-    function saveInfoCache(subject,questions){
-        if (!Array.isArray(questions) || !questions.length) return false;
-        try {
-            localStorage.setItem(getInfoCacheKey(subject), JSON.stringify({
-                version:getInfoCacheVersion(),
-                subject:subject,
-                saved_at:Date.now(),
-                questions:questions
-            }));
-            return true;
-        } catch {
-            return false;
-        }
-    }
+    function getStoredUser(){
+        try{
+            const keys = ["tet_user","tetUser","TET_USER","user","currentUser"];
 
-    function getSessionUser(){
-        try {
-            if (typeof getUserSession === "function") return getUserSession();
-        } catch {}
+            for(const key of keys){
+                const value = localStorage.getItem(key);
+                if(value){
+                    try{
+                        return JSON.parse(value);
+                    }catch(e){
+                        return { phone:value };
+                    }
+                }
+            }
+        }catch(e){}
+
         return null;
     }
 
-    async function ensureAppSettings(){
-        try {
-            if (typeof isAppSettingsLoaded === "function" && isAppSettingsLoaded()) return true;
-            if (typeof loadTetAppSettings === "function") return await loadTetAppSettings();
-        } catch (error) {
-            console.warn("Info app settings skipped", error);
-        }
-        return false;
+    function redirectLogin(){
+        window.location.replace(getConfigValue("LOGIN_PAGE","index.html"));
     }
 
-    async function loadTrialStatus(user){
-        if (!user || !window.supabase || !CONFIG?.TABLES?.TRIAL_PREMIUM) return null;
-
-        const userId = user.id || user.user_id || null;
-        const phone = user.phone || user.mobile || user.phone_number || user.user_phone || null;
-
-        try {
-            let query = supabase.from(CONFIG.TABLES.TRIAL_PREMIUM).select("*").limit(1);
-            if (userId) query = query.eq("user_id", userId);
-            else if (phone) query = query.eq("phone", phone);
-            else return null;
-
-            const { data, error } = await query.maybeSingle();
-            if (error) throw error;
-            return data || null;
-        } catch (error) {
-            console.warn("Info trial status load failed", error);
-            return null;
-        }
-    }
-
-    function applyPremiumState(){
-        if (typeof renderTrialPremiumBadge === "function") {
-            currentBadgeModel = renderTrialPremiumBadge(badge,currentStatus,currentUser,{mode:"end"});
-        } else {
-            currentBadgeModel = { state:"trial" };
-        }
-
-        const isPremium = typeof isPremiumStatus === "function" && isPremiumStatus(currentStatus,currentUser);
-        const isExpired = currentBadgeModel && currentBadgeModel.state === "expired";
-
-        page.classList.toggle("is-premium", !!isPremium);
-        page.classList.toggle("is-expired", !!isExpired && !isPremium);
-    }
-
-    function showModal(subject){
-        modalTitle.textContent = subject + " Latest Content";
-        modalSubtitle.textContent = "30 Questions";
-        modalBody.innerHTML = '<div class="info-loading">Loading latest content...</div>';
-        modal.classList.add("show");
-        modal.setAttribute("aria-hidden","false");
-    }
-
-    function closeModal(){
-        modal.classList.remove("show");
-        modal.setAttribute("aria-hidden","true");
-        modalBody.innerHTML = "";
-    }
-
-    function getQuestionId(item,index){
-        return item.id || item.question_id || item.question_no || (index + 1);
-    }
-
-    function getAnswerText(item){
-        return item.correct_answer_text || item.correct_answer || item.answer_text || item.answer || item.correct_option || "";
-    }
-
-    function getExplanation(item){
-        return item.short_explanation || item.explanation || item.answer_explanation || "";
-    }
-
-    function getChapter(item){
-        return item.chapter || item.chapter_name || item.concept || "Latest Content";
-    }
-
-    function renderQuestions(subject,questions){
-        if (!Array.isArray(questions) || !questions.length) {
-            modalBody.innerHTML = '<div class="info-empty">Latest content is being updated.<br>Please check again soon.</div>';
-            return;
-        }
-
-        modalBody.innerHTML = questions.slice(0,MAX_QUESTIONS).map(function(item,index){
-            const no = item.question_no || item.question_number || (index + 1);
-            const question = item.question_text || item.question || "Question text is being updated.";
-            const options = [
-                ["A", item.option_a || item.optionA || ""],
-                ["B", item.option_b || item.optionB || ""],
-                ["C", item.option_c || item.optionC || ""],
-                ["D", item.option_d || item.optionD || ""]
-            ].filter(function(option){ return String(option[1] || "").trim(); });
-            const answer = getAnswerText(item);
-            const explanation = getExplanation(item);
-            const chapter = getChapter(item);
-
-            return '<article class="question-card" data-question-id="' + safeText(getQuestionId(item,index)) + '">' +
-                '<div class="question-meta">' +
-                    '<span class="question-count">Question ' + safeText(no) + ' of 30</span>' +
-                    '<span class="question-badge">' + safeText(subject) + ' / ' + safeText(chapter) + '</span>' +
-                '</div>' +
-                '<p class="question-text">' + safeText(question) + '</p>' +
-                '<div class="option-list">' + options.map(function(option){
-                    return '<div class="option-item"><span class="option-key">' + option[0] + '</span><span>' + safeText(option[1]) + '</span></div>';
-                }).join("") + '</div>' +
-                '<div class="answer-box"><small>Correct Answer</small><b>' + safeText(answer || "Answer is being updated.") + '</b></div>' +
-                (explanation ? '<div class="explanation-box"><small>Short Explanation</small><span>' + safeText(explanation) + '</span></div>' : '') +
-            '</article>';
-        }).join("");
-    }
-
-    async function fetchQuestionsFromSupabase(subject,useActiveColumn){
-        let query = supabase
-            .from(CONFIG.TABLES.LEARN_QUESTIONS)
-            .select("*")
-            .eq("group_name", INFO_GROUP)
-            .eq("level_no", INFO_LEVEL)
-            .eq("subject", subject)
-            .order("question_no", { ascending:true })
-            .limit(MAX_QUESTIONS);
-
-        if (useActiveColumn) query = query.eq("is_active", true);
-        else query = query.eq("status", "active");
-
-        const { data, error } = await query;
-        if (error) throw error;
-        return Array.isArray(data) ? data : [];
-    }
-
-    async function loadSubjectContent(subject){
-        if (currentBadgeModel && currentBadgeModel.state === "expired") {
-            if (typeof showGlobalPremiumEntry === "function") showGlobalPremiumEntry(currentStatus,currentUser);
-            return;
-        }
-
-        showModal(subject);
-
-        const cached = loadInfoCache(subject);
-        if (cached) {
-            renderQuestions(subject,cached);
-            return;
-        }
-
-        if (!window.supabase || !CONFIG?.TABLES?.LEARN_QUESTIONS) {
-            renderQuestions(subject,[]);
-            toast("Latest content is not available now", "warning");
-            return;
-        }
-
-        try {
-            let questions = [];
-            try {
-                questions = await fetchQuestionsFromSupabase(subject,true);
-            } catch (error) {
-                const message = String(error?.message || "").toLowerCase();
-                if (!message.includes("is_active") && !message.includes("column")) throw error;
-                questions = await fetchQuestionsFromSupabase(subject,false);
+    async function checkSession(){
+        try{
+            if(window.TETApp && typeof TETApp.getUserSession === "function"){
+                const user = TETApp.getUserSession();
+                if(user) return user;
             }
 
-            if (questions.length) saveInfoCache(subject,questions);
-            renderQuestions(subject,questions);
-        } catch (error) {
-            console.warn("Info latest content load failed", error);
-            renderQuestions(subject,[]);
-            toast("Latest content is being updated", "warning");
+            if(typeof getUserSession === "function"){
+                const user = getUserSession();
+                if(user) return user;
+            }
+
+            if(window.supabaseClient && supabaseClient.auth){
+                const result = await supabaseClient.auth.getSession();
+                if(result && result.data && result.data.session){
+                    return result.data.session.user;
+                }
+            }
+
+            const storedUser = getStoredUser();
+            if(storedUser) return storedUser;
+        }catch(error){
+            console.warn("Info session check failed",error);
         }
+
+        return null;
     }
 
-    function bindEvents(){
-        document.querySelectorAll(".subject-card[data-subject]").forEach(function(button){
-            button.addEventListener("click", function(){
-                loadSubjectContent(button.dataset.subject);
-            });
-        });
+    async function loadStatus(user){
+        const badge = document.getElementById("statusBadge");
+        if(!badge) return;
 
-        modalClose.addEventListener("click", closeModal);
-        modal.addEventListener("click", function(event){
-            if (event.target === modal) closeModal();
-        });
+        let row = null;
 
-        document.querySelectorAll(".info-bottom-nav [data-nav-url]").forEach(function(button){
-            button.addEventListener("click", function(event){
-                event.preventDefault();
-                if (typeof navigateTo === "function") navigateTo(button.dataset.navUrl);
-                else window.location.href = button.dataset.navUrl;
-            });
-        });
-    }
+        try{
+            const tableName = getTableName("TRIAL_PREMIUM","");
 
-    async function init(){
-        currentUser = getSessionUser();
-        if (!currentUser) {
-            window.location.href = CONFIG?.LOGIN_PAGE || "index.html";
+            if(window.supabaseClient && tableName){
+                const phone = user && (user.phone || user.mobile || user.user_phone || user.phone_number);
+                const userId = user && (user.id || user.user_id);
+
+                let query = supabaseClient.from(tableName).select("*").limit(1);
+
+                if(userId){
+                    query = query.eq("user_id",userId);
+                }else if(phone){
+                    query = query.eq("phone",phone);
+                }else{
+                    query = null;
+                }
+
+                if(query){
+                    const res = await query.maybeSingle();
+                    if(res && res.data) row = res.data;
+                }
+            }
+        }catch(error){
+            console.warn("Status load failed",error);
+        }
+
+        if(typeof renderTrialPremiumBadge === "function"){
+            renderTrialPremiumBadge(badge,row,user,{mode:"end"});
             return;
         }
 
-        await ensureAppSettings();
-        currentStatus = await loadTrialStatus(currentUser);
-        applyPremiumState();
-        bindEvents();
+        badge.innerHTML = "<b>Trial Version</b><small>Ends " + formatDate(user?.created_at) + "</small>";
     }
 
-    document.addEventListener("DOMContentLoaded", init);
+    function formatTrialText(value){
+        if(!value) return DEFAULT_TRIAL_TEXT;
+        if(String(value).toLowerCase().includes("end")) return value;
+        return "Ends " + formatDate(value);
+    }
+
+    function formatDate(value){
+        if(!value) return "";
+
+        try{
+            const date = new Date(value);
+            if(!isNaN(date.getTime())){
+                return date.toLocaleDateString("en-GB",{
+                    day:"2-digit",
+                    month:"short",
+                    year:"numeric"
+                }).replace(/ /g," ");
+            }
+        }catch(e){}
+
+        return value;
+    }
+
+    function bindNavigation(){
+        document.querySelectorAll(".home-bottom-nav [data-page]").forEach(function(btn){
+            btn.addEventListener("click",function(){
+                window.location.href = btn.dataset.page;
+            });
+        });
+
+        const questionBtn = document.getElementById("openQuestionsBtn");
+        if(questionBtn){
+            questionBtn.addEventListener("click",function(){
+                const page = getConfigValue("QUESTIONS_PAGE","questions.html");
+                showToast("Previous TET Questions");
+                setTimeout(function(){
+                    window.location.href = page;
+                },250);
+            });
+        }
+
+        const textBookBtn = document.getElementById("openTextBookBtn");
+        if(textBookBtn){
+            textBookBtn.addEventListener("click",function(){
+                const page = getConfigValue("TEXTBOOK_PAGE","textbook.html");
+                showToast("Digital Text Book");
+                setTimeout(function(){
+                    window.location.href = page;
+                },250);
+            });
+        }
+    }
+
+    function setupBackRule(){
+        try{
+            history.pushState(null,"",location.href);
+            window.addEventListener("popstate",function(){
+                history.pushState(null,"",location.href);
+            });
+        }catch(e){}
+    }
+
+    async function initInfoPage(){
+        const user = await checkSession();
+
+        if(!user){
+            redirectLogin();
+            return;
+        }
+
+        await loadStatus(user);
+        bindNavigation();
+        setupBackRule();
+    }
+
+    document.addEventListener("DOMContentLoaded",initInfoPage);
 })();
 </script>
+
 </body>
 </html>
-
-
-
-

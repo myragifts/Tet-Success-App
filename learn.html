@@ -653,10 +653,10 @@ body{
 (function(){
     "use strict";
 
-    const LEARN_GROUP = "Learn";
-    const LEARN_LEVEL = 1;
+    const MOCK_TABLE = "tet_mock_questions";
+    const MOCK_NO = 1;
     const MAX_QUESTIONS = 30;
-    const CACHE_PREFIX = "tet_daily_mock_cache_v1_";
+    const CACHE_PREFIX = "tet_daily_mock_questions_v1_";
     const RESULT_KEY = "tet_daily_mock_last_result_v1";
 
     let currentUser = null;
@@ -788,13 +788,12 @@ body{
         const cached = loadDailyCache();
         if (cached) return cached;
 
-        if (!window.supabase || !CONFIG?.TABLES?.LEARN_QUESTIONS) return [];
+        if (!window.supabase) return [];
 
         const { data, error } = await supabase
-            .from(CONFIG.TABLES.LEARN_QUESTIONS)
+            .from(MOCK_TABLE)
             .select("*")
-            .eq("group_name", LEARN_GROUP)
-            .eq("level_no", LEARN_LEVEL)
+            .eq("mock_no", MOCK_NO)
             .eq("status", "active")
             .eq("question_type", "mcq")
             .order("question_no", { ascending:true, nullsFirst:false })
@@ -1002,6 +1001,7 @@ body{
 </script>
 </body>
 </html>
+
 
 
 

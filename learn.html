@@ -1,188 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TET Success | Learn</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TET Success | Learn</title>
 
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon-192.png" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
 
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="learn.css" />
+<style>
+:root{
+    --learn-primary:#6B8F71;
+    --learn-primary-dark:#4F6F5A;
+    --learn-deep:#1F5B3E;
+    --learn-deeper:#0E4B31;
+    --learn-cream:#F6F8F7;
+    --learn-card:#FFFFFF;
+    --learn-soft:#EEF5F1;
+    --learn-gold:#D3A93F;
+    --learn-gold-soft:#FFF8E8;
+    --learn-border:#E3E8E5;
+    --learn-text:#2F3E36;
+    --learn-muted:#66756D;
+    --learn-shadow:0 16px 38px rgba(47,58,54,.12);
+    --learn-radius:20px;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:var(--learn-cream);
+    color:var(--learn-text);
+    font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+.learn-page{
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:0 14px calc(86px + env(safe-area-inset-bottom,0px));
+    background:
+        radial-gradient(circle at 20% 18%,rgba(221,236,225,.48),transparent 28%),
+        linear-gradient(180deg,#F6F8F7 0%,#F8F8F3 100%);
+}
+
+.learn-header{
+    margin:0 -14px 18px;
+    padding:32px 20px 30px;
+    color:#fff;
+    background:
+        radial-gradient(circle at 92% 0%,rgba(255,255,255,.18),transparent 34%),
+        linear-gradient(135deg,var(--learn-primary),var(--learn-primary-dark));
+    box-shadow:0 14px 28px rgba(47,58,54,.13);
+}
+
+.learn-header-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+}
+
+.learn-title h1{
+    margin:0;
+    font-size:34px;
+    line-height:1;
+    font-weight:900;
+    letter-spacing:0;
+    text-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+
+.learn-title p{
+    margin:9px 0 0;
+    font-size:16px;
+    color:rgba(255,255,255,.93);
+}
+
+.learn-status-badge{
+    min-width:138px;
+    padding:12px 13px;
+    border-radius:18px;
+    border:1px solid #EAD8A6;
+    background:linear-gradient(180deg,#FFFDF8,#FFF5DD);
+    color:#6F4510;
+    text-align:center;
+    box-shadow:0 12px 24px rgba(17,24,39,.16);
+}
+
+.learn-status-badge b{
+    display:block;
+    font-size:16px;
+    line-height:1.1;
+    font-weight:900;
+}
+
+.learn-status-badge small{
+    display:block;
+    margin-top:5px;
+    font-size:12px;
+    color:#7B5A25;
+}
+
+.learn-status-badge.expired{cursor:pointer}
+.learn-status-badge.premium{background:#EEF5F1;color:#1F5B3E;border-color:#CFE2D5}
+
+.learn-locked-wrap{position:relative}
+.learn-page.is-expired .learn-protected{
+    filter:blur(4px);
+    opacity:.58;
+    pointer-events:none;
+    user-select:none;
+}
+
+.mock-hero-card{
+    display:grid;
+    grid-template-columns:132px 1fr;
+    gap:18px;
+    align-items:center;
+    min-height:218px;
+    margin:0 0 16px;
+    padding:22px 20px;
+    border-radius:22px;
+    border:1.5px solid var(--learn-gold);
+    background:linear-gradient(135deg,#FFFFFF 0%,#FFFEFA 60%,#FFF8EA 100%);
+    box-shadow:var(--learn-shadow);
+}
+
+.mock-art{
+    width:122px;
+    height:122px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(180deg,#EEF5F1,#FFF8EA);
+    border:1px solid #EAD8A6;
+    box-shadow:inset 0 0 0 8px rgba(255,255,255,.55);
+    position:relative;
+}
+
+.mock-art::before{
+    content:"";
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    border:9px solid var(--learn-primary-dark);
+    box-shadow:inset 0 0 0 13px #F8FAF9,inset 0 0 0 22px var(--learn-primary-dark);
+}
+
+.mock-art::after{
+    content:"";
+    position:absolute;
+    width:58px;
+    height:9px;
+    background:linear-gradient(90deg,var(--learn-gold),#7B5A25);
+    border-radius:999px;
+    transform:rotate(-42deg) translate(12px,-12px);
+    box-shadow:0 22px 0 -2px #D3A93F;
+}
+
+.mock-hero-content h2{
+    margin:0;
+    color:var(--learn-deep);
+    font-size:29px;
+    line-height:1.08;
+    font-weight:950;
+}
+
+.mock-hero-content .mock-count{
+    display:block;
+    margin-top:9px;
+    color:var(--learn-deep);
+    font-size:20px;
+    font-weight:800;
+}
+
+.mock-hero-content p{
+    margin:13px 0 20px;
+    color:#55615C;
+    font-size:16px;
+    line-height:1.45;
+}
+
+.learn-primary-btn{
+    min-height:54px;
+    padding:0 20px;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--learn-deep),var(--learn-deeper));
+    color:#fff;
+    font-size:18px;
+    font-weight:900;
+    box-shadow:0 12px 22px rgba(31,91,62,.22);
+    transition:transform .2s ease,opacity .2s ease;
+}
+
+.learn-primary-btn:active{transform:scale(.985)}
+.learn-primary-btn:disabled{opacity:.6;box-shadow:none}
+
+.mock-rule-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+    margin-bottom:18px;
+    border:1px solid #E3D8BF;
+    border-radius:18px;
+    background:rgba(255,255,255,.9);
+    box-shadow:0 8px 22px rgba(47,58,54,.07);
+    overflow:hidden;
+}
+
+.rule-item{
+    min-height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    padding:10px 8px;
+    border-right:1px solid #E5DED0;
+}
+
+.rule-item:last-child{border-right:0}
+.rule-icon{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,var(--learn-deep),var(--learn-deeper));
+    color:#fff;
+    font-size:15px;
+    font-weight:900;
+}
+
+.rule-text b{
+    display:block;
+    color:var(--learn-text);
+    font-size:15px;
+    line-height:1.1;
+    font-weight:900;
+}
+
+.rule-text small{
+    display:block;
+    margin-top:3px;
+    color:var(--learn-muted);
+    font-size:12px;
+}
+
+.question-card,
+.result-card,
+.empty-card{
+    margin:0 0 18px;
+    padding:20px;
+    border-radius:20px;
+    background:var(--learn-card);
+    border:1px solid #DDE4DF;
+    box-shadow:0 12px 30px rgba(47,58,54,.10);
+}
+
+.question-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:10px;
+}
+
+.question-head b{
+    color:var(--learn-deep);
+    font-size:18px;
+    font-weight:950;
+}
+
+.question-percent{
+    color:var(--learn-gold);
+    font-size:18px;
+    font-weight:950;
+}
+
+.learn-progress-track{
+    height:10px;
+    border-radius:999px;
+    background:#E9E6DF;
+    overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(47,58,54,.10);
+}
+
+.learn-progress-fill{
+    width:0;
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,var(--learn-deep),var(--learn-primary-dark),var(--learn-gold));
+    transition:width .28s ease;
+}
+
+.question-text{
+    margin:22px 0 16px;
+    color:#26312D;
+    font-size:20px;
+    line-height:1.38;
+    font-weight:800;
+}
+
+.option-list{
+    display:grid;
+    gap:10px;
+}
+
+.option-btn{
+    width:100%;
+    min-height:58px;
+    display:grid;
+    grid-template-columns:42px 1fr;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid #DDE4DF;
+    background:#fff;
+    color:#2E3833;
+    text-align:left;
+    transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+
+.option-btn:active{transform:scale(.99)}
+.option-btn.selected{
+    background:#EEF7F1;
+    border-color:#9BC3A7;
+    box-shadow:0 0 0 3px rgba(107,143,113,.11);
+}
+
+.option-letter{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:var(--learn-deep);
+    color:#fff;
+    font-weight:950;
+    font-size:18px;
+}
+
+.option-text{
+    font-size:17px;
+    line-height:1.3;
+    font-weight:600;
+}
+
+.question-actions{margin-top:18px}
+
+.result-card{
+    display:none;
+    border-color:#AFCDB7;
+    background:linear-gradient(135deg,#F8FCF9,#EEF7F1);
+}
+
+.result-card.show{display:block}
+.result-top{
+    display:grid;
+    grid-template-columns:76px 1fr;
+    gap:15px;
+    align-items:center;
+}
+
+.result-icon{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#fff;
+    border:1px solid #DDECE1;
+    color:var(--learn-deep);
+    font-size:33px;
+}
+
+.result-title{
+    margin:0;
+    color:var(--learn-deep);
+    font-size:30px;
+    line-height:1;
+    font-weight:950;
+}
+
+.result-label{
+    margin:8px 0 0;
+    color:var(--learn-deep);
+    font-size:18px;
+    font-weight:700;
+}
+
+.result-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:18px;
+}
+
+.result-stat{
+    padding:10px 8px;
+    border-radius:14px;
+    background:rgba(255,255,255,.72);
+    border:1px solid #DDECE1;
+    text-align:center;
+}
+
+.result-stat small{display:block;color:var(--learn-muted);font-size:11px}
+.result-stat b{display:block;margin-top:3px;color:var(--learn-deep);font-size:16px}
+
+.result-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:16px;
+}
+
+.learn-light-btn{
+    min-height:48px;
+    border-radius:14px;
+    background:#fff;
+    color:var(--learn-deep);
+    border:1px solid #CFE2D5;
+    font-weight:900;
+}
+
+.empty-card{
+    display:none;
+    text-align:center;
+    color:var(--learn-muted);
+    line-height:1.5;
+}
+.empty-card.show{display:block}
+.empty-card b{display:block;margin-bottom:7px;color:var(--learn-deep);font-size:18px}
+
+.motivation-card{
+    display:grid;
+    grid-template-columns:72px 1fr;
+    gap:16px;
+    align-items:center;
+    margin:0 0 8px;
+    padding:18px;
+    border-radius:18px;
+    border:1px solid var(--learn-gold);
+    background:linear-gradient(135deg,#FFFDF8,#FFF7E8);
+    box-shadow:0 10px 24px rgba(47,58,54,.07);
+}
+
+.motivation-icon{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    border:1px solid #EAD8A6;
+    background:#fff;
+    color:#B0841D;
+    font-size:30px;
+}
+
+.motivation-card b{
+    display:block;
+    color:#6F4510;
+    font-size:22px;
+    line-height:1.1;
+    font-weight:950;
+}
+
+.motivation-card small{
+    display:block;
+    margin-top:8px;
+    color:#59645F;
+    font-size:15px;
+    line-height:1.3;
+}
+
+.learn-bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:max(0px,env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+    width:100%;
+    max-width:520px;
+    height:74px;
+    padding:6px 6px 8px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+    background:#fff;
+    border-top:1px solid var(--learn-border);
+    box-shadow:0 -8px 24px rgba(47,58,54,.08);
+    z-index:9000;
+}
+
+.learn-bottom-nav button{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    border-radius:14px;
+    background:transparent;
+    color:#5F6C65;
+    font-size:12px;
+    font-weight:700;
+}
+
+.learn-bottom-nav button span{font-size:22px;line-height:1}
+.learn-bottom-nav button.active{
+    color:var(--learn-deep);
+    background:#EEF5F0;
+}
+
+@media (max-width:420px){
+    .learn-page{padding-left:12px;padding-right:12px}
+    .learn-header{margin-left:-12px;margin-right:-12px;padding:28px 18px 28px}
+    .learn-title h1{font-size:31px}
+    .learn-title p{font-size:15px}
+    .learn-status-badge{min-width:126px;padding:10px 11px;border-radius:16px}
+    .learn-status-badge b{font-size:14px}
+    .learn-status-badge small{font-size:11px}
+    .mock-hero-card{grid-template-columns:96px 1fr;gap:14px;min-height:176px;padding:18px 16px}
+    .mock-art{width:90px;height:90px}
+    .mock-art::before{width:58px;height:58px;border-width:7px;box-shadow:inset 0 0 0 10px #F8FAF9,inset 0 0 0 17px var(--learn-primary-dark)}
+    .mock-art::after{width:44px;height:7px}
+    .mock-hero-content h2{font-size:23px}
+    .mock-hero-content .mock-count{font-size:17px}
+    .mock-hero-content p{font-size:14px;margin:10px 0 14px}
+    .learn-primary-btn{min-height:48px;font-size:16px}
+    .rule-item{min-height:68px;gap:7px}
+    .rule-icon{width:30px;height:30px;font-size:13px}
+    .rule-text b{font-size:13px}
+    .question-card,.result-card,.empty-card{padding:17px}
+    .question-text{font-size:18px}
+    .option-text{font-size:16px}
+    .result-title{font-size:25px}
+    .motivation-card{grid-template-columns:58px 1fr;padding:15px}
+    .motivation-icon{width:54px;height:54px;font-size:25px}
+    .motivation-card b{font-size:19px}
+}
+
+@media (max-width:350px){
+    .mock-hero-card{grid-template-columns:1fr;text-align:center}
+    .mock-art{margin:0 auto}
+    .mock-rule-row{grid-template-columns:1fr}
+    .rule-item{border-right:0;border-bottom:1px solid #E5DED0;justify-content:flex-start;padding-left:22px}
+    .rule-item:last-child{border-bottom:0}
+    .result-actions,.result-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
-
 <body>
-
-<main class="learn-page">
-
-  <header class="learn-header">
-    <div class="learn-header-top">
-      <div class="learn-title">
-        <h1>Learn</h1>
-        <p>Your Learning Journey</p>
-      </div>
-
-      <div id="learnStatusBadge" class="learn-status-badge">
-        <b>Trial Version</b>
-        <small>Loading...</small>
-      </div>
-    </div>
-  </header>
-
-  <section class="progress-card">
-    <div class="progress-inner">
-      <h2 class="progress-title">Your Current Progress</h2>
-
-      <div class="progress-top">
-        <div class="trophy-art" aria-hidden="true">🏆</div>
-
-        <div class="progress-stats">
-          <div class="progress-stat">
-            <div class="stat-icon">▰</div>
-            <small>Current Group</small>
-            <b id="currentGroupText">PRIMARY</b>
-          </div>
-
-          <div class="progress-stat">
-            <div class="stat-icon">⚙</div>
-            <small>Current Level</small>
-            <b id="currentLevelText">Level 1</b>
-          </div>
-
-          <div class="progress-stat">
-            <div class="stat-icon">▮</div>
-            <small>Questions Completed</small>
-            <b>
-              <span id="completedQuestionsText">0</span> /
-              <span id="totalQuestionsText">25</span>
-            </b>
-          </div>
+<main class="learn-page" id="learnPage">
+    <header class="learn-header">
+        <div class="learn-header-top">
+            <div class="learn-title">
+                <h1>Learn</h1>
+                <p>Your Learning Journey</p>
+            </div>
+            <div id="learnStatusBadge" class="learn-status-badge">
+                <b>Trial Version</b>
+                <small>Loading...</small>
+            </div>
         </div>
-      </div>
+    </header>
 
-      <button id="bookmarkedMainBtn" class="bookmark-main-btn" type="button" onclick="window.location.href='bookmarks.html'">
-        <span>🔖</span>
-        Bookmarked Question
-        <span>→</span>
-      </button>
-      <button id="resetProgressBtn" class="reset-progress-btn" type="button">
-        Reset Progress
-      </button>
-    </div>
-  </section>
-
-  <h2 class="roadmap-title">Learning Roadmap</h2>
-
-  <section class="roadmap-card" id="primaryRoadmapCard">
-    <button class="group-header" type="button" data-group="Primary" data-unlocked="true">
-      <span class="group-icon">📖</span>
-      <span class="group-name">PRIMARY</span>
-      <span class="group-arrow">⌃</span>
-    </button>
-
-    <div class="group-body">
-      <div class="timeline-wrap">
-        <div class="timeline-line" aria-hidden="true"></div>
-
-        <div class="level-list" id="primaryLevelList">
-          <div class="level-row completed" data-group="Primary" data-level="1" data-unlocked="true">
-            <div class="level-dot">✓</div>
-
-            <div class="level-title">
-              <b>Level 1</b>
-              <div class="level-actions">
-                <button type="button" data-action="read" data-group="Primary" data-level="1">📖 Read</button>
-                <span class="divider">|</span>
-                <button type="button" data-action="practice" data-group="Primary" data-level="1">✎ Practice</button>
-              </div>
+    <div class="learn-locked-wrap">
+        <section class="learn-protected" id="mockTestSection" aria-label="Daily Mock Test">
+            <div class="mock-hero-card">
+                <div class="mock-art" aria-hidden="true"></div>
+                <div class="mock-hero-content">
+                    <h2>Daily Mock Test</h2>
+                    <span class="mock-count">30 Questions</span>
+                    <p>Answer every question and check your score.</p>
+                    <button id="startTestBtn" class="learn-primary-btn" type="button">Start Test</button>
+                </div>
             </div>
 
-            <div class="level-status">Completed</div>
-          </div>
+            <div class="mock-rule-row" aria-label="Mock Test Rules">
+                <div class="rule-item"><span class="rule-icon">30</span><span class="rule-text"><b>30</b><small>Questions</small></span></div>
+                <div class="rule-item"><span class="rule-icon">1</span><span class="rule-text"><b>1 Mark</b><small>Each</small></span></div>
+                <div class="rule-item"><span class="rule-icon">0</span><span class="rule-text"><b>No</b><small>Negative</small></span></div>
+            </div>
 
-          <div class="level-row" data-group="Primary" data-level="2" data-unlocked="false">
-            <div class="level-dot">🔒</div>
-            <div class="level-title"><b>Level 2</b></div>
-            <div class="level-status">Locked</div>
-          </div>
+            <div id="emptyState" class="empty-card">
+                <b>Daily mock test is being updated.</b>
+                Please check again soon.
+            </div>
 
-          <div class="level-row" data-group="Primary" data-level="3" data-unlocked="false">
-            <div class="level-dot">🔒</div>
-            <div class="level-title"><b>Level 3</b></div>
-            <div class="level-status">Locked</div>
-          </div>
+            <article id="questionCard" class="question-card" hidden>
+                <div class="question-head">
+                    <b id="questionCounter">Question 1 of 30</b>
+                    <span id="questionPercent" class="question-percent">3%</span>
+                </div>
+                <div class="learn-progress-track" aria-hidden="true">
+                    <div id="questionProgress" class="learn-progress-fill"></div>
+                </div>
+                <div id="questionText" class="question-text"></div>
+                <div id="optionList" class="option-list"></div>
+                <div class="question-actions">
+                    <button id="nextQuestionBtn" class="learn-primary-btn" type="button">Next</button>
+                </div>
+            </article>
 
-          <div class="level-row" data-group="Primary" data-level="4" data-unlocked="false">
-            <div class="level-dot">🔒</div>
-            <div class="level-title"><b>Level 4</b></div>
-            <div class="level-status">Locked</div>
-          </div>
+            <section id="resultCard" class="result-card" aria-label="Mock Test Result">
+                <div class="result-top">
+                    <div class="result-icon" aria-hidden="true">★</div>
+                    <div>
+                        <h2 id="scoreText" class="result-title">Score: 0 / 30</h2>
+                        <p id="performanceLabel" class="result-label">Practice Again</p>
+                    </div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-stat"><small>Correct</small><b id="correctText">0</b></div>
+                    <div class="result-stat"><small>Wrong</small><b id="wrongText">0</b></div>
+                    <div class="result-stat"><small>Percentage</small><b id="percentageText">0%</b></div>
+                </div>
+                <div class="result-actions">
+                    <button id="tryAgainBtn" class="learn-primary-btn" type="button">Try Again</button>
+                    <button id="backToLearnBtn" class="learn-light-btn" type="button">Back to Learn</button>
+                </div>
+            </section>
+        </section>
 
-          <div class="level-row" data-group="Primary" data-level="5" data-unlocked="false">
-            <div class="level-dot">🔒</div>
-            <div class="level-title"><b>Level 5</b></div>
-            <div class="level-status">Locked</div>
-          </div>
-        </div>
-      </div>
+        <section class="motivation-card" aria-label="Practice Every Day">
+            <div class="motivation-icon" aria-hidden="true">★</div>
+            <div>
+                <b>Practice Every Day</b>
+                <small>Move one step closer to success</small>
+            </div>
+        </section>
     </div>
-  </section>
-
-  <button class="collapsed-group" type="button" data-group="Basic" data-prerequisite="Primary Level 1" data-unlocked="false">
-    <span class="group-icon">▰</span>
-    <b>BASIC</b>
-    <span>⌄</span>
-  </button>
-
-  <button class="collapsed-group" type="button" data-group="Growth" data-prerequisite="Basic Level 1" data-unlocked="false">
-    <span class="group-icon">▟</span>
-    <b>GROWTH</b>
-    <span>⌄</span>
-  </button>
-
-  <button class="collapsed-group" type="button" data-group="Focus" data-prerequisite="Growth Level 1" data-unlocked="false">
-    <span class="group-icon">◎</span>
-    <b>FOCUS</b>
-    <span>⌄</span>
-  </button>
-
-  <button class="collapsed-group" type="button" data-group="Target" data-prerequisite="Focus Level 1" data-unlocked="false">
-    <span class="group-icon">⚑</span>
-    <b>TARGET</b>
-    <span>⌄</span>
-  </button>
-
-  <button class="collapsed-group" type="button" data-group="Advance" data-prerequisite="Target Level 1" data-unlocked="false">
-    <span class="group-icon">🚀</span>
-    <b>ADVANCE</b>
-    <span>⌄</span>
-  </button>
-
-  <button class="collapsed-group" type="button" data-group="Real Exam Test" data-prerequisite="Advance Level 1" data-unlocked="false">
-    <span class="group-icon">☷</span>
-    <b>REAL EXAM TEST</b>
-    <span>⌄</span>
-  </button>
-
-  <section class="daily-card">
-    <div class="daily-trophy">🏆</div>
-    <div>
-      <b>One Level Every Day</b>
-      <small>Consistency beats speed.</small>
-    </div>
-  </section>
-
 </main>
 
-<nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html" onclick="window.location.href='home2.html'"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html" onclick="window.location.href='info.html'"><span>ℹ️</span>Info</button>
-  <button class="active" type="button"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html" onclick="window.location.href='profile.html'"><span>👤</span>Profile</button>
+<nav class="learn-bottom-nav" aria-label="Bottom Navigation">
+    <button type="button" data-nav-url="home2.html"><span>🏠</span>Home</button>
+    <button type="button" data-nav-url="info.html"><span>ℹ️</span>Info</button>
+    <button class="active" type="button" aria-current="page"><span>📖</span>Learn</button>
+    <button type="button" data-nav-url="profile.html"><span>👤</span>Profile</button>
 </nav>
-
-<div id="learnToast" class="learn-toast"></div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -190,65 +648,355 @@
 <script src="tet_app_settings.js"></script>
 <script src="common.js"></script>
 
-<script src="learnData.js"></script>
-<script src="learnSupabase.js"></script>
-
-<script src="learnRoadmap.js"></script>
-<script src="learnProgress.js"></script>
-<script src="learnBookmarks.js"></script>
-<script src="learnRender.js"></script>
-<script src="learnEvents.js"></script>
-<script src="learnApp.js"></script>
 <script>
-(function tetLearnActionFallback() {
-  document.addEventListener("click", function (event) {
-    const actionButton = event.target.closest(".level-action-btn[data-action]");
-    if (!actionButton) return;
+(function(){
+    "use strict";
 
-    event.preventDefault();
-    event.stopPropagation();
+    const LEARN_GROUP = "Learn";
+    const LEARN_LEVEL = 1;
+    const MAX_QUESTIONS = 30;
+    const CACHE_PREFIX = "tet_daily_mock_cache_v1_";
+    const RESULT_KEY = "tet_daily_mock_last_result_v1";
 
-    const action = actionButton.getAttribute("data-action") || "read";
-    const group = actionButton.getAttribute("data-group") || "Primary";
-    const level = Number(actionButton.getAttribute("data-level") || 1);
-    const fallbackUrl = actionButton.getAttribute("data-url") || (action + ".html?group=" + encodeURIComponent(group) + "&level=" + encodeURIComponent(level) + "&from=learn");
+    let currentUser = null;
+    let currentStatus = null;
+    let badgeModel = null;
+    let questions = [];
+    let currentIndex = 0;
+    let answers = [];
+    let selectedOption = null;
 
-    if (window.TETLearnEvents && typeof window.TETLearnEvents.openLearning === "function") {
-      Promise.resolve(window.TETLearnEvents.openLearning(action, group, level)).catch(function () {
-        window.location.href = fallbackUrl;
-      });
-      return;
+    const page = document.getElementById("learnPage");
+    const badge = document.getElementById("learnStatusBadge");
+    const startBtn = document.getElementById("startTestBtn");
+    const questionCard = document.getElementById("questionCard");
+    const emptyState = document.getElementById("emptyState");
+    const questionCounter = document.getElementById("questionCounter");
+    const questionPercent = document.getElementById("questionPercent");
+    const questionProgress = document.getElementById("questionProgress");
+    const questionText = document.getElementById("questionText");
+    const optionList = document.getElementById("optionList");
+    const nextBtn = document.getElementById("nextQuestionBtn");
+    const resultCard = document.getElementById("resultCard");
+    const scoreText = document.getElementById("scoreText");
+    const performanceLabel = document.getElementById("performanceLabel");
+    const correctText = document.getElementById("correctText");
+    const wrongText = document.getElementById("wrongText");
+    const percentageText = document.getElementById("percentageText");
+    const tryAgainBtn = document.getElementById("tryAgainBtn");
+    const backToLearnBtn = document.getElementById("backToLearnBtn");
+
+    function notify(message,type){
+        if (typeof showToast === "function") showToast(message,type || "info");
     }
 
-    window.location.href = fallbackUrl;
-  }, true);
-})();
-</script>
-<script>
-(function tetLearnBookmarkFallback() {
-  document.addEventListener("click", function (event) {
-    const bookmarkButton = event.target.closest("#bookmarkedMainBtn");
-    if (!bookmarkButton) return;
+    function canUseLearn(){
+        const premium = typeof isPremiumStatus === "function" && isPremiumStatus(currentStatus,currentUser);
+        return premium || !(badgeModel && badgeModel.state === "expired");
+    }
 
-    event.preventDefault();
-    event.stopPropagation();
-    window.location.href = "bookmarks.html";
-  }, true);
-})();
-</script>
-<script>
-(function tetLearnNavFallback() {
-  document.addEventListener("click", function (event) {
-    const navButton = event.target.closest(".home-bottom-nav [data-page]");
-    if (!navButton) return;
+    function blockIfExpired(){
+        if (canUseLearn()) return false;
+        if (typeof showGlobalPremiumEntry === "function") showGlobalPremiumEntry(currentStatus,currentUser);
+        return true;
+    }
 
-    const page = navButton.getAttribute("data-page");
-    if (!page) return;
+    function safe(value){
+        if (typeof escapeHTML === "function") return escapeHTML(value);
+        return String(value ?? "").replace(/[&<>"']/g,function(char){
+            return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[char];
+        });
+    }
 
-    event.preventDefault();
-    event.stopPropagation();
-    window.location.href = page;
-  }, true);
+    function getCacheVersion(){
+        if (typeof getQuestionCacheVersion === "function") return getQuestionCacheVersion();
+        return String(CONFIG?.QUESTION_BANK_VERSION || "1");
+    }
+
+    function getDailyCacheKey(){
+        return CACHE_PREFIX + getCacheVersion();
+    }
+
+    function loadDailyCache(){
+        try {
+            const raw = localStorage.getItem(getDailyCacheKey());
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            const list = Array.isArray(parsed?.questions) ? parsed.questions : [];
+            return list.length ? list.slice(0,MAX_QUESTIONS) : null;
+        } catch {
+            return null;
+        }
+    }
+
+    function saveDailyCache(list){
+        if (!Array.isArray(list) || !list.length) return;
+        try {
+            localStorage.setItem(getDailyCacheKey(),JSON.stringify({
+                version:getCacheVersion(),
+                saved_at:new Date().toISOString(),
+                questions:list.slice(0,MAX_QUESTIONS)
+            }));
+        } catch {}
+    }
+
+    async function ensureAppSettings(){
+        try {
+            if (typeof isAppSettingsLoaded === "function" && isAppSettingsLoaded()) return true;
+            if (typeof loadTetAppSettings === "function") return await loadTetAppSettings();
+        } catch (error) {
+            console.warn("Learn app settings skipped", error);
+        }
+        return false;
+    }
+
+    async function loadTrialStatus(user){
+        if (!user || !window.supabase || !CONFIG?.TABLES?.TRIAL_PREMIUM) return null;
+        const userId = user.id || user.user_id || null;
+        const phone = user.phone || user.mobile || user.phone_number || user.user_phone || null;
+
+        try {
+            let query = supabase.from(CONFIG.TABLES.TRIAL_PREMIUM).select("*").limit(1);
+            if (userId) query = query.eq("user_id", userId);
+            else if (phone) query = query.eq("phone", phone);
+            else return null;
+
+            const { data, error } = await query.maybeSingle();
+            if (error) throw error;
+            return data || null;
+        } catch (error) {
+            console.warn("Learn trial status load failed", error);
+            return null;
+        }
+    }
+
+    function applyPremiumState(){
+        if (typeof renderTrialPremiumBadge === "function") {
+            badgeModel = renderTrialPremiumBadge(badge,currentStatus,currentUser,{mode:"end"});
+        } else {
+            badgeModel = { state:"trial" };
+        }
+
+        const premium = typeof isPremiumStatus === "function" && isPremiumStatus(currentStatus,currentUser);
+        const expired = badgeModel && badgeModel.state === "expired" && !premium;
+        page.classList.toggle("is-expired", !!expired);
+        page.classList.toggle("is-premium", !!premium);
+    }
+
+    async function fetchQuestions(){
+        const cached = loadDailyCache();
+        if (cached) return cached;
+
+        if (!window.supabase || !CONFIG?.TABLES?.LEARN_QUESTIONS) return [];
+
+        const { data, error } = await supabase
+            .from(CONFIG.TABLES.LEARN_QUESTIONS)
+            .select("*")
+            .eq("group_name", LEARN_GROUP)
+            .eq("level_no", LEARN_LEVEL)
+            .eq("status", "active")
+            .eq("question_type", "mcq")
+            .order("question_no", { ascending:true, nullsFirst:false })
+            .order("created_at", { ascending:true })
+            .limit(MAX_QUESTIONS);
+
+        if (error) throw error;
+        const list = Array.isArray(data) ? data.slice(0,MAX_QUESTIONS) : [];
+        if (list.length) saveDailyCache(list);
+        return list;
+    }
+
+    function getQuestionId(question,index){
+        return question.id || question.question_id || question.question_no || (index + 1);
+    }
+
+    function getOptions(question){
+        return [
+            { key:"A", text:question.option_a },
+            { key:"B", text:question.option_b },
+            { key:"C", text:question.option_c },
+            { key:"D", text:question.option_d }
+        ].filter(item => item.text !== undefined && item.text !== null && String(item.text).trim() !== "");
+    }
+
+    function normalizeAnswer(value){
+        return String(value ?? "").trim().replace(/\s+/g," ").toLowerCase();
+    }
+
+    function isCorrect(question,selected){
+        const correct = normalizeAnswer(question.correct_answer || question.answer || question.correct_option);
+        const selectedText = normalizeAnswer(selected?.text);
+        const selectedKey = normalizeAnswer(selected?.key);
+        return correct && (correct === selectedText || correct === selectedKey);
+    }
+
+    function resetTestState(){
+        currentIndex = 0;
+        answers = [];
+        selectedOption = null;
+        resultCard.classList.remove("show");
+    }
+
+    function showIntroState(){
+        questionCard.hidden = true;
+        resultCard.classList.remove("show");
+        emptyState.classList.remove("show");
+        startBtn.disabled = false;
+        startBtn.textContent = "Start Test";
+    }
+
+    function renderQuestion(){
+        if (!questions.length) {
+            questionCard.hidden = true;
+            emptyState.classList.add("show");
+            return;
+        }
+
+        const question = questions[currentIndex];
+        const total = questions.length;
+        const shownNo = currentIndex + 1;
+        const percent = Math.round((shownNo / total) * 100);
+
+        selectedOption = null;
+        questionCard.hidden = false;
+        emptyState.classList.remove("show");
+        resultCard.classList.remove("show");
+
+        questionCounter.textContent = "Question " + shownNo + " of " + total;
+        questionPercent.textContent = percent + "%";
+        questionProgress.style.width = percent + "%";
+        questionText.innerHTML = safe(question.question || question.question_text || "Question text missing");
+        nextBtn.textContent = shownNo === total ? "Final Submit" : "Next";
+
+        optionList.innerHTML = getOptions(question).map(function(option){
+            return '<button class="option-btn" type="button" data-key="' + safe(option.key) + '">' +
+                '<span class="option-letter">' + safe(option.key) + '</span>' +
+                '<span class="option-text">' + safe(option.text) + '</span>' +
+            '</button>';
+        }).join("");
+
+        optionList.querySelectorAll(".option-btn").forEach(function(button){
+            button.addEventListener("click", function(){
+                optionList.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+                button.classList.add("selected");
+                const key = button.dataset.key;
+                const option = getOptions(question).find(item => item.key === key);
+                selectedOption = option || null;
+            });
+        });
+    }
+
+    async function startTest(){
+        if (blockIfExpired()) return;
+        startBtn.disabled = true;
+        startBtn.textContent = "Loading...";
+        resetTestState();
+
+        try {
+            questions = await fetchQuestions();
+            if (!questions.length) {
+                showIntroState();
+                emptyState.classList.add("show");
+                notify("Daily mock test is being updated", "warning");
+                return;
+            }
+            renderQuestion();
+        } catch (error) {
+            console.warn("Daily mock load failed", error);
+            showIntroState();
+            emptyState.classList.add("show");
+            notify("Daily mock test is being updated", "warning");
+        } finally {
+            startBtn.disabled = false;
+            startBtn.textContent = "Start Test";
+        }
+    }
+
+    function handleNext(){
+        if (blockIfExpired()) return;
+        if (!questions.length) return;
+        if (!selectedOption) {
+            notify("Please select an answer", "warning");
+            return;
+        }
+
+        const question = questions[currentIndex];
+        answers.push({
+            question_id:getQuestionId(question,currentIndex),
+            selected_key:selectedOption.key,
+            selected_answer:selectedOption.text,
+            correct:isCorrect(question,selectedOption)
+        });
+
+        if (currentIndex >= questions.length - 1) {
+            showResult();
+            return;
+        }
+
+        currentIndex += 1;
+        renderQuestion();
+    }
+
+    function getPerformance(score){
+        if (score === MAX_QUESTIONS) return "Excellent";
+        if (score >= 25) return "Very Good";
+        if (score >= 20) return "Good, Keep Improving";
+        return "Practice Again";
+    }
+
+    function showResult(){
+        const total = questions.length || MAX_QUESTIONS;
+        const correct = answers.filter(item => item.correct).length;
+        const wrong = Math.max(0,total - correct);
+        const percent = Math.round((correct / total) * 100);
+        const label = getPerformance(correct);
+
+        questionCard.hidden = true;
+        resultCard.classList.add("show");
+        scoreText.textContent = "Score: " + correct + " / " + total;
+        performanceLabel.textContent = label;
+        correctText.textContent = String(correct);
+        wrongText.textContent = String(wrong);
+        percentageText.textContent = percent + "%";
+
+        try {
+            localStorage.setItem(RESULT_KEY, JSON.stringify({
+                score:correct,
+                total,
+                wrong,
+                percentage:percent,
+                label,
+                submitted_at:new Date().toISOString()
+            }));
+        } catch {}
+    }
+
+    function bindEvents(){
+        startBtn.addEventListener("click", startTest);
+        nextBtn.addEventListener("click", handleNext);
+        tryAgainBtn.addEventListener("click", startTest);
+        backToLearnBtn.addEventListener("click", showIntroState);
+
+        document.querySelectorAll(".learn-bottom-nav [data-nav-url]").forEach(function(button){
+            button.addEventListener("click", function(event){
+                event.preventDefault();
+                if (typeof navigateTo === "function") navigateTo(button.dataset.navUrl);
+                else window.location.href = button.dataset.navUrl;
+            });
+        });
+    }
+
+    async function init(){
+        if (typeof requireUserLogin === "function" && !requireUserLogin()) return;
+        currentUser = typeof getUserSession === "function" ? getUserSession() : null;
+        await ensureAppSettings();
+        currentStatus = await loadTrialStatus(currentUser);
+        applyPremiumState();
+        bindEvents();
+        showIntroState();
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
 })();
 </script>
 </body>

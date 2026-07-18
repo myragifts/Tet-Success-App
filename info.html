@@ -869,7 +869,7 @@ button{
     }
 
     function getInfoCacheKey(subject){
-        return "info_latest_" + getInfoCacheVersion() + "_" + normalizeSubject(subject);
+        return "info_latest_status_v3_" + getInfoCacheVersion() + "_" + normalizeSubject(subject);
     }
 
     function loadInfoCache(subject){
@@ -1016,20 +1016,17 @@ button{
         }).join("");
     }
 
-    async function fetchQuestionsFromSupabase(subject,useActiveColumn){
-        let query = supabase
+    async function fetchQuestionsFromSupabase(subject){
+        const { data, error } = await supabase
             .from(CONFIG.TABLES.LEARN_QUESTIONS)
             .select("*")
             .eq("group_name", INFO_GROUP)
             .eq("level_no", INFO_LEVEL)
             .eq("subject", subject)
-            .order("question_no", { ascending:true })
+            .eq("status", "active")
+            .order("created_at", { ascending:true })
             .limit(MAX_QUESTIONS);
 
-        if (useActiveColumn) query = query.eq("is_active", true);
-        else query = query.eq("status", "active");
-
-        const { data, error } = await query;
         if (error) throw error;
         return Array.isArray(data) ? data : [];
     }
@@ -1055,14 +1052,7 @@ button{
         }
 
         try {
-            let questions = [];
-            try {
-                questions = await fetchQuestionsFromSupabase(subject,true);
-            } catch (error) {
-                const message = String(error?.message || "").toLowerCase();
-                if (!message.includes("is_active") && !message.includes("column")) throw error;
-                questions = await fetchQuestionsFromSupabase(subject,false);
-            }
+            const questions = await fetchQuestionsFromSupabase(subject);
 
             if (questions.length) saveInfoCache(subject,questions);
             renderQuestions(subject,questions);
@@ -1112,6 +1102,7 @@ button{
 </script>
 </body>
 </html>
+
 
 
 

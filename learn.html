@@ -476,44 +476,45 @@ body{
     font-size:15px;
     line-height:1.3;
 }
-.learn-bottom-nav{
+.home-bottom-nav{
     position:fixed;
     left:50%;
-    bottom:max(0px,env(safe-area-inset-bottom));
+    bottom:0;
     transform:translateX(-50%);
     width:100%;
     max-width:520px;
-    height:var(--nav-height,74px);
-    padding:6px 6px 8px;
-    padding-bottom:max(4px,env(safe-area-inset-bottom,0px));
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:0;
+    height:58px;
     background:#fff;
     border-top:1px solid var(--learn-border);
-    box-shadow:0 -8px 24px rgba(47,58,54,.08);
+    box-shadow:0 -8px 24px rgba(47,58,54,.10);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
     z-index:9000;
+    padding:4px 6px;
 }
 
-.learn-bottom-nav button{
+.home-bottom-nav button{
+    background:transparent;
+    color:#5F6C65;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:4px;
+    gap:3px;
     border-radius:12px;
-    background:transparent;
-    color:#5F6C65;
-    font-size:12px;
-    font-weight:600;
+    font-size:11px;
+    font-weight:700;
 }
 
-.learn-bottom-nav button span{font-size:21px;line-height:1}
-.learn-bottom-nav button.active{
-    color:var(--learn-deep);
+.home-bottom-nav button span{
+    font-size:20px;
+    line-height:1;
+}
+
+.home-bottom-nav button.active{
     background:#EEF5F0;
+    color:var(--learn-deep);
 }
-
 @media (max-width:420px){
     .learn-page{padding-left:12px;padding-right:12px}
     .learn-header{margin-left:-12px;margin-right:-12px;padding:28px 18px 28px}
@@ -635,7 +636,7 @@ body{
     </div>
 </main>
 
-<nav class="learn-bottom-nav" aria-label="Bottom Navigation">
+<nav class="home-bottom-nav" aria-label="Bottom Navigation">
     <button type="button" data-nav-url="home2.html"><span>🏠</span>Home</button>
     <button type="button" data-nav-url="info.html"><span>ℹ️</span>Info</button>
     <button class="active" type="button" aria-current="page"><span>📖</span>Learn</button>
@@ -977,7 +978,7 @@ body{
         tryAgainBtn.addEventListener("click", startTest);
         backToLearnBtn.addEventListener("click", showIntroState);
 
-        document.querySelectorAll(".learn-bottom-nav [data-nav-url]").forEach(function(button){
+        document.querySelectorAll(".home-bottom-nav [data-nav-url]").forEach(function(button){
             button.addEventListener("click", function(event){
                 event.preventDefault();
                 if (typeof navigateTo === "function") navigateTo(button.dataset.navUrl);
@@ -1001,6 +1002,7 @@ body{
 </script>
 </body>
 </html>
+
 
 
 

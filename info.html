@@ -253,21 +253,30 @@ button{
     box-shadow:var(--info-shadow);
 }
 
+.help-title-band{
+    margin:0 0 22px;
+    padding:18px 16px 16px;
+    border-radius:18px;
+    border:4px solid rgba(133,92,47,.88);
+    background:linear-gradient(135deg,#173F2C,#1D5138);
+    box-shadow:0 16px 30px rgba(47,58,54,.16);
+    text-align:center;
+}
+
 .help-card h2{
     margin:0;
-    text-align:center;
-    color:var(--info-primary-dark);
-    font-size:24px;
+    color:#F8D66D;
+    font-size:22px;
     line-height:1.15;
     font-weight:900;
 }
 
 .help-divider{
-    width:40px;
+    width:42px;
     height:3px;
-    margin:16px auto 22px;
+    margin:12px auto 0;
     border-radius:999px;
-    background:var(--info-gold);
+    background:#F8D66D;
 }
 
 .help-grid{
@@ -634,8 +643,13 @@ button{
         padding:22px 14px 18px;
     }
 
+    .help-title-band{
+        padding:15px 12px 14px;
+        border-width:3px;
+    }
+
     .help-card h2{
-        font-size:20px;
+        font-size:18px;
     }
 
     .help-grid{
@@ -726,8 +740,10 @@ button{
     </section>
 
     <section class="help-card" aria-label="How Latest Content Helps You">
-        <h2>How Latest Content Helps You</h2>
-        <div class="help-divider" aria-hidden="true"></div>
+        <div class="help-title-band">
+            <h2>How Latest Content Helps You</h2>
+            <div class="help-divider" aria-hidden="true"></div>
+        </div>
         <div class="help-grid">
             <div class="help-item"><div class="help-icon">R</div><p>Read updated subject-wise questions</p></div>
             <div class="help-item"><div class="help-icon">T</div><p>Revise important exam topics</p></div>
@@ -735,6 +751,7 @@ button{
             <div class="help-item"><div class="help-icon">S</div><p>Cover all subjects and chapters</p></div>
         </div>
         <div class="info-note"><span class="info-note-mark">*</span><span>Follow the tasks regularly and prepare for WB TET happily.</span></div>
+        <div class="info-final-note"><span class="info-final-note-mark">*</span><span><b>TET Success</b>Latest content will be updated from time to time to support your WB TET preparation.</span></div>
     </section>
 </main>
 
@@ -1053,6 +1070,7 @@ button{
 </script>
 </body>
 </html>
+
 
 
 

@@ -476,7 +476,6 @@ body{
     font-size:15px;
     line-height:1.3;
 }
-
 .learn-bottom-nav{
     position:fixed;
     left:50%;
@@ -484,11 +483,12 @@ body{
     transform:translateX(-50%);
     width:100%;
     max-width:520px;
-    height:74px;
+    height:var(--nav-height,74px);
     padding:6px 6px 8px;
+    padding-bottom:max(4px,env(safe-area-inset-bottom,0px));
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:2px;
+    gap:0;
     background:#fff;
     border-top:1px solid var(--learn-border);
     box-shadow:0 -8px 24px rgba(47,58,54,.08);
@@ -501,14 +501,14 @@ body{
     align-items:center;
     justify-content:center;
     gap:4px;
-    border-radius:14px;
+    border-radius:12px;
     background:transparent;
     color:#5F6C65;
     font-size:12px;
-    font-weight:700;
+    font-weight:600;
 }
 
-.learn-bottom-nav button span{font-size:22px;line-height:1}
+.learn-bottom-nav button span{font-size:21px;line-height:1}
 .learn-bottom-nav button.active{
     color:var(--learn-deep);
     background:#EEF5F0;
@@ -1001,3 +1001,6 @@ body{
 </script>
 </body>
 </html>
+
+
+

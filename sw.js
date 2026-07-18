@@ -4,7 +4,7 @@
    Production Version
 ========================================================= */
 
-const CACHE_NAME = "tet-success-v35";
+const CACHE_NAME = "tet-success-v40";
 
 const FILES_TO_CACHE = [
 
@@ -136,3 +136,5 @@ self.addEventListener("fetch", event => {
     );
 
 });
+
+

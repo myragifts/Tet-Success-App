@@ -308,14 +308,14 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
         .maybeSingle();
       if (error) throw error;
       if (!data) {
-        if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>`);
+        if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="smartBackBtn">Back</button></div>`);
       } else {
         localStorage.setItem(SMART_NOTE_CACHE, JSON.stringify(data));
         renderSmartNote(data);
       }
     } catch (error) {
       console.warn("Smart Notes load failed", error);
-      if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>`);
+      if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="smartBackBtn">Back</button></div>`);
     }
     setTimeout(function(){ const b = $("smartBackBtn"); if (b) b.onclick = closeModal; }, 0);
   }
@@ -330,7 +330,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
       <h3 style="margin:0 0 10px;color:#174B33">${safe(note.title || "Quick Revision")}</h3>
       <div class="note-box"><b>Rule</b><br>${safe(note.rule_text || "Smart Notes are being updated. Please check again soon.").replace(/\n/g,"<br>")}</div>
       ${note.example_text ? `<div class="note-box"><b>Examples</b><br>${safe(note.example_text).replace(/\n/g,"<br>")}</div>` : ""}
-      <div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>
+      <div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="smartBackBtn">Back</button></div>
     `);
     setTimeout(function(){ const b = $("smartBackBtn"); if (b) b.onclick = closeModal; }, 0);
   }
@@ -345,7 +345,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
     let result = null;
     try { result = JSON.parse(localStorage.getItem(MOCK_RESULT_KEY)); } catch { result = null; }
     if (!result) {
-      openModal("Scores", `<p>No mock test result yet. Start today’s mock test from Learn page.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="scoreBackBtn">Back</button></div>`);
+      openModal("Scores", `<p>No mock test result yet. Start today’s mock test from Learn page.</p><div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="scoreBackBtn">Back</button></div>`);
     } else {
       const score = Number(result.score || result.correct || 0);
       const total = Number(result.total || 30);
@@ -360,7 +360,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
           <div class="score-box"><small>Wrong</small><b>${wrong}</b></div>
         </div>
         <p style="margin:14px 0 0;color:#174B33;font-weight:900">${safe(label)}</p>
-        <div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="scoreBackBtn">Back</button></div>
+        <div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="scoreBackBtn">Back</button></div>
       `);
     }
     setTimeout(function(){ const b = $("scoreBackBtn"); if (b) b.onclick = closeModal; }, 0);
@@ -374,7 +374,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
   }
 
   function openReminder(){
-    openModal("Daily Study Reminder", `<p>Study a little every day.</p><p>Complete one mock test and revise Smart Notes regularly.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="reminderBackBtn">Back</button></div>`);
+    openModal("Daily Study Reminder", `<p>Study a little every day.</p><p>Complete one mock test and revise Smart Notes regularly.</p><div class="profile-modal-actions"><button class="profile-light-btn" type="button" id="reminderBackBtn">Back</button></div>`);
     setTimeout(function(){ const b = $("reminderBackBtn"); if (b) b.onclick = closeModal; }, 0);
   }
 
@@ -516,5 +516,6 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
 </script>
 </body>
 </html>
+
 
 

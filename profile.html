@@ -3,95 +3,115 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="tet-page-version" content="profile-v2" />
+<meta name="tet-page-version" content="profile-v3-daily" />
 <title>TET Success | Profile</title>
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="icon-192.png" />
 <link rel="stylesheet" href="style.css" />
 <style>
-:root{--p:#5A7D76;--pd:#1F5B3E;--gold:#A26A12;--bg:#EEF5F0;--card:#fff;--text:#17231F;--muted:#6B7772;--border:#DDECE1;--shadow:0 12px 30px rgba(47,58,54,.12);--nav:58px}
+:root{
+  --profile-primary:#6B8F71;
+  --profile-primary-dark:#4F6F5A;
+  --profile-deep:#174B33;
+  --profile-green:#0F5A3D;
+  --profile-gold:#B8861B;
+  --profile-gold-soft:#FFF8E8;
+  --profile-bg:#F6F8F7;
+  --profile-card:#FFFFFF;
+  --profile-border:#E3E8E5;
+  --profile-text:#2F3E36;
+  --profile-muted:#66756D;
+  --profile-shadow:0 16px 36px rgba(47,58,54,.12);
+  --profile-nav:58px;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;background:var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);overflow-x:hidden}
-button,input,select,textarea{font:inherit}button{border:none;cursor:pointer}
-.profile-page{max-width:520px;margin:0 auto;min-height:100vh;padding:0 14px calc(var(--nav) + 10px);background:linear-gradient(180deg,#EEF5F0 0%,#F8FBF8 58%,#fff 100%)}
-.profile-header{margin:0 -14px 0;padding:28px 22px 94px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-radius:0 0 30px 30px;box-shadow:0 10px 26px rgba(47,58,54,.14);position:relative;overflow:hidden}
-.profile-header:after{content:"";position:absolute;left:-10%;right:-10%;bottom:-44px;height:78px;background:#F8FBF8;border-radius:50% 50% 0 0}
-.header-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;position:relative;z-index:1}.profile-header h1{margin:0;font-size:34px;font-weight:950}.profile-header p{margin:6px 0 0;font-size:14px;opacity:.92}
-.status-badge{background:#FFF8E8;color:#6F4510;border-radius:18px;padding:10px 13px;min-width:120px;text-align:center;font-weight:950;font-size:13px}.status-badge small{display:block;margin-top:3px;font-size:11px;font-weight:750;color:#7B5A25}
-.card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-.identity-card{margin-top:-58px;position:relative;z-index:2;padding:16px;display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#fff,#FFF8E8)}
-.avatar{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;font-size:30px;font-weight:950;border:4px solid #EAF3ED;box-shadow:0 12px 24px rgba(47,90,67,.18)}
-.identity h2{margin:0;font-size:22px;color:var(--pd)}.identity p{margin:6px 0 0;color:var(--muted);font-weight:800}
-.section-title{margin:0 0 12px;font-size:19px;color:var(--pd);font-weight:950;display:flex;align-items:center;gap:8px}.title-dot{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#E6F2EA;color:var(--pd)}
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.summary{background:#F8FBF8;border:1px solid #E4EEE7;border-radius:16px;padding:9px 5px;text-align:center;min-height:82px;display:grid;align-content:center}.summary-icon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;margin:0 auto 5px;background:#E6F2EA;color:var(--pd);font-size:16px}.summary small{display:block;color:var(--muted);font-size:10.5px;font-weight:850}.summary b{display:block;margin-top:3px;color:var(--pd);font-size:14px;line-height:1.1}
-.btn{min-height:50px;border-radius:16px;padding:0 14px;font-weight:950}.primary{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;box-shadow:0 10px 24px rgba(47,90,67,.20)}.green{background:#1E6A48;color:#fff}.light{background:#EEF5F1;color:var(--pd);border:1px solid #DDECE1}.danger{background:#FEE2E2;color:#991B1B}.amber{background:#FFF8E8;color:#7B5A25;border:1px solid #F2E3C4}.full{width:100%;margin-top:12px}
-.invite-card{background:linear-gradient(135deg,#fff,#FFFDF4);border:1px dashed #F1CA76}.invite-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}.invite-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#FFF8E8;color:var(--pd);font-size:24px}.invite-head h2{margin:0;color:var(--pd);font-size:20px}.invite-head p{margin:3px 0 0;color:var(--muted);font-size:13px}.invite-row{display:grid;grid-template-columns:1fr 96px;gap:8px}.invite-link{word-break:break-all;background:#fff;border:1px solid #DDE6E1;border-radius:14px;padding:12px;color:var(--pd);font-size:13px;font-weight:800;min-height:48px}
-.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.quick-btn{min-height:74px;border-radius:18px;background:#fff;border:1px solid var(--border);color:var(--pd);font-weight:900;display:grid;place-items:center;gap:4px;box-shadow:0 8px 18px rgba(47,58,54,.06)}.quick-btn span{font-size:24px}.quick-btn.logout-tile span{color:#EF4444}
-.home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--border);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}.home-bottom-nav button{background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}.home-bottom-nav button span{font-size:20px}.home-bottom-nav button.active{background:#EEF5F1;color:var(--pd)}
-.modal-overlay{position:fixed;inset:0;background:rgba(23,35,31,.42);z-index:10000;display:none;align-items:center;justify-content:center;padding:16px}.modal-overlay.show{display:flex}.modal-card{width:min(100%,460px);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.24);animation:pop .22s ease}.modal-card.full-modal{width:min(100%,520px);height:min(92vh,760px)}@keyframes pop{from{transform:translateY(12px);opacity:.72}to{transform:none;opacity:1}}
-.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.modal-head h2{margin:0;color:var(--pd)}.close-btn{width:38px;height:38px;border-radius:14px;background:#EEF5F1;color:var(--pd);font-size:22px}.empty{color:var(--muted);line-height:1.5}
-.history-item{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #EEF2EF;padding:9px 0;color:var(--muted)}.history-item:last-child{border-bottom:none}.history-item b{color:var(--text)}.mock-list,.bookmark-list{display:grid;gap:8px}.mock-row,.bookmark-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#F8FBF8;border:1px solid #E4EEE7;border-radius:14px;padding:10px}.mock-row small,.bookmark-row small{color:var(--muted)}.bookmark-row b{color:var(--pd)}
-.field{display:grid;gap:7px;margin-bottom:10px}.field label{font-size:12px;color:var(--muted);font-weight:900}.field input,.field select,.field textarea{width:100%;border:1px solid #D1D5DB;border-radius:14px;padding:12px;background:#fff;color:var(--text);outline:none}.field textarea{min-height:112px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--p);box-shadow:0 0 0 4px rgba(90,125,118,.14)}
-.tree-box{text-align:center;background:linear-gradient(180deg,#F8FBF8,#fff);border:1px solid #E4EEE7;border-radius:20px;padding:18px;margin-bottom:12px}.tree{font-size:78px;line-height:1}.progress-bar{height:10px;background:#E8EEE9;border-radius:99px;overflow:hidden}.progress-bar span{display:block;height:100%;width:0;background:linear-gradient(135deg,var(--p),var(--pd));border-radius:99px}.group-progress{display:grid;gap:9px}.group-row{background:#F8FBF8;border:1px solid #E4EEE7;border-radius:14px;padding:10px}.group-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:7px;font-size:13px}.checkbox-line{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:14px;line-height:1.45}.checkbox-line input{margin-top:3px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.support-grid{display:grid;gap:10px}
-@media(min-width:760px){.profile-page{max-width:760px}.home-bottom-nav{max-width:760px}.support-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:380px){.summary-grid{gap:6px}.summary{padding:8px 4px}.summary b{font-size:13px}.quick-grid{gap:7px}.quick-btn{min-height:68px;font-size:13px}.invite-row{grid-template-columns:1fr}.profile-header h1{font-size:30px}}
+body{margin:0;background:var(--profile-bg);color:var(--profile-text);font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;background:transparent}
+.profile-page{width:100%;max-width:520px;min-height:100vh;margin:0 auto;padding:0 14px calc(var(--profile-nav) + 10px);background:linear-gradient(180deg,#F6F8F7 0%,#FFFEFA 58%,#FFFFFF 100%)}
+.profile-header{margin:0 -14px 0;padding:36px 20px 96px;position:relative;overflow:hidden;color:#fff;background:radial-gradient(circle at 8% 52%,rgba(255,255,255,.12),transparent 28%),linear-gradient(135deg,var(--profile-primary),var(--profile-primary-dark));border-radius:0 0 40px 40px;box-shadow:0 14px 30px rgba(47,58,54,.15)}
+.profile-header::before{content:"";position:absolute;left:-18px;top:74px;width:100px;height:120px;opacity:.11;background:radial-gradient(ellipse at center,rgba(255,255,255,.9) 0 12%,transparent 13% 100%);transform:rotate(-28deg)}
+.profile-header-row{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.profile-heading h1{margin:0;font-size:36px;line-height:1;font-weight:900;letter-spacing:0;text-shadow:0 2px 10px rgba(0,0,0,.12)}.profile-heading p{margin:10px 0 0;color:rgba(255,255,255,.92);font-size:17px;line-height:1.25}
+.profile-badge{min-width:142px;padding:11px 13px;border-radius:18px;border:1px solid #EAD8A6;background:linear-gradient(180deg,#FFFDF8,#FFF5DD);color:#6F4510;text-align:center;box-shadow:0 12px 24px rgba(17,24,39,.16)}.profile-badge b{display:block;font-size:16px;line-height:1.12;font-weight:900}.profile-badge small{display:block;margin-top:5px;font-size:12px;color:#7B5A25}.profile-badge.expired{cursor:pointer;box-shadow:0 12px 28px rgba(184,134,27,.22),0 0 0 3px rgba(255,248,232,.32)}.profile-badge.premium{background:linear-gradient(180deg,#EEF5F1,#FFFFFF);color:var(--profile-deep);border-color:#CFE2D5}
+.profile-user-card{margin:-54px 16px 28px;position:relative;z-index:2;min-height:136px;padding:22px 24px;display:flex;align-items:center;gap:24px;background:#fff;border:1px solid var(--profile-border);border-radius:23px;box-shadow:var(--profile-shadow)}.profile-avatar{width:86px;height:86px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--profile-primary),var(--profile-primary-dark));color:#fff;font-size:48px;font-weight:800;border:6px solid #EEF5F1;box-shadow:0 12px 22px rgba(47,58,54,.17)}.profile-user-name{margin:0;color:var(--profile-deep);font-size:28px;line-height:1.08;font-weight:900}.profile-user-phone{margin:10px 0 0;display:flex;align-items:center;gap:9px;color:#3F4944;font-size:20px}.phone-mark{color:var(--profile-primary-dark);font-weight:900}
+.profile-card{background:var(--profile-card);border:1px solid var(--profile-border);border-radius:22px;box-shadow:var(--profile-shadow)}.invite-card{margin:0 16px 28px;padding:22px 20px;background:linear-gradient(135deg,#FFFDF8 0%,#FFF8EA 42%,#FFFFFF 100%);border:1.5px dashed #D9A43D;box-shadow:0 12px 28px rgba(184,134,27,.10)}.invite-top{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;margin-bottom:18px}.invite-art{width:68px;height:68px;display:grid;place-items:center;color:var(--profile-gold)}.invite-art svg{width:68px;height:68px}.invite-title h2{margin:0;color:var(--profile-deep);font-size:24px;line-height:1.12;font-weight:900}.invite-title p{margin:8px 0 0;color:#626E68;font-size:16px}.invite-link-row{display:grid;grid-template-columns:1fr 132px;gap:10px;align-items:center;margin-bottom:16px}.invite-url{min-height:58px;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #E4D4B5;border-radius:15px;background:#fff;color:#111827;font-size:15px;line-height:1.25;overflow:hidden}.invite-url span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.link-mark{flex:0 0 auto;color:var(--profile-green);font-weight:900}.copy-btn{height:58px;border-radius:14px;background:linear-gradient(135deg,#174B33,#0F5A3D);color:#fff;border:1px solid #0E4B31;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 18px rgba(15,90,61,.20)}.copy-btn:active,.whatsapp-btn:active,.tile-btn:active{transform:scale(.985)}.whatsapp-btn{width:100%;min-height:58px;border-radius:16px;background:linear-gradient(135deg,var(--profile-primary),var(--profile-primary-dark));color:#fff;font-size:20px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 12px 22px rgba(79,111,90,.24)}
+.profile-actions{margin:0 16px 28px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.tile-btn{min-height:116px;border-radius:18px;background:#fff;border:1px solid var(--profile-border);box-shadow:0 12px 24px rgba(47,58,54,.09);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--profile-deep);font-size:16px;font-weight:850;transition:transform .18s ease}.tile-icon{width:42px;height:42px;display:grid;place-items:center}.tile-icon svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tile-gold{color:var(--profile-gold)}.tile-red{color:#D94135}.tile-green{color:#3F7656}.tile-btn.logout .tile-icon{color:#D94135}
+.app-info-card{margin:0 16px 12px;padding:18px 22px;min-height:96px;display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--profile-border);border-radius:22px;box-shadow:var(--profile-shadow)}.app-medal{width:72px;height:62px;display:grid;place-items:center;color:var(--profile-gold);flex:0 0 auto}.app-medal svg{width:72px;height:62px}.app-info-card h2{margin:0;color:var(--profile-deep);font-size:22px}.app-info-card p{margin:7px 0 0;color:#505A55;font-size:18px}
+.home-bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;height:58px;background:#fff;border-top:1px solid var(--profile-border);box-shadow:0 -8px 24px rgba(47,58,54,.10);display:grid;grid-template-columns:repeat(4,1fr);z-index:9000;padding:4px 6px}.home-bottom-nav button{background:transparent;color:#2F3E36;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:14px;font-size:11px;font-weight:700}.home-bottom-nav button span{font-size:20px;line-height:1}.home-bottom-nav button.active{background:#EEF5F1;color:var(--profile-green)}
+.profile-modal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(23,35,31,.46)}.profile-modal.show{display:flex}.profile-modal-card{width:min(100%,452px);max-height:88vh;overflow:auto;background:#fff;border:1px solid #E3E8E5;border-radius:24px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.24);animation:profilePop .22s ease}.profile-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.profile-modal-head h2{margin:0;color:var(--profile-deep);font-size:23px}.profile-modal-head p{margin:5px 0 0;color:var(--profile-muted)}.profile-close{width:40px;height:40px;border-radius:14px;background:#EEF5F1;color:var(--profile-deep);font-size:25px;line-height:1}.profile-modal-text{color:#4F5A54;line-height:1.55;font-size:15px}.profile-modal-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}.profile-primary-btn,.profile-light-btn{min-height:50px;border-radius:14px;font-size:15px;font-weight:900}.profile-primary-btn{background:linear-gradient(135deg,var(--profile-green),#0E4B31);color:#fff}.profile-light-btn{background:#EEF5F1;color:var(--profile-deep);border:1px solid #DDECE1}.note-badge{display:inline-flex;padding:6px 12px;border-radius:999px;background:#FFF8E8;color:#7B5A25;font-weight:900;margin-bottom:10px}.note-box{margin:10px 0;padding:13px;border-radius:16px;background:#F8FBF8;border:1px solid #DDECE1;color:#33413A;line-height:1.55}.score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.score-box{padding:12px;border-radius:16px;background:#F8FBF8;border:1px solid #DDECE1;text-align:center}.score-box small{display:block;color:var(--profile-muted);font-weight:800}.score-box b{display:block;margin-top:4px;color:var(--profile-deep);font-size:22px}.support-list{display:grid;gap:10px}
+@keyframes profilePop{from{transform:translateY(12px);opacity:.72}to{transform:none;opacity:1}}
+@media(max-width:390px){.profile-header{padding:32px 18px 88px}.profile-heading h1{font-size:32px}.profile-heading p{font-size:15px}.profile-badge{min-width:126px;padding:10px 11px}.profile-user-card{margin-left:8px;margin-right:8px;gap:16px;padding:18px}.profile-avatar{width:72px;height:72px;font-size:40px}.profile-user-name{font-size:24px}.profile-user-phone{font-size:17px}.invite-card,.profile-actions,.app-info-card{margin-left:8px;margin-right:8px}.invite-top{grid-template-columns:70px 1fr}.invite-title h2{font-size:22px}.invite-link-row{grid-template-columns:1fr}.copy-btn{width:100%}.profile-actions{gap:12px}.tile-btn{min-height:100px;font-size:14px}.tile-icon svg{width:34px;height:34px}.app-info-card{padding:16px}.app-info-card h2{font-size:20px}.app-info-card p{font-size:16px}}
 </style>
 </head>
 <body>
 <main class="profile-page">
   <header class="profile-header">
-    <div class="header-row">
-      <div><h1>My Profile</h1><p>Your personal progress dashboard</p></div>
-      <div id="profileBadge" class="status-badge">Trial Version</div>
+    <div class="profile-header-row">
+      <div class="profile-heading">
+        <h1>My Profile</h1>
+        <p>Your Personal Dashboard</p>
+      </div>
+      <button id="profileBadge" class="profile-badge" type="button" aria-label="Premium status">
+        <b>Trial Version</b><small>Loading...</small>
+      </button>
     </div>
   </header>
 
-  <section class="card identity-card">
-    <div id="avatar" class="avatar">T</div>
-    <div class="identity"><h2 id="profileName">Student</h2><p id="profilePhone">Phone</p></div>
-  </section>
-
-  <section class="card">
-    <h2 class="section-title"><span class="title-dot">↗</span>Progress Summary</h2>
-    <div class="summary-grid">
-      <div class="summary"><span class="summary-icon">👥</span><small>Current Group</small><b id="currentGroup">Primary</b></div>
-      <div class="summary"><span class="summary-icon">🎓</span><small>Current Level</small><b id="currentLevel">Level 1</b></div>
-      <div class="summary"><span class="summary-icon">☑</span><small>Completed</small><b id="completedLevels">0</b></div>
-      <div class="summary"><span class="summary-icon">☆</span><small>Best Score</small><b id="bestScore">Not Started</b></div>
+  <section class="profile-user-card" aria-label="User details">
+    <div id="profileAvatar" class="profile-avatar">T</div>
+    <div>
+      <h2 id="profileName" class="profile-user-name">Student</h2>
+      <p id="profilePhone" class="profile-user-phone"><span class="phone-mark">&#9742;</span><span>Phone</span></p>
     </div>
-    <button id="successBtn" class="btn primary full" type="button">🏆 My Success</button>
   </section>
 
-  <section class="card invite-card">
-    <div class="invite-head"><div class="invite-icon">👥</div><div><h2>Invite Your Friend</h2><p>Share the app and learn together!</p></div></div>
-    <div class="invite-row"><div id="inviteLink" class="invite-link">Loading invite link...</div><button id="copyInviteBtn" class="btn light" type="button">Copy Link</button></div>
-    <button id="sendInviteBtn" class="btn primary full" type="button">Send in WhatsApp</button>
+  <section class="invite-card" aria-label="Invite your friend">
+    <div class="invite-top">
+      <div class="invite-art" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><circle cx="24" cy="22" r="10" stroke="currentColor"/><circle cx="44" cy="25" r="7" stroke="currentColor"/><path d="M8 54c2-14 11-20 22-20s20 6 22 20" stroke="currentColor"/><path d="M36 45c4-6 10-8 17-5 4 2 7 7 8 14" stroke="currentColor"/><path d="M49 7l2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="invite-title">
+        <h2>Invite Your Friend</h2>
+        <p>Share the app and learn together!</p>
+      </div>
+    </div>
+    <div class="invite-link-row">
+      <div class="invite-url"><span class="link-mark">&#128279;</span><span id="inviteLinkText">https://tinyurl.com/Tet-Success-Download</span></div>
+      <button id="copyInviteBtn" class="copy-btn" type="button"><span>&#9635;</span> Copy Link</button>
+    </div>
+    <button id="sendInviteBtn" class="whatsapp-btn" type="button"><span>&#9742;</span> Send in WhatsApp</button>
   </section>
 
-  <section class="quick-grid">
-    <button id="premiumTile" class="quick-btn" type="button"><span>♛</span>Premium</button>
-    <button id="historyTile" class="quick-btn" type="button"><span>↺</span>History</button>
-  <button id="mocksTile" class="quick-btn" type="button"><span>☑</span>Mocks</button>
-  <button id="supportTile" class="quick-btn" type="button"><span>🎧</span>Support</button>
-  <button id="bookmarksTile" class="quick-btn" type="button"><span>🔖</span>Bookmarks</button>
-  <button id="logoutBtn" class="quick-btn logout-tile" type="button"><span>⇥</span>Logout</button>
-</section>
+  <section class="profile-actions" aria-label="Profile actions">
+    <button id="premiumBtn" class="tile-btn" type="button"><span class="tile-icon tile-gold"><svg viewBox="0 0 48 48"><path d="M7 37h34M10 34l3-22 10 12L24 9l11 15 10-12-3 22H10z" fill="currentColor" stroke="none"/></svg></span><span>Premium</span></button>
+    <button id="smartNotesBtn" class="tile-btn" type="button"><span class="tile-icon tile-green"><svg viewBox="0 0 48 48"><path d="M16 7h18a5 5 0 0 1 5 5v29H16a7 7 0 0 1-7-7V14a7 7 0 0 1 7-7z"/><path d="M16 7v34M22 18h10M22 26h10"/></svg></span><span>Smart Notes</span></button>
+    <button id="scoresBtn" class="tile-btn" type="button"><span class="tile-icon tile-green"><svg viewBox="0 0 48 48"><path d="M9 39h30M13 35V24h6v11M22 35V14h6v21M31 35V8h6v27"/></svg></span><span>Scores</span></button>
+    <button id="reminderBtn" class="tile-btn" type="button"><span class="tile-icon tile-green"><svg viewBox="0 0 48 48"><path d="M17 39h14M20 40a4 4 0 0 0 8 0M12 34h24l-3-4v-9a9 9 0 0 0-18 0v9l-3 4zM24 8v4"/></svg></span><span>Reminder</span></button>
+    <button id="supportBtn" class="tile-btn" type="button"><span class="tile-icon tile-green"><svg viewBox="0 0 48 48"><path d="M12 27v-5a12 12 0 0 1 24 0v5"/><path d="M12 27v7h7v-9h-5a2 2 0 0 0-2 2zM36 27v7h-7v-9h5a2 2 0 0 1 2 2z"/><path d="M31 37c-2 3-5 4-9 4"/></svg></span><span>Support</span></button>
+    <button id="logoutBtn" class="tile-btn logout" type="button"><span class="tile-icon"><svg viewBox="0 0 48 48"><path d="M20 10H9v28h11"/><path d="M28 16l8 8-8 8M36 24H18"/></svg></span><span>Logout</span></button>
+  </section>
+
+  <section class="app-info-card" aria-label="App info">
+    <div class="app-medal" aria-hidden="true"><svg viewBox="0 0 80 70"><path d="M19 11c-6 9-9 20-7 32M61 11c6 9 9 20 7 32M25 55c-6-2-11-6-15-11M55 55c6-2 11-6 15-11" stroke="currentColor" fill="none" stroke-width="3"/><path d="M25 18h30v28H25z" fill="#174B33"/><path d="M30 24c7 0 10 3 10 3s3-3 10-3v15c-7 0-10 3-10 3s-3-3-10-3V24z" fill="#fff"/><path d="M40 12l18 8-18 8-18-8 18-8z" fill="#174B33"/></svg></div>
+    <div><h2>TET Success</h2><p>Version 1.0</p></div>
+  </section>
 </main>
 
-<nav class="home-bottom-nav">
-  <button type="button" data-page="home2.html"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
-  <button type="button" data-page="learn.html"><span>📖</span>Learn</button>
-  <button class="active" type="button" data-page="profile.html"><span>👤</span>Profile</button>
+<nav class="home-bottom-nav" aria-label="Bottom navigation">
+  <button type="button" data-page="home2.html"><span>&#127968;</span>Home</button>
+  <button type="button" data-page="info.html"><span>&#8505;</span>Info</button>
+  <button type="button" data-page="learn.html"><span>&#128214;</span>Learn</button>
+  <button class="active" type="button" data-page="profile.html"><span>&#128100;</span>Profile</button>
 </nav>
 
-<div id="successModal" class="modal-overlay"><div class="modal-card full-modal"><div class="modal-head"><div><h2>Your Success Tree</h2><p class="empty">Every level grows your preparation.</p></div><button class="close-btn" data-close="successModal">×</button></div><div class="tree-box"><div id="successTree" class="tree">🌱</div><h3 id="successTitle">Seed / tiny sprout</h3><p id="overallText">Overall Progress: 0%</p><div class="progress-bar"><span id="overallBar"></span></div></div><div id="groupProgress" class="group-progress"></div></div></div>
-
-<div id="historyModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Learning History</h2><button class="close-btn" data-close="historyModal">×</button></div><div id="learningHistory"></div></div></div>
-<div id="mocksModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Mock Test Report</h2><button class="close-btn" data-close="mocksModal">×</button></div><div id="mockReport" class="mock-list"></div></div></div>
-<div id="bookmarksModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Bookmarked Questions</h2><button class="close-btn" data-close="bookmarksModal">×</button></div><div id="bookmarksList" class="bookmark-list"></div><button id="openBookmarksBtn" class="btn primary full" type="button">Open Bookmarks Page</button></div></div>
-<div id="supportModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Support</h2><button class="close-btn" data-close="supportModal">×</button></div><div class="support-grid"><button id="contactAdminBtn" class="btn light" type="button">Contact Admin</button><button id="reportIssueBtn" class="btn light" type="button">Report an Issue</button><button id="rateAppBtn" class="btn light" type="button">Rate This App</button></div></div></div>
-<div id="declarationModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Self Declaration</h2><button class="close-btn" data-close="declarationModal">×</button></div><p class="empty">TET Success is an educational learning platform designed to help you prepare for the TET examination through study materials, practice questions, mock tests, and guidance.</p><p class="empty">We do not guarantee success or selection in any examination. Your result depends on your own preparation, effort, and performance.</p><label class="checkbox-line"><input id="agreeDeclaration" type="checkbox" /> <span>I have read and understood the above declaration and agree to continue.</span></label><button id="continuePaymentBtn" class="btn primary full" type="button" disabled>CONTINUE TO PAYMENT</button></div></div>
-<div id="issueModal" class="modal-overlay"><div class="modal-card"><div class="modal-head"><h2>Report an Issue</h2><button class="close-btn" data-close="issueModal">×</button></div><div class="field"><label>Issue Category</label><select id="issueCategory"><option value="">Select category</option><option>Login Problem</option><option>Learn Page</option><option>Question Wrong</option><option>Progress Issue</option><option>Payment Issue</option><option>Premium Issue</option><option>App Crash</option><option>Other</option></select></div><div class="field"><label>Describe Your Issue</label><textarea id="issueText" maxlength="500"></textarea></div><div class="actions"><button id="sendIssueBtn" class="btn primary" type="button">Send Report</button><button class="btn light" data-close="issueModal" type="button">Cancel</button></div></div></div>
+<div id="profileModal" class="profile-modal" aria-hidden="true">
+  <div class="profile-modal-card">
+    <div class="profile-modal-head">
+      <div><h2 id="modalTitle">Title</h2><p id="modalSub"></p></div>
+      <button id="modalCloseBtn" class="profile-close" type="button">&times;</button>
+    </div>
+    <div id="modalBody" class="profile-modal-text"></div>
+  </div>
+</div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -101,69 +121,399 @@ button,input,select,textarea{font:inherit}button{border:none;cursor:pointer}
 <script>
 "use strict";
 (function(){
-  let user=null,status=null,progress=null,settings=null,invite=null,mocks=[],bookmarks=[];
-  const groups=[["Primary",5],["Basic",5],["Growth",5],["Focus",5],["Target",5],["Advance",5],["Real Exam Test",20]];
-  const $=s=>document.querySelector(s), db=()=>window.tetSupabase||window.supabase, table=n=>CONFIG.TABLES[n], esc=v=>escapeHTML(v??"");
-  function requireLogin(){if(typeof requireUserLogin==="function"&&!requireUserLogin())return false;user=getUserSession();if(!user){location.href=CONFIG.LOGIN_PAGE;return false}return true}
-  async function selectOne(n,c,v){const {data,error}=await db().from(table(n)).select("*").eq(c,v).maybeSingle();if(error)throw error;return data}
-  async function selectMany(n,c,v){const {data,error}=await db().from(table(n)).select("*").eq(c,v);if(error)throw error;return data||[]}
-  function isPremium(){return status?.status==="premium"||status?.payment_verified===true||user?.status==="premium"}
-  function dateText(v){return v?formatDate(v):""}
-  function trialDays(){return calculateDaysRemaining(status?.trial_end_date)}
-  function completedMap(){const arr=progress?.completed_levels||[];const map={};arr.forEach(x=>{const [g,l]=String(x).split(":");if(!map[g])map[g]=[];map[g].push(Number(l))});return map}
-  function completedCount(){return Object.values(completedMap()).reduce((n,a)=>n+a.length,0)}
-  function completedMockCount(){return Math.min(20,new Set((mocks||[]).map(m=>Number(m.mock_no||m.test_no||0)).filter(Boolean)).size)}
-  function journeyCompleted(){return Math.min(30,completedCount())+completedMockCount()}
-  function overall(){return Math.min(100,Math.round((journeyCompleted()/50)*100))}
-  async function loadAll(){const fresh=await selectOne("USERS","id",user.id);if(fresh){user=fresh;saveUserSession(user)}status=await selectOne("TRIAL_PREMIUM","user_id",user.id);progress=await selectOne("USER_PROGRESS","user_id",user.id)||{current_group:"Primary",current_level:1,completed_levels:[],best_score:0};const {data:s}=await db().from(table("APP_SETTINGS")).select("*").order("created_at",{ascending:false}).limit(1);settings=s?.[0]||{};mocks=await selectMany("MOCK_TEST_RESULTS","user_id",user.id);bookmarks=await selectMany("BOOKMARKS","user_id",user.id);await ensureInvite()}
-  function renderBadge(){if(typeof renderTrialPremiumBadge==="function"){renderTrialPremiumBadge($("#profileBadge"),status,user,{mode:"days"});return}$("#profileBadge").innerHTML=isPremium()?`Premium Member<small>Valid Until: ${esc(dateText(status?.premium_valid_until||"2028-09-30"))}</small>`:`Trial Version<small>${trialDays()} days left</small>`}
-  function renderTop(){$("#avatar").textContent=(user.full_name||"T").trim().charAt(0).toUpperCase();$("#profileName").textContent=user.full_name||"Student";$("#profilePhone").textContent=user.phone||""}
-  function renderProgress(){$("#currentGroup").textContent=progress.current_group||"Primary";$("#currentLevel").textContent="Level "+(progress.current_level||1);$("#completedLevels").textContent=completedCount();$("#bestScore").textContent=Number(progress.best_score||0)>0?`${progress.best_score}%`:"Not Started"}
-  function renderPremium(){}
-  function historyLine(a,b){return `<div class="history-item"><span>${esc(a)}</span><b>${esc(b||"Not Started")}</b></div>`}
-  function renderHistory(){const h=progress?.last_attempt_group;$("#learningHistory").innerHTML=h?`${historyLine("Last attempted group",progress.last_attempt_group)}${historyLine("Last attempted level",progress.last_attempt_level?"Level "+progress.last_attempt_level:"")}${historyLine("Last score",progress.last_attempt_score?progress.last_attempt_score+"%":"")}${historyLine("Result category",progress.last_result||"")}${historyLine("Attempt count",progress.attempt_count||0)}`:`<p class="empty">Start your first lesson from Learn page.</p><button class="btn primary full" type="button" data-page="learn.html">Go to Learn</button>`}
-  function renderMocks(){const best=mocks.reduce((n,m)=>Math.max(n,Number(m.percentage||0)),0);const rows=[];for(let i=1;i<=20;i++){const m=mocks.find(x=>Number(x.mock_no||x.test_no)===i);const locked=i===1?"Free Test":"Premium";rows.push(`<div class="mock-row"><div><b>Mock Test ${i}</b><br><small>${m?`Attempt ${m.attempt_count||1}`:"Not Started"}</small></div><div><b>${m?m.percentage+"%":locked}</b><br><small>${m?(Number(m.percentage)>=80?"Qualified":"Not Qualified"):""}</small></div></div>`)}$("#mockReport").innerHTML=`<p class="empty">Best Mock Score: ${best?best+"%":"Not Started"} · Mock Test Progress: ${completedMockCount()}/20</p>${rows.join("")}`}
-  function treeState(){const pct=overall();if(pct>=100)return["Tree","Full Grown Success Tree"];if(pct>=86)return["Tree","Success Tree"];if(pct>=66)return["Tree","Mature Tree"];if(pct>=46)return["Tree","Strong Tree"];if(pct>=31)return["Tree","Growing Tree"];if(pct>=16)return["Plant","Young Plant"];if(pct>=6)return["Sprout","Small Sprout"];return["Seed","Seed / tiny sprout"]}
-  function renderSuccess(){const [icon,title]=treeState();$("#successTree").textContent=icon;$("#successTitle").textContent=title;$("#overallText").textContent=`Overall Progress: ${overall()}%`;$("#overallBar").style.width=overall()+"%";const map=completedMap();$("#groupProgress").innerHTML=groups.map(([g,total])=>{const isExam=g==="Real Exam Test";const done=isExam?completedMockCount():(map[g]||[]).length;const pct=Math.round(done/total*100);const state=done===total?"Completed":(g===(progress.current_group||"Primary")?"Active":"Locked");return `<div class="group-row"><div class="group-top"><b>${esc(g)}</b><span>${done}/${total} · ${state}</span></div><div class="progress-bar"><span style="width:${pct}%"></span></div></div>`}).join("")}
-  function renderBookmarks(){if(!bookmarks.length){$("#bookmarksList").innerHTML=`<p class="empty">No bookmarked questions yet. When you save important questions, they will appear here.</p>`;return}$("#bookmarksList").innerHTML=bookmarks.slice(0,8).map(b=>`<div class="bookmark-row"><div><b>${esc(b.subject||b.bookmark_type||"Saved Question")}</b><br><small>${esc(b.chapter_name||b.bookmark_ref_id||"Bookmark")}</small></div><small>${esc(dateText(b.created_at))}</small></div>`).join("")+(bookmarks.length>8?`<p class="empty">Showing latest 8 of ${bookmarks.length} bookmarks.</p>`:"")}
-  async function ensureInvite(){invite=await selectOne("INVITE_LINKS","user_id",user.id);if(invite)return;const name=(user.full_name||"User").split(/\s+/)[0].replace(/[^a-z0-9]/gi,"")||"User",day=String(new Date().getDate()).padStart(2,"0"),last4=String(user.phone||"0000").slice(-4);let code=`${name}${day}${last4}`;const base=settings?.github_app_link||"https://myragifts.github.io/Tet-Success-App/";let link=`${base}?invite=${code}`;const existing=await selectOne("INVITE_LINKS","invite_code",code);if(existing){code=code+String(Math.floor(Math.random()*9)+1);link=`${base}?invite=${code}`}const payload={user_id:user.id,full_name:user.full_name,phone:user.phone,invite_code:code,invite_link:link};const {data,error}=await db().from(table("INVITE_LINKS")).insert(payload).select("*").single();if(error)throw error;await db().from(table("USERS")).update({invite_code:code,invite_link:link}).eq("id",user.id);invite=data}
-  function getShareLink(){return "https://tinyurl.com/Tet-Success-Download"}
-  function renderInvite(){$("#inviteLink").textContent=getShareLink()}
-  function openPayment(){if(typeof getPremiumWhatsAppMessage==="function"){openWhatsApp(settings?.admin_whatsapp_number||"9836697502",getPremiumWhatsAppMessage());return}const msg=`Hello,
+  const INVITE_LINK = "https://tinyurl.com/Tet-Success-Download";
+  const SMART_NOTE_CACHE = "tet_smart_notes_latest_v1";
+  const MOCK_RESULT_KEY = "tet_daily_mock_last_result_v1";
+  const $ = (id) => document.getElementById(id);
 
-I want to upgrade to TET Success Premium.
+  let currentUser = null;
+  let trialStatus = null;
+  let appSettings = {};
 
-Name: ${user.full_name}
-Phone: ${user.phone}
+  function client(){ return window.tetSupabase || window.supabase; }
+  function text(value, fallback){ return String(value || fallback || ""); }
+  function safe(value){ return typeof escapeHTML === "function" ? escapeHTML(value) : String(value ?? ""); }
+  function isPremiumUser(){
+    return trialStatus?.status === "premium" || trialStatus?.payment_verified === true || currentUser?.status === "premium";
+  }
+  function openModal(title, body, sub){
+    $("modalTitle").textContent = title;
+    $("modalSub").textContent = sub || "";
+    $("modalBody").innerHTML = body;
+    $("profileModal").classList.add("show");
+    $("profileModal").setAttribute("aria-hidden", "false");
+  }
+  function closeModal(){
+    $("profileModal").classList.remove("show");
+    $("profileModal").setAttribute("aria-hidden", "true");
+  }
+  function getUserName(){ return text(currentUser?.full_name || currentUser?.name, "Student"); }
+  function getUserPhone(){ return text(currentUser?.phone || currentUser?.mobile, "Phone"); }
+  function getAdminPhone(){ return text(appSettings?.admin_whatsapp_number, "9836697502"); }
+  function getInitial(name){ return text(name, "T").trim().charAt(0).toUpperCase() || "T"; }
 
-Plan:
-Premium Membership
+  async function loadUserAndStatus(){
+    currentUser = typeof getUserSession === "function" ? getUserSession() : null;
+    if (!currentUser) {
+      window.location.href = CONFIG.LOGIN_PAGE;
+      return false;
+    }
 
-Subscription Fee:
-₹799 (One-Time Payment)
+    try {
+      const { data: freshUser } = await client()
+        .from(CONFIG.TABLES.USERS)
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
 
-Premium Validity:
-30 September 2028
+      if (freshUser) {
+        currentUser = freshUser;
+        if (typeof saveUserSession === "function") saveUserSession(freshUser);
+      }
+    } catch (error) {
+      console.warn("Profile user refresh skipped", error);
+    }
 
-Access:
-Full Premium Access to all features until 30 September 2028.
+    try {
+      const { data: statusData } = await client()
+        .from(CONFIG.TABLES.TRIAL_PREMIUM)
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+      trialStatus = statusData || null;
+    } catch (error) {
+      console.warn("Profile premium status load skipped", error);
+      trialStatus = null;
+    }
 
-Self Declaration:
-I have read and accepted that TET Success provides educational guidance and learning resources only. I understand that passing the examination depends on my own preparation and performance, and TET Success does not guarantee exam success.
+    try {
+      appSettings = typeof APP === "object" && APP ? APP : {};
+    } catch {
+      appSettings = {};
+    }
 
-Payment Link:
-${settings?.payment_link||"https://tinyurl.com/Tet-Success-Pay-now"}
+    return true;
+  }
 
-After payment send screenshot for confirmation.
+  function renderProfile(){
+    const name = getUserName();
+    $("profileAvatar").textContent = getInitial(name);
+    $("profileName").textContent = name;
+    $("profilePhone").querySelector("span:last-child").textContent = getUserPhone();
+    $("inviteLinkText").textContent = INVITE_LINK;
+    renderBadge();
+  }
 
-Thank you.`;openWhatsApp(settings?.admin_whatsapp_number||"9836697502",msg)}
-  async function reportIssue(){const cat=$("#issueCategory").value,text=$("#issueText").value.trim();if(!cat){showToast("Please select issue category","warning");return}if(!text){showToast("Please describe your issue","warning");return}if(text.length<10){showToast("Minimum 10 characters required","warning");return}const payload={user_id:user.id,full_name:user.full_name,phone:user.phone,user_status:isPremium()?"Premium Member":"Trial",issue_category:cat,issue_text:text,issue_status:"unsolved"};const {error}=await db().from(table("ISSUE_REPORTS")).insert(payload);if(error){showToast("Unable to send report","error");return}closeModal("issueModal");openWhatsApp(settings?.admin_whatsapp_number,`Hello TET Success Team,\n\nI want to report an issue.\n\nName: ${user.full_name}\nPhone: ${user.phone}\n\nIssue Category:\n${cat}\n\nCurrent Group:\n${progress.current_group||"Primary"}\n\nCurrent Level:\n${progress.current_level||1}\n\nApp Version:\n${settings?.app_version||"1.0.0"}\n\nIssue Description:\n${text}\n\nThank you.`)}
-  function openModal(id){const el=$("#"+id);if(el)el.classList.add("show")}function closeModal(id){const el=typeof id==="string"?$("#"+id):id;if(el)el.classList.remove("show")}
-  function renderAll(){renderBadge();renderTop();renderProgress();renderPremium();renderHistory();renderMocks();renderBookmarks();renderInvite();renderSuccess();if(typeof scheduleExpiredTrialReminder==="function")scheduleExpiredTrialReminder(status,user)}
-  async function refresh(){showLoading("Loading profile...");try{await loadAll();renderAll();showToast("Progress updated","success")}catch(e){console.error(e);showToast("Unable to load profile. Please try again.","error")}finally{hideLoading()}}
-  function bind(){document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>location.href=b.dataset.page);document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));$("#successBtn").onclick=()=>{renderSuccess();openModal("successModal")};$("#premiumTile").onclick=()=>{if(typeof showGlobalPremiumEntry==="function")showGlobalPremiumEntry(status,user);else if(typeof showGlobalPremiumModal==="function")showGlobalPremiumModal()};$("#historyTile").onclick=()=>openModal("historyModal");$("#mocksTile").onclick=()=>openModal("mocksModal");$("#supportTile").onclick=()=>openModal("supportModal");$("#bookmarksTile").onclick=()=>openModal("bookmarksModal");$("#openBookmarksBtn").onclick=()=>location.href="bookmarks.html";$("#copyInviteBtn").onclick=()=>copyToClipboard(invite?.invite_link||"");$("#sendInviteBtn").onclick=()=>{const msg=`Hi,\n\nI am using TET Success app. This app is very helpful for WB Primary TET preparation.\n\nYou should definitely try this app.\n\nDownload / open the app from here:\n${invite?.invite_link||""}\n\nStart your free trial and prepare step by step.\n\nThank you.`;showToast("We are connecting you... In WhatsApp select your friend and click on send","info");setTimeout(()=>openExternalLink(`https://wa.me/?text=${encodeURIComponent(msg)}`),500)};$("#contactAdminBtn").onclick=()=>openWhatsApp(settings?.admin_whatsapp_number,`Hello TET Success Team,\n\nI need help.\n\nName: ${user.full_name}\nPhone: ${user.phone}`);$("#reportIssueBtn").onclick=()=>openModal("issueModal");$("#rateAppBtn").onclick=()=>showToast("Coming Soon","info");$("#logoutBtn").onclick=()=>showConfirmModal({title:"Logout?",message:"Are you sure you want to logout from TET Success?",confirmText:"Logout",onConfirm:()=>{clearUserSession();location.href=CONFIG.LOGIN_PAGE}});$("#agreeDeclaration").onchange=e=>$("#continuePaymentBtn").disabled=!e.target.checked;$("#continuePaymentBtn").onclick=()=>{if(!$("#agreeDeclaration").checked){showToast("Please agree before continuing","warning");return}closeModal("declarationModal");openPayment();showToast("Subscription request opened","success")};$("#sendIssueBtn").onclick=reportIssue}
-  document.addEventListener("DOMContentLoaded",async()=>{if(!requireLogin())return;bind();await refresh()});
+  function renderBadge(){
+    const badge = $("profileBadge");
+    badge.classList.remove("expired", "premium");
+
+    if (typeof renderTrialPremiumBadge === "function") {
+      renderTrialPremiumBadge(badge, trialStatus, currentUser, { mode:"date" });
+      const state = window.TETPremiumState;
+      if (isPremiumUser()) badge.classList.add("premium");
+      if (badge.textContent.toLowerCase().includes("go premium")) badge.classList.add("expired");
+      return;
+    }
+
+    if (isPremiumUser()) {
+      badge.classList.add("premium");
+      badge.innerHTML = "<b>Premium Member</b><small>Valid Until 30 Sep 2028</small>";
+      badge.onclick = null;
+      return;
+    }
+
+    const days = typeof calculateDaysRemaining === "function" ? calculateDaysRemaining(trialStatus?.trial_end_date) : 1;
+    if (days <= 0) {
+      badge.classList.add("expired");
+      badge.innerHTML = "<b>Go Premium</b><small>Unlock Full Access</small>";
+      badge.onclick = showPremiumFlow;
+    } else {
+      const endText = typeof formatDate === "function" ? formatDate(trialStatus?.trial_end_date) : "";
+      badge.innerHTML = "<b>Trial Version</b><small>Ends " + safe(endText || "Soon") + "</small>";
+      badge.onclick = null;
+    }
+  }
+
+  function showPremiumFlow(){
+    if (!navigator.onLine) {
+      showToast("Please check your internet connection", "warning");
+      return;
+    }
+    if (typeof showGlobalPremiumEntry === "function") {
+      showGlobalPremiumEntry(trialStatus, currentUser);
+      return;
+    }
+    openModal("Unlock Premium Access", `
+      <p><b>₹799 Only – One Time Payment</b></p>
+      <p>Full premium access to all features until 30 September 2028.</p>
+      <p>This small one-time amount can support your preparation, confidence, and long-term teaching career.</p>
+      <div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="fallbackPremiumPay">Subscribe Now</button><button class="profile-light-btn" type="button" id="fallbackPremiumLater">Later</button></div>
+    `);
+    setTimeout(function(){
+      const pay = $("fallbackPremiumPay");
+      const later = $("fallbackPremiumLater");
+      if (pay) pay.onclick = openPremiumWhatsApp;
+      if (later) later.onclick = closeModal;
+    }, 0);
+  }
+
+  function showPremiumStatus(){
+    if (typeof showGlobalPremiumEntry === "function") {
+      showGlobalPremiumEntry(trialStatus, currentUser);
+      return;
+    }
+    openModal("Premium User", `<p>Enjoy all premium benefits up to 30 September 2028.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="premiumBackBtn">Back</button></div>`);
+    setTimeout(function(){ const b = $("premiumBackBtn"); if (b) b.onclick = closeModal; }, 0);
+  }
+
+  function openPremiumWhatsApp(){
+    const message = typeof getPremiumWhatsAppMessage === "function" ? getPremiumWhatsAppMessage() : `Hello,\n\nI want to upgrade to TET Success Premium.\n\nName: ${getUserName() || "Not available"}\nPhone: ${getUserPhone() || "Not available"}\n\nPlan:\nPremium Membership\n\nSubscription Fee:\n₹799 (One-Time Payment)\n\nPremium Validity:\n30 September 2028\n\nAccess:\nFull Premium Access to all features until 30 September 2028.\n\nSelf Declaration:\nI have read and accepted that TET Success provides educational guidance and learning resources only. I understand that passing the examination depends on my own preparation and performance, and TET Success does not guarantee exam success.\n\nPayment Link:\nhttps://tinyurl.com/Tet-Success-Pay-now\n\nAfter payment send screenshot for confirmation.\n\nThank you.`;
+    if (typeof openWhatsApp === "function") openWhatsApp(getAdminPhone(), message);
+  }
+
+  async function copyInvite(){
+    try {
+      await navigator.clipboard.writeText(INVITE_LINK);
+      showToast("Invite link copied", "success");
+    } catch {
+      showToast("Unable to copy link", "error");
+    }
+  }
+
+  function sendInvite(){
+    const message = `Hi,\n\nI am using TET Success app. This app is very helpful for WB Primary TET preparation.\n\nYou should definitely try this app.\n\nDownload / open the app from here:\n${INVITE_LINK}\n\nStart your free trial and prepare step by step.\n\nThank you.`;
+    const url = "https://wa.me/?text=" + encodeURIComponent(message);
+    if (typeof openExternalLink === "function") openExternalLink(url);
+    else window.open(url, "_blank", "noopener");
+  }
+
+  async function openSmartNotes(){
+    if (!isPremiumUser() && isExpired()) {
+      showPremiumFlow();
+      return;
+    }
+
+    const cached = readSmartNoteCache();
+    if (cached) renderSmartNote(cached);
+    else openModal("Smart Notes", `<p>Loading Smart Notes...</p>`);
+
+    try {
+      const { data, error } = await client()
+        .from("tet_smart_notes")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending:false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) {
+        if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>`);
+      } else {
+        localStorage.setItem(SMART_NOTE_CACHE, JSON.stringify(data));
+        renderSmartNote(data);
+      }
+    } catch (error) {
+      console.warn("Smart Notes load failed", error);
+      if (!cached) openModal("Smart Notes", `<p>Smart Notes are being updated. Please check again soon.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>`);
+    }
+    setTimeout(function(){ const b = $("smartBackBtn"); if (b) b.onclick = closeModal; }, 0);
+  }
+
+  function readSmartNoteCache(){
+    try { return JSON.parse(localStorage.getItem(SMART_NOTE_CACHE)); } catch { return null; }
+  }
+
+  function renderSmartNote(note){
+    openModal("Smart Notes", `
+      <span class="note-badge">${safe(note.subject || "Subject")}</span>
+      <h3 style="margin:0 0 10px;color:#174B33">${safe(note.title || "Quick Revision")}</h3>
+      <div class="note-box"><b>Rule</b><br>${safe(note.rule_text || "Smart Notes are being updated. Please check again soon.").replace(/\n/g,"<br>")}</div>
+      ${note.example_text ? `<div class="note-box"><b>Examples</b><br>${safe(note.example_text).replace(/\n/g,"<br>")}</div>` : ""}
+      <div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="smartBackBtn">Back</button></div>
+    `);
+    setTimeout(function(){ const b = $("smartBackBtn"); if (b) b.onclick = closeModal; }, 0);
+  }
+
+  function isExpired(){
+    if (isPremiumUser()) return false;
+    if (typeof isTrialExpiredStatus === "function") return isTrialExpiredStatus(trialStatus, currentUser);
+    return typeof calculateDaysRemaining === "function" ? calculateDaysRemaining(trialStatus?.trial_end_date) <= 0 : false;
+  }
+
+  function openScores(){
+    let result = null;
+    try { result = JSON.parse(localStorage.getItem(MOCK_RESULT_KEY)); } catch { result = null; }
+    if (!result) {
+      openModal("Scores", `<p>No mock test result yet. Start today’s mock test from Learn page.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="scoreBackBtn">Back</button></div>`);
+    } else {
+      const score = Number(result.score || result.correct || 0);
+      const total = Number(result.total || 30);
+      const wrong = Number(result.wrong ?? Math.max(0,total-score));
+      const percent = Number(result.percentage || Math.round((score/total)*100));
+      const label = result.label || getScoreLabel(score);
+      openModal("Scores", `
+        <div class="score-grid">
+          <div class="score-box"><small>Last Score</small><b>${score} / ${total}</b></div>
+          <div class="score-box"><small>Percentage</small><b>${percent}%</b></div>
+          <div class="score-box"><small>Correct</small><b>${score}</b></div>
+          <div class="score-box"><small>Wrong</small><b>${wrong}</b></div>
+        </div>
+        <p style="margin:14px 0 0;color:#174B33;font-weight:900">${safe(label)}</p>
+        <div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="scoreBackBtn">Back</button></div>
+      `);
+    }
+    setTimeout(function(){ const b = $("scoreBackBtn"); if (b) b.onclick = closeModal; }, 0);
+  }
+
+  function getScoreLabel(score){
+    if (score === 30) return "Excellent";
+    if (score >= 25) return "Very Good";
+    if (score >= 20) return "Good, Keep Improving";
+    return "Practice Again";
+  }
+
+  function openReminder(){
+    openModal("Daily Study Reminder", `<p>Study a little every day.</p><p>Complete one mock test and revise Smart Notes regularly.</p><div class="profile-modal-actions"><button class="profile-primary-btn" type="button" id="reminderBackBtn">Back</button></div>`);
+    setTimeout(function(){ const b = $("reminderBackBtn"); if (b) b.onclick = closeModal; }, 0);
+  }
+
+  function openSupport(){
+    openModal("Support", `
+      <div class="support-list">
+        <button class="profile-light-btn" type="button" id="contactAdminBtn">Contact Admin</button>
+        <button class="profile-light-btn" type="button" id="reportIssueBtn">Report an Issue</button>
+        <button class="profile-light-btn" type="button" id="rateAppBtn">Rate This App</button>
+      </div>
+    `);
+    setTimeout(function(){
+      const admin = $("contactAdminBtn");
+      const issue = $("reportIssueBtn");
+      const rate = $("rateAppBtn");
+      if (admin) admin.onclick = contactAdmin;
+      if (issue) issue.onclick = openIssueForm;
+      if (rate) rate.onclick = function(){ showToast("Coming Soon", "info"); };
+    }, 0);
+  }
+
+  function contactAdmin(){
+    const message = `Hello TET Success Team,\n\nI need help.\n\nName: ${getUserName()}\nPhone: ${getUserPhone()}`;
+    if (typeof openWhatsApp === "function") openWhatsApp(getAdminPhone(), message);
+  }
+
+  function openIssueForm(){
+    openModal("Report an Issue", `
+      <div class="note-box">
+        <label style="display:block;font-weight:900;margin-bottom:6px;color:#174B33">Issue Category</label>
+        <select id="issueCategory" style="width:100%;min-height:46px;border:1px solid #DDECE1;border-radius:12px;padding:10px;background:#fff;color:#2F3E36">
+          <option value="">Select category</option>
+          <option>Login Problem</option>
+          <option>Learn Page</option>
+          <option>Question Wrong</option>
+          <option>Progress Issue</option>
+          <option>Payment Issue</option>
+          <option>Premium Issue</option>
+          <option>App Crash</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="note-box">
+        <label style="display:block;font-weight:900;margin-bottom:6px;color:#174B33">Describe Your Issue</label>
+        <textarea id="issueText" maxlength="500" style="width:100%;min-height:112px;border:1px solid #DDECE1;border-radius:12px;padding:10px;background:#fff;color:#2F3E36;resize:vertical"></textarea>
+      </div>
+      <div class="profile-modal-actions">
+        <button class="profile-primary-btn" type="button" id="sendIssueBtn">Send Report</button>
+        <button class="profile-light-btn" type="button" id="cancelIssueBtn">Back</button>
+      </div>
+    `);
+    setTimeout(function(){
+      const send = $("sendIssueBtn");
+      const cancel = $("cancelIssueBtn");
+      if (send) send.onclick = sendIssueReport;
+      if (cancel) cancel.onclick = closeModal;
+    }, 0);
+  }
+
+  async function sendIssueReport(){
+    const category = text($("issueCategory")?.value, "");
+    const issueText = text($("issueText")?.value, "").trim();
+    if (!category) {
+      showToast("Please select issue category", "warning");
+      return;
+    }
+    if (!issueText) {
+      showToast("Please describe your issue", "warning");
+      return;
+    }
+    if (issueText.length < 10) {
+      showToast("Minimum 10 characters required", "warning");
+      return;
+    }
+
+    try {
+      const payload = {
+        user_id: currentUser.id,
+        full_name: getUserName(),
+        phone: getUserPhone(),
+        user_status: isPremiumUser() ? "Premium Member" : "Trial",
+        issue_category: category,
+        issue_text: issueText,
+        issue_status: "unsolved"
+      };
+      const { error } = await client().from(CONFIG.TABLES.ISSUE_REPORTS).insert(payload);
+      if (error) throw error;
+      showToast("Issue report sent", "success");
+      closeModal();
+      if (typeof openWhatsApp === "function") {
+        openWhatsApp(getAdminPhone(), `Hello TET Success Team,\n\nI want to report an issue.\n\nName: ${getUserName()}\nPhone: ${getUserPhone()}\n\nIssue Category:\n${category}\n\nIssue Description:\n${issueText}\n\nThank you.`);
+      }
+    } catch (error) {
+      console.error("Issue report failed", error);
+      showToast("Unable to send report", "error");
+    }
+  }
+
+  function logout(){
+    const doLogout = function(){
+      if (typeof clearUserSession === "function") clearUserSession();
+      else localStorage.removeItem("tet_success_user_session");
+      window.location.href = CONFIG.LOGIN_PAGE;
+    };
+    if (typeof showConfirmModal === "function") {
+      showConfirmModal({ title:"Logout?", message:"Are you sure you want to logout from TET Success?", confirmText:"Logout", cancelText:"Back", onConfirm:doLogout });
+    } else {
+      doLogout();
+    }
+  }
+
+  function bindEvents(){
+    document.querySelectorAll("[data-page]").forEach(function(btn){
+      btn.addEventListener("click", function(){ window.location.href = btn.dataset.page; });
+    });
+    $("modalCloseBtn").addEventListener("click", closeModal);
+    $("profileModal").addEventListener("click", function(event){ if (event.target === $("profileModal")) closeModal(); });
+    $("premiumBtn").addEventListener("click", function(){ isPremiumUser() ? showPremiumStatus() : showPremiumFlow(); });
+    $("smartNotesBtn").addEventListener("click", openSmartNotes);
+    $("scoresBtn").addEventListener("click", openScores);
+    $("reminderBtn").addEventListener("click", openReminder);
+    $("supportBtn").addEventListener("click", openSupport);
+    $("logoutBtn").addEventListener("click", logout);
+    $("copyInviteBtn").addEventListener("click", copyInvite);
+    $("sendInviteBtn").addEventListener("click", sendInvite);
+  }
+
+  document.addEventListener("DOMContentLoaded", async function(){
+    if (typeof requireUserLogin === "function" && !requireUserLogin()) return;
+    bindEvents();
+    if (typeof initializeBackend === "function") {
+      try { await initializeBackend(); } catch (error) { console.warn("Backend init skipped", error); }
+    }
+    const ok = await loadUserAndStatus();
+    if (!ok) return;
+    renderProfile();
+  });
 })();
 </script>
 </body>
 </html>
+

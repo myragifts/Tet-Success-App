@@ -685,6 +685,7 @@ body{
     let questions = [];
     let currentIndex = 0;
     let answers = [];
+    let lastWrongAnswers = [];
     let selectedOption = null;
 
     const page = document.getElementById("learnPage");
@@ -843,6 +844,14 @@ body{
         return String(value ?? "").trim().replace(/\s+/g," ").toLowerCase();
     }
 
+    
+    function getCorrectAnswerText(question){
+        const raw = question.correct_answer || question.answer || question.correct_option || "";
+        const correct = normalizeAnswer(raw);
+        const option = getOptions(question).find(item => normalizeAnswer(item.key) === correct || normalizeAnswer(item.text) === correct);
+        return option ? option.text : raw;
+    }
+
     function isCorrect(question,selected){
         const correct = normalizeAnswer(question.correct_answer || question.answer || question.correct_option);
         const selectedText = normalizeAnswer(selected?.text);
@@ -853,6 +862,7 @@ body{
     function resetTestState(){
         currentIndex = 0;
         answers = [];
+        lastWrongAnswers = [];
         selectedOption = null;
         resultCard.classList.remove("show");
     }
@@ -943,8 +953,11 @@ body{
         const question = questions[currentIndex];
         answers.push({
             question_id:getQuestionId(question,currentIndex),
+            question_no:currentIndex + 1,
+            question_text:question.question || question.question_text || "Question text missing",
             selected_key:selectedOption.key,
             selected_answer:selectedOption.text,
+            correct_answer:getCorrectAnswerText(question),
             correct:isCorrect(question,selectedOption)
         });
 
@@ -978,6 +991,8 @@ body{
         correctText.textContent = String(correct);
         wrongText.textContent = String(wrong);
         percentageText.textContent = percent + "%";
+        lastWrongAnswers = answers.filter(item => !item.correct);
+        tryAgainBtn.textContent = lastWrongAnswers.length ? "Analysis" : "Review Success";
 
         try {
             localStorage.setItem(RESULT_KEY, JSON.stringify({
@@ -990,11 +1005,55 @@ body{
             }));
         } catch {}
     }
+    function closeLearnAnalysisModal(){
+        document.querySelectorAll(".learn-analysis-modal").forEach(function(modal){
+            modal.classList.remove("show");
+            setTimeout(function(){ modal.remove(); }, 250);
+        });
+    }
 
+    function openLearnAnalysisModal(){
+        const wrongItems = Array.isArray(lastWrongAnswers) ? lastWrongAnswers : [];
+        const isSuccess = wrongItems.length === 0;
+        const body = isSuccess
+            ? '<p class="premium-global-text">You answered all questions correctly. Keep practicing regularly to maintain your preparation.</p>'
+            : '<div style="display:grid;gap:12px;max-height:52vh;overflow:auto;text-align:left;margin-top:12px">' + wrongItems.map(function(item){
+                return '<div style="border:1px solid #E1E9E3;border-radius:16px;padding:12px;background:#FBFDFB">' +
+                    '<b style="display:block;color:#1F5B3E;margin-bottom:8px">Question ' + safe(item.question_no) + '</b>' +
+                    '<p style="margin:0 0 10px;color:#25352F;line-height:1.45">' + safe(item.question_text) + '</p>' +
+                    '<p style="margin:0 0 6px;color:#6B4F14"><b>Your answer:</b> ' + safe(item.selected_answer || "Not answered") + '</p>' +
+                    '<p style="margin:0;color:#1F5B3E"><b>Right answer:</b> ' + safe(item.correct_answer || "Not available") + '</p>' +
+                '</div>';
+            }).join("") + '</div>';
+
+        closeLearnAnalysisModal();
+        const modal = document.createElement("div");
+        modal.className = "premium-global-modal learn-analysis-modal";
+        modal.innerHTML = '<div class="premium-global-card" role="dialog" aria-modal="true">' +
+            '<button class="premium-global-close" type="button" data-analysis-close>&times;</button>' +
+            '<h2>' + (isSuccess ? "Excellent Performance" : "Your Wrong Answers") + '</h2>' +
+            body +
+            '<div class="premium-global-actions">' +
+                '<button class="premium-global-btn light" type="button" data-analysis-back>Back to Learn</button>' +
+                '<button class="premium-global-btn primary" type="button" data-analysis-restart>Test Again</button>' +
+            '</div>' +
+        '</div>';
+        document.body.appendChild(modal);
+        requestAnimationFrame(function(){ modal.classList.add("show"); });
+        modal.querySelectorAll("[data-analysis-close]").forEach(btn => btn.addEventListener("click", closeLearnAnalysisModal));
+        modal.querySelector("[data-analysis-back]").addEventListener("click", function(){
+            closeLearnAnalysisModal();
+            showIntroState();
+        });
+        modal.querySelector("[data-analysis-restart]").addEventListener("click", function(){
+            closeLearnAnalysisModal();
+            startTest();
+        });
+    }
     function bindEvents(){
         startBtn.addEventListener("click", startTest);
         nextBtn.addEventListener("click", handleNext);
-        tryAgainBtn.addEventListener("click", startTest);
+        tryAgainBtn.addEventListener("click", openLearnAnalysisModal);
         backToLearnBtn.addEventListener("click", showIntroState);
 
         document.querySelectorAll(".home-bottom-nav [data-nav-url]").forEach(function(button){
@@ -1021,6 +1080,8 @@ body{
 </script>
 </body>
 </html>
+
+
 
 
 

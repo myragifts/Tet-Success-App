@@ -826,12 +826,22 @@ function getTrialEndDate(status, user) {
 }
 
 function isPremiumStatus(status, user) {
-    if (user?.status === "premium" || user?.isPremium || user?.premium || user?.is_premium) return true;
     if (!status) return false;
-    if (status.status === "premium" || status.payment_verified === true || status.paymentVerified === true) return true;
 
-    const valid = parseAppDate(status.premium_valid_until || status.valid_until || status.expiry_date || status.premiumValidUntil);
-    return !!(valid && valid.getTime() >= Date.now());
+    const subscriptionStatus = String(
+        status.subscription_status ||
+        status.status ||
+        ""
+    ).toLowerCase();
+
+    const validUntil = parseAppDate(status.premium_valid_until || status.valid_until || status.expiry_date || status.premiumValidUntil);
+    if (subscriptionStatus !== "premium" || !validUntil) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    validUntil.setHours(23, 59, 59, 999);
+
+    return validUntil.getTime() >= today.getTime();
 }
 
 function getTrialDaysLeft(status, user) {
@@ -901,14 +911,13 @@ function scheduleExpiredTrialReminder(status, user, options = {}) {
     return true;
 }
 function getTrialPremiumModel(status, user, mode) {
-    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
-    const validUntil = status?.premium_valid_until || status?.valid_until || status?.expiry_date || "2028-09-30";
+    const validUntil = status?.premium_valid_until || status?.valid_until || status?.expiry_date || status?.premiumValidUntil;
 
     if (isPremiumStatus(status, user)) {
         return {
             state: "premium",
             title: "Premium Member",
-            small: "Valid Until: " + (formatDate(validUntil) || validText)
+            small: "Valid Until " + (formatDate(validUntil) || "")
         };
     }
 
@@ -965,13 +974,39 @@ function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
 
 function getPremiumWhatsAppMessage() {
     const user = typeof getUserSession === "function" ? (getUserSession() || {}) : {};
-    const fee = getPremiumFlowSetting("subscription_fee", 799);
-    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const fee = 299;
     const paymentLink = getPremiumFlowSetting("payment_link", "https://tinyurl.com/Tet-Success-Pay-now");
-    const name = user.full_name || user.name || "Student";
-    const phone = user.phone || user.mobile || "";
+    const name = user.full_name || user.name || "Not available";
+    const phone = user.phone || user.mobile || "Not available";
 
-    return `Hello,\n\nI want to upgrade to TET Success Premium.\n\nName: ${name}\nPhone: ${phone}\n\nPlan:\nPremium Membership\n\nSubscription Fee:\n₹${fee} (One-Time Payment)\n\nPremium Validity:\n${validText}\n\nAccess:\nFull Premium Access to all features until ${validText}.\n\nSelf Declaration:\nI have read and accepted that TET Success provides educational guidance and learning resources only. I understand that passing the examination depends on my own preparation and performance, and TET Success does not guarantee exam success.\n\nPayment Link:\n${paymentLink}\n\nAfter payment send screenshot for confirmation.\n\nThank you.`;
+    return `Hello,
+
+I want to upgrade to TET Success Premium.
+
+Name: ${name}
+Phone: ${phone}
+
+Plan:
+Premium Membership
+
+Subscription Fee:
+₹${fee} (One-Time Payment)
+
+Premium Validity:
+3 months premium access
+
+Access:
+Premium access for 3 months after admin approval / renewal.
+
+Self Declaration:
+I have read and accepted that TET Success provides educational guidance and learning resources only. I understand that passing the examination depends on my own preparation and performance, and TET Success does not guarantee exam success.
+
+Payment Link:
+${paymentLink}
+
+After payment send screenshot for confirmation.
+
+Thank you.`;
 }
 
 function removeGlobalPremiumModal() {
@@ -1006,7 +1041,8 @@ function showGlobalPremiumEntry(status, user) {
 function showGlobalPremiumUserModal(status, user) {
     removeGlobalPremiumModal();
 
-    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const validUntil = status?.premium_valid_until || status?.valid_until || status?.expiry_date || status?.premiumValidUntil;
+    const validText = formatDate(validUntil) || "your premium validity date";
     const modal = document.createElement("div");
     modal.className = "premium-global-modal";
     modal.innerHTML = `
@@ -1034,8 +1070,7 @@ function showGlobalPremiumModal() {
 
     removeGlobalPremiumModal();
 
-    const fee = getPremiumFlowSetting("subscription_fee", 799);
-    const validText = getPremiumFlowSetting("premium_valid_text", "30 September 2028");
+    const fee = 299;
     const modal = document.createElement("div");
     modal.className = "premium-global-modal";
     modal.innerHTML = `
@@ -1044,7 +1079,7 @@ function showGlobalPremiumModal() {
             <span class="premium-global-badge">Premium Access</span>
             <h2>Unlock Premium Access</h2>
             <p class="premium-global-price">₹${escapeHTML(fee)} Only - One Time Payment</p>
-            <p class="premium-global-sub">Full premium access to all features until ${escapeHTML(validText)}.</p>
+            <p class="premium-global-sub">Premium access for 3 months.</p>
             <p class="premium-global-note">This small one-time amount can support your preparation, confidence, and long-term teaching career.</p>
             <div class="premium-global-actions">
                 <button class="premium-global-btn light" type="button" data-premium-later>Later</button>
@@ -1109,7 +1144,7 @@ function getStatusBadge(status, premiumValidUntil = "") {
         return `
             <div class="tet-badge premium">
                 Premium Member
-                <small>Valid Until: ${escapeHTML(formatDate(premiumValidUntil || "2028-09-30"))}</small>
+                <small>Valid Until: ${escapeHTML(formatDate(premiumValidUntil))}</small>
             </div>
         `;
     }

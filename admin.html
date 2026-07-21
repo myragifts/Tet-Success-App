@@ -46,7 +46,7 @@ button{border:0;cursor:pointer}
     <div class="topbar-inner">
       <div class="brand">
         <h1>Admin Dashboard</h1>
-        <p>TET Success · Your TET Guru</p>
+        <p>TET Success Â· Your TET Guru</p>
       </div>
       <button id="logoutBtn" class="logout" type="button">Logout</button>
     </div>
@@ -54,8 +54,8 @@ button{border:0;cursor:pointer}
 
   <section class="overview">
     <div class="metric"><small>Total Users</small><b id="totalUsers">0</b></div>
-    <div class="metric"><small>Trial Users</small><b id="trialUsers">0</b></div>
-    <div class="metric"><small>Premium Users</small><b id="premiumUsers">0</b></div>
+    <div class="metric"><small>Trial / Expired Users</small><b id="trialUsers">0</b></div>
+    <div class="metric"><small>Active Premium Users</small><b id="premiumUsers">0</b></div>
     <div class="metric"><small>Pending Issues</small><b id="pendingIssues">0</b></div>
   </section>
 
@@ -63,8 +63,8 @@ button{border:0;cursor:pointer}
     <nav class="menu" id="adminMenu"></nav>
     <div id="sections">
       <section class="section active" data-section="premium">
-        <h2>Premium Approval</h2><p>Approve trial users and review premium members.</p>
-        <div class="tabs"><button class="active" data-premium-tab="trial">Trial Users</button><button data-premium-tab="premium">Premium Users</button><button data-premium-tab="upgrade">Upgrade User</button></div>
+        <h2>Status Change</h2><p>Change trial users to 3-month premium access and review active premium members.</p>
+        <div class="tabs"><button class="active" data-premium-tab="trial">Trial Users</button><button data-premium-tab="premium">Premium Users</button><button data-premium-tab="upgrade">Search User</button></div>
         <div class="form" id="upgradeSearchBox" style="display:none"><div class="field"><label>Search Name or Phone</label><input id="upgradeSearch" type="search" /></div></div>
         <div class="list" id="premiumList"></div>
       </section>
@@ -172,7 +172,7 @@ button{border:0;cursor:pointer}
 "use strict";
 (function(){
   const sections=[
-    ["premium","Premium Approval"],["notice","Notice Board"],["motivation","Daily Motivation"],
+    ["premium","Status Change"],["notice","Notice Board"],["motivation","Daily Motivation"],
     ["learn","Learn Page Update"],["previous","Previous TET Update"],["textbook","Digital Text Book Update"],
     ["issues","Issue Reports"],["settings","App Settings"],["users","User Management"]
   ];
@@ -217,28 +217,65 @@ button{border:0;cursor:pointer}
     trial=await select("TRIAL_PREMIUM");
     progress=await select("USER_PROGRESS");
     try{issues=await select("ISSUE_REPORTS")}catch{issues=[]}
+    const activePremiumUsers=users.filter(isActivePremium).length;
     $("#totalUsers").textContent=users.length;
-    $("#trialUsers").textContent=trial.filter(x=>x.status!=="premium").length || users.filter(x=>x.status==="trial").length;
-    $("#premiumUsers").textContent=trial.filter(x=>x.status==="premium").length || users.filter(x=>x.status==="premium").length;
+    $("#trialUsers").textContent=Math.max(users.length-activePremiumUsers,0);
+    $("#premiumUsers").textContent=activePremiumUsers;
     $("#pendingIssues").textContent=issues.filter(x=>x.issue_status!=="solved").length;
   }
 
-  function userStatus(u){return trial.find(x=>x.user_id===u.id)?.status || u.status || "trial"}
+  function dateOnly(v){
+    if(!v)return null;
+    const d=new Date(v);
+    if(Number.isNaN(d.getTime()))return null;
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function premiumRow(u){return trial.find(x=>x.user_id===u.id)||null}
+  function isActivePremium(u){
+    const r=premiumRow(u);
+    if(!r)return false;
+    const status=String(r.subscription_status||r.status||"").toLowerCase();
+    const valid=dateOnly(r.premium_valid_until);
+    const today=new Date();today.setHours(0,0,0,0);
+    return status==="premium" && !!valid && valid.getTime()>=today.getTime();
+  }
+  function userStatus(u){return isActivePremium(u)?"premium":"trial"}
+  function premiumValidText(u){
+    const valid=premiumRow(u)?.premium_valid_until;
+    return valid?`Valid Until: ${formatDate(valid)}`:"No active premium validity";
+  }
   function renderPremium(){
     const q=($("#upgradeSearch")?.value||"").toLowerCase().trim();
     $("#upgradeSearchBox").style.display=premiumTab==="upgrade"?"grid":"none";
-    let list=users.filter(u=>premiumTab==="premium"?userStatus(u)==="premium":userStatus(u)!=="premium");
-    if(premiumTab==="upgrade"&&q)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q));
-    $("#premiumList").innerHTML=list.length?list.map(u=>`
-      <article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p>
-      <span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial Version"}</span>
-      ${userStatus(u)!=="premium"?`<div class="actions"><button class="btn green" data-upgrade="${u.id}" type="button">Upgrade to Premium</button></div>`:""}
-      </article>`).join(""):empty("No users found");
+    let list=users.filter(u=>premiumTab==="premium"?isActivePremium(u):!isActivePremium(u));
+    if(premiumTab==="upgrade"){
+      list=q?users.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q)):[];
+    }
+    $("#premiumList").innerHTML=list.length?list.map(u=>{
+      const premium=isActivePremium(u);
+      return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p>
+      <span class="pill ${premium?"green":"amber"}">${premium?"Premium Member":"Trial / Expired"}</span>
+      <p>${esc(premiumValidText(u))}</p>
+      <div class="actions"><button class="btn green" data-upgrade="${u.id}" type="button">${premium?"Renew Premium":"Make Premium"}</button></div>
+      </article>`;
+    }).join(""):empty(premiumTab==="upgrade"?"Search by name or phone to change status":"No users found");
     document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>confirmUpgrade(b.dataset.upgrade));
   }
 
   function confirmUpgrade(userId){
-    showConfirmModal({title:"Upgrade this user?",message:"This will mark payment approved and premium valid until 30 Sep 2028.",confirmText:"Confirm Upgrade",onConfirm:async()=>{await rpc("tet_admin_upgrade_user",{input_session_token:token(),input_user_id:userId});showToast("User upgraded successfully","success");await refreshBase();renderPremium();}});
+    showConfirmModal({
+      title:"Confirm premium access?",
+      message:"Confirm 3-month premium access for this user? If the user already has active premium, this will renew from the current valid-until date.",
+      confirmText:"Confirm Premium",
+      onConfirm:async()=>{
+        await rpc("tet_admin_upgrade_user",{input_session_token:token(),input_user_id:userId});
+        showToast("3-month premium access updated","success");
+        await refreshBase();
+        if(activeSection==="premium")renderPremium();
+        if(activeSection==="users")renderUsers();
+      }
+    });
   }
 
   async function loadSection(id){
@@ -257,7 +294,7 @@ button{border:0;cursor:pointer}
     const q=($("#learnSearch").value||"").toLowerCase();
     let rows=await select("LEARN_QUESTIONS");
     if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-    $("#learnList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.group_name)} Level ${esc(r.level_no)} · ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span><div class="actions"><button class="btn light" data-edit-learn="${r.id}">Edit</button><button class="btn danger" data-disable-learn="${r.id}">Disable</button></div></article>`).join(""):empty("No learn questions found");
+    $("#learnList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.group_name)} Level ${esc(r.level_no)} Â· ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span><div class="actions"><button class="btn light" data-edit-learn="${r.id}">Edit</button><button class="btn danger" data-disable-learn="${r.id}">Disable</button></div></article>`).join(""):empty("No learn questions found");
     document.querySelectorAll("[data-edit-learn]").forEach(b=>b.onclick=()=>fillLearn(rows.find(r=>r.id===b.dataset.editLearn)));
     document.querySelectorAll("[data-disable-learn]").forEach(b=>b.onclick=()=>disableLearn(b.dataset.disableLearn));
   }
@@ -268,17 +305,17 @@ button{border:0;cursor:pointer}
   async function renderPreviousList(){
     const q=($("#previousSearch").value||"").toLowerCase();
     let rows=await select("PREVIOUS_TET_QUESTIONS"); if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-    $("#previousList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.tet_year)} · Q${esc(r.question_no)} · ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No previous TET questions found");
+    $("#previousList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.tet_year)} Â· Q${esc(r.question_no)} Â· ${esc(r.subject)}</h3><p>${esc(r.question_text)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No previous TET questions found");
   }
 
   async function renderTextbookList(){
     const q=($("#textbookSearch").value||"").toLowerCase();
     let rows=await select("DIGITAL_TEXTBOOK"); if(q)rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
-    $("#textbookList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.subject)} · ${esc(r.chapter_name)}</h3><p>${esc(r.concept)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No textbook chapters found");
+    $("#textbookList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.subject)} Â· ${esc(r.chapter_name)}</h3><p>${esc(r.concept)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No textbook chapters found");
   }
 
   function renderIssues(){
-    $("#issueList").innerHTML=issues.length?issues.map(i=>`<article class="card"><h3>${esc(i.issue_category)}</h3><p>${esc(i.full_name)} · ${esc(i.phone)}</p><p>${esc(i.issue_text)}</p><span class="pill ${i.issue_status==="solved"?"green":"amber"}">${esc(i.issue_status)}</span><div class="actions"><button class="btn green" data-issue="${i.id}" data-status="solved">Mark Solved</button><button class="btn amber" data-issue="${i.id}" data-status="unsolved">Mark Unsolved</button></div></article>`).join(""):empty("No issue reports found");
+    $("#issueList").innerHTML=issues.length?issues.map(i=>`<article class="card"><h3>${esc(i.issue_category)}</h3><p>${esc(i.full_name)} Â· ${esc(i.phone)}</p><p>${esc(i.issue_text)}</p><span class="pill ${i.issue_status==="solved"?"green":"amber"}">${esc(i.issue_status)}</span><div class="actions"><button class="btn green" data-issue="${i.id}" data-status="solved">Mark Solved</button><button class="btn amber" data-issue="${i.id}" data-status="unsolved">Mark Unsolved</button></div></article>`).join(""):empty("No issue reports found");
     document.querySelectorAll("[data-issue]").forEach(b=>b.onclick=async()=>{await rpc("tet_admin_set_issue_status",{input_session_token:token(),input_issue_id:b.dataset.issue,input_status:b.dataset.status});showToast("Issue updated","success");await refreshBase();renderIssues()});
   }
 
@@ -290,7 +327,7 @@ button{border:0;cursor:pointer}
   function renderUsers(){
     const q=($("#userSearch").value||"").toLowerCase().trim();
     let list=users; if(q)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q));
-    $("#userList").innerHTML=list.length?list.map(u=>{const p=progress.find(x=>x.user_id===u.id)||{};return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p><p>Current: ${esc(p.current_group||"Primary")} Level ${esc(p.current_level||1)} · Best Score ${esc(p.best_score||0)}%</p><span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial Version"}</span><div class="actions"><button class="btn green" data-upgrade="${u.id}">Upgrade</button><button class="btn danger" data-reset="${u.id}">Reset Learn Progress</button></div></article>`}).join(""):empty("No users found");
+    $("#userList").innerHTML=list.length?list.map(u=>{const p=progress.find(x=>x.user_id===u.id)||{};return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p><p>Current: ${esc(p.current_group||"Primary")} Level ${esc(p.current_level||1)} Â· Best Score ${esc(p.best_score||0)}%</p><span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial / Expired"}</span><div class="actions"><button class="btn green" data-upgrade="${u.id}">${userStatus(u)==="premium"?"Renew Premium":"Make Premium"}</button><button class="btn danger" data-reset="${u.id}">Reset Learn Progress</button></div></article>`}).join(""):empty("No users found");
     document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>confirmUpgrade(b.dataset.upgrade));
     document.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>showConfirmModal({title:"Reset Learn Progress?",message:"This keeps account and subscription unchanged.",confirmText:"Confirm Reset",onConfirm:async()=>{await rpc("tet_admin_reset_progress",{input_session_token:token(),input_user_id:b.dataset.reset});showToast("Learn progress reset","success");await refreshBase();renderUsers()}}));
   }
@@ -319,3 +356,4 @@ button{border:0;cursor:pointer}
 </script>
 </body>
 </html>
+

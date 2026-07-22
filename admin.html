@@ -269,11 +269,27 @@ button{border:0;cursor:pointer}
       message:"Confirm 3-month premium access for this user? If the user already has active premium, this will renew from the current valid-until date.",
       confirmText:"Confirm Premium",
       onConfirm:async()=>{
-        await rpc("tet_admin_upgrade_user",{input_session_token:token(),input_user_id:userId});
-        showToast("3-month premium access updated","success");
-        await refreshBase();
-        if(activeSection==="premium")renderPremium();
-        if(activeSection==="users")renderUsers();
+        const confirmBtn = document.querySelector(".tet-modal-overlay.show [data-confirm]");
+        const oldText = confirmBtn ? confirmBtn.textContent : "";
+        try{
+          if(confirmBtn){
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Updating...";
+          }
+          await rpc("tet_admin_upgrade_user",{input_session_token:token(),input_user_id:userId});
+          showToast("3-month premium access updated","success");
+          await refreshBase();
+          if(activeSection==="premium")renderPremium();
+          if(activeSection==="users")renderUsers();
+        }catch(error){
+          console.error("Premium update failed:",error);
+          showToast(error?.message || "Premium update failed. Please try again.","error");
+        }finally{
+          if(confirmBtn){
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = oldText;
+          }
+        }
       }
     });
   }
@@ -356,4 +372,6 @@ button{border:0;cursor:pointer}
 </script>
 </body>
 </html>
+
+
 

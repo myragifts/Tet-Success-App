@@ -910,6 +910,49 @@ function scheduleExpiredTrialReminder(status, user, options = {}) {
 
     return true;
 }
+async function fetchFreshTrialPremiumStatus(user) {
+    try {
+        if (!user || !window.supabase || !CONFIG?.TABLES?.TRIAL_PREMIUM) return null;
+
+        const userId = user.id || user.user_id || null;
+        const phone = user.phone || user.mobile || user.phone_number || user.user_phone || null;
+        let query = supabase.from(CONFIG.TABLES.TRIAL_PREMIUM).select("*").limit(1);
+
+        if (userId) query = query.eq("user_id", userId);
+        else if (phone) query = query.eq("phone", phone);
+        else return null;
+
+        const { data, error } = await query
+            .order("updated_at", { ascending: false })
+            .order("created_at", { ascending: false })
+            .maybeSingle();
+
+        if (error) {
+            console.warn("Trial/premium status refresh failed:", error.message || error);
+            return null;
+        }
+
+        return data || null;
+    } catch (error) {
+        console.warn("Trial/premium status refresh failed:", error?.message || error);
+        return null;
+    }
+}
+
+function normalizeSessionPremiumStatus(user, status) {
+    if (!user || !status) return user;
+    const nextUser = Object.assign({}, user, {
+        subscription_status: status.subscription_status || status.status || user.subscription_status || user.status,
+        status: status.status || status.subscription_status || user.status,
+        trial_start_date: status.trial_start_date || user.trial_start_date,
+        trial_end_date: status.trial_end_date || user.trial_end_date,
+        premium_started_at: status.premium_started_at || status.premium_activated_date || user.premium_started_at,
+        premium_valid_until: status.premium_valid_until || status.valid_until || status.expiry_date || user.premium_valid_until
+    });
+
+    try { saveUserSession(nextUser); } catch {}
+    return nextUser;
+}
 function getTrialPremiumModel(status, user, mode) {
     const validUntil = status?.premium_valid_until || status?.valid_until || status?.expiry_date || status?.premiumValidUntil;
 
@@ -990,7 +1033,7 @@ Plan:
 Premium Membership
 
 Subscription Fee:
-₹${fee} (One-Time Payment)
+â‚¹${fee} (One-Time Payment)
 
 Premium Validity:
 3 months premium access
@@ -1078,7 +1121,7 @@ function showGlobalPremiumModal() {
             <button class="premium-global-close" type="button" data-premium-close>&times;</button>
             <span class="premium-global-badge">Premium Access</span>
             <h2>Unlock Premium Access</h2>
-            <p class="premium-global-price">₹${escapeHTML(fee)} Only - One Time Payment</p>
+            <p class="premium-global-price">â‚¹${escapeHTML(fee)} Only - One Time Payment</p>
             <p class="premium-global-sub">Premium access for 3 months.</p>
             <p class="premium-global-note">This small one-time amount can support your preparation, confidence, and long-term teaching career.</p>
             <div class="premium-global-actions">
@@ -1201,5 +1244,6 @@ function initializeCommon() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeCommon);
+
 
 

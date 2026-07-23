@@ -860,8 +860,27 @@ function getExpiredTrialReminderKey(user) {
     return TET_EXPIRED_REMINDER_KEY + "_" + String(userKey);
 }
 
+function isExpiredPremiumStatus(status) {
+    if (!status) return false;
+
+    const subscriptionStatus = String(
+        status.subscription_status ||
+        status.status ||
+        ""
+    ).toLowerCase();
+
+    const validUntil = parseAppDate(status.premium_valid_until || status.valid_until || status.expiry_date || status.premiumValidUntil);
+    if (subscriptionStatus !== "premium" || !validUntil) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    validUntil.setHours(23, 59, 59, 999);
+
+    return validUntil.getTime() < today.getTime();
+}
+
 function isTrialExpiredStatus(status, user) {
-    return !isPremiumStatus(status, user) && getTrialDaysLeft(status, user) <= 0;
+    return isExpiredPremiumStatus(status) || (!isPremiumStatus(status, user) && getTrialDaysLeft(status, user) <= 0);
 }
 
 function markExpiredTrialReminderLater(user) {
@@ -910,35 +929,62 @@ function scheduleExpiredTrialReminder(status, user, options = {}) {
 
     return true;
 }
+function getStatusSortTime(status) {
+    const date = parseAppDate(
+        status?.updated_at ||
+        status?.last_renewed_at ||
+        status?.premium_valid_until ||
+        status?.premium_activated_date ||
+        status?.trial_end_date ||
+        status?.created_at
+    );
+    return date ? date.getTime() : 0;
+}
+
+function chooseCurrentTrialPremiumStatus(rows, user) {
+    const list = Array.isArray(rows) ? rows.filter(Boolean) : [];
+    if (!list.length) return null;
+
+    const activePremiumRows = list
+        .filter(function (row) { return isPremiumStatus(row, user); })
+        .sort(function (a, b) {
+            const aUntil = parseAppDate(a?.premium_valid_until || a?.valid_until || a?.expiry_date || a?.premiumValidUntil);
+            const bUntil = parseAppDate(b?.premium_valid_until || b?.valid_until || b?.expiry_date || b?.premiumValidUntil);
+            return (bUntil ? bUntil.getTime() : 0) - (aUntil ? aUntil.getTime() : 0);
+        });
+
+    if (activePremiumRows.length) return activePremiumRows[0];
+
+    return list.sort(function (a, b) {
+        return getStatusSortTime(b) - getStatusSortTime(a);
+    })[0];
+}
+
 async function fetchFreshTrialPremiumStatus(user) {
     try {
         if (!user || !window.supabase || !CONFIG?.TABLES?.TRIAL_PREMIUM) return null;
 
         const userId = user.id || user.user_id || null;
         const phone = user.phone || user.mobile || user.phone_number || user.user_phone || null;
-        let query = supabase.from(CONFIG.TABLES.TRIAL_PREMIUM).select("*").limit(1);
+        let query = supabase.from(CONFIG.TABLES.TRIAL_PREMIUM).select("*").limit(10);
 
         if (userId) query = query.eq("user_id", userId);
         else if (phone) query = query.eq("phone", phone);
         else return null;
 
-        const { data, error } = await query
-            .order("updated_at", { ascending: false })
-            .order("created_at", { ascending: false })
-            .maybeSingle();
+        const { data, error } = await query.order("created_at", { ascending: false });
 
         if (error) {
             console.warn("Trial/premium status refresh failed:", error.message || error);
             return null;
         }
 
-        return data || null;
+        return chooseCurrentTrialPremiumStatus(data, user);
     } catch (error) {
         console.warn("Trial/premium status refresh failed:", error?.message || error);
         return null;
     }
 }
-
 function normalizeSessionPremiumStatus(user, status) {
     if (!user || !status) return user;
     const nextUser = Object.assign({}, user, {
@@ -967,7 +1013,7 @@ function getTrialPremiumModel(status, user, mode) {
     const end = getTrialEndDate(status, user);
     const days = getTrialDaysLeft(status, user);
 
-    if (days <= 0) {
+    if (isExpiredPremiumStatus(status) || days <= 0) {
         return {
             state: "expired",
             title: "Go Premium",
@@ -994,22 +1040,63 @@ function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
     const el = typeof elementOrId === "string" ? document.getElementById(elementOrId) : elementOrId;
     if (!el) return null;
 
-    window.TETPremiumState = { status, user };
+    let currentStatus = status;
+    let currentUser = user;
+    window.TETPremiumState = { status: currentStatus, user: currentUser };
 
-    const model = getTrialPremiumModel(status, user, options.mode || "end");
-    el.classList.toggle("premium", model.state === "premium");
-    el.classList.toggle("expired", model.state === "expired");
-    el.dataset.subscriptionState = model.state;
-    el.innerHTML = "<b>" + escapeHTML(model.title) + "</b><small>" + escapeHTML(model.small) + "</small>";
+    function applyBadge(nextStatus, nextUser) {
+        currentStatus = nextStatus;
+        currentUser = nextUser;
+        window.TETPremiumState = { status: currentStatus, user: currentUser };
 
-    if (model.state === "expired") {
-        el.setAttribute("role", "button");
-        el.tabIndex = 0;
-        el.onclick = function () { showGlobalPremiumEntry(status, user); };
-    } else {
-        el.removeAttribute("role");
-        el.removeAttribute("tabindex");
-        el.onclick = null;
+        const model = getTrialPremiumModel(currentStatus, currentUser, options.mode || "end");
+        const titleHTML = model.state === "premium"
+            ? "&#9818; " + escapeHTML(model.title)
+            : escapeHTML(model.title);
+
+        el.classList.toggle("premium", model.state === "premium");
+        el.classList.toggle("expired", model.state === "expired");
+        el.dataset.subscriptionState = model.state;
+        el.innerHTML = "<b>" + titleHTML + "</b><small>" + escapeHTML(model.small) + "</small>";
+
+        if (model.state === "expired") {
+            el.setAttribute("role", "button");
+            el.tabIndex = 0;
+            el.onclick = function () { showGlobalPremiumEntry(currentStatus, currentUser); };
+        } else {
+            el.removeAttribute("role");
+            el.removeAttribute("tabindex");
+            el.onclick = null;
+        }
+
+        return model;
+    }
+
+    const model = applyBadge(currentStatus, currentUser);
+
+    if (currentUser && !options.skipFreshStatus) {
+        fetchFreshTrialPremiumStatus(currentUser).then(function (freshStatus) {
+            if (!freshStatus) return;
+            const freshUser = normalizeSessionPremiumStatus(currentUser, freshStatus);
+            const oldSignature = JSON.stringify({
+                state: model.state,
+                title: model.title,
+                small: model.small
+            });
+            const freshModel = getTrialPremiumModel(freshStatus, freshUser, options.mode || "end");
+            const freshSignature = JSON.stringify({
+                state: freshModel.state,
+                title: freshModel.title,
+                small: freshModel.small
+            });
+
+            if (freshSignature !== oldSignature) {
+                applyBadge(freshStatus, freshUser);
+                window.dispatchEvent(new CustomEvent("tetPremiumStatusUpdated", {
+                    detail: { status: freshStatus, user: freshUser }
+                }));
+            }
+        });
     }
 
     return model;
@@ -1186,7 +1273,7 @@ function getStatusBadge(status, premiumValidUntil = "") {
     if (status === "premium" || status === "Premium Member") {
         return `
             <div class="tet-badge premium">
-                Premium Member
+                &#9818; Premium Member
                 <small>Valid Until: ${escapeHTML(formatDate(premiumValidUntil))}</small>
             </div>
         `;
@@ -1244,6 +1331,11 @@ function initializeCommon() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeCommon);
+
+
+
+
+
 
 
 

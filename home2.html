@@ -581,24 +581,21 @@ body{
       <div class="home-actions">
         <select id="homeLanguage" class="home-language">
           <option value="english">English</option>
-          <option value="bengali">বাংলা</option>
-          <option value="hindi">हिन्दी</option>
+          <option value="bengali">à¦¬à¦¾à¦‚à¦²à¦¾</option>
+          <option value="hindi">à¤¹à¤¿à¤¨à¥à¤¦à¥€</option>
         </select>
 
-        <div id="homeStatus" class="home-status">
-          Trial Version
-          <small>Loading...</small>
-        </div>
+        <div id="homeStatus" class="home-status" aria-label="Premium status"></div>
       </div>
     </div>
   </header>
 
   <section class="home-greeting">
     <div class="greeting-top">
-      <div class="home-avatar">👤</div>
+      <div class="home-avatar">ðŸ‘¤</div>
 
       <div class="greeting-text">
-        <h2>Hi, <span id="homeUserName">User</span> 👋</h2>
+        <h2>Hi, <span id="homeUserName">User</span> ðŸ‘‹</h2>
         <p>Welcome Back</p>
       </div>
 
@@ -623,12 +620,12 @@ body{
     </div>
 
     <button id="homeContinueBtn" class="home-continue">
-      📖 Continue Learning →
+      ðŸ“– Continue Learning â†’
     </button>
     <button id="homeYoutubeHelpBtn" class="home-youtube-help" type="button" hidden>
-      <span class="home-youtube-icon">▶</span>
+      <span class="home-youtube-icon">â–¶</span>
       <span class="home-youtube-text">How to Use TET Success</span>
-      <span class="home-youtube-arrow">›</span>
+      <span class="home-youtube-arrow">â€º</span>
     </button>
   </section>
 
@@ -642,12 +639,12 @@ body{
 
   <section class="subject-grid">
     <button class="subject-card" data-subject="CDP">
-      <div class="subject-icon">🧠</div>
+      <div class="subject-icon">ðŸ§ </div>
       <div><b>CDP</b><small>30 Marks</small></div>
     </button>
 
     <button class="subject-card" data-subject="Bengali">
-      <div class="subject-icon">অ</div>
+      <div class="subject-icon">à¦…</div>
       <div><b>Bengali</b><small>30 Marks</small></div>
     </button>
 
@@ -657,17 +654,17 @@ body{
     </button>
 
     <button class="subject-card" data-subject="Mathematics">
-      <div class="subject-icon">÷</div>
+      <div class="subject-icon">Ã·</div>
       <div><b>Mathematics</b><small>30 Marks</small></div>
     </button>
 
     <button class="subject-card" data-subject="EVS">
-      <div class="subject-icon">🌿</div>
+      <div class="subject-icon">ðŸŒ¿</div>
       <div><b>EVS</b><small>30 Marks</small></div>
     </button>
 
     <button id="totalMarksBtn" class="subject-card total-card">
-      <div class="subject-icon">🏆</div>
+      <div class="subject-icon">ðŸ†</div>
       <div><b>TOTAL</b><small>150 Marks</small></div>
     </button>
   </section>
@@ -676,7 +673,7 @@ body{
     <div class="today-target-top">
 
         <div class="today-target-title">
-            <div class="today-target-icon">🎯</div>
+            <div class="today-target-icon">ðŸŽ¯</div>
 
             <div>
                 <h3>Today's Target</h3>
@@ -701,7 +698,7 @@ body{
 
 </section>
   <section class="motivation-card">
-    <div class="quote-icon">“</div>
+    <div class="quote-icon">â€œ</div>
     <div>
       <h3>Daily Motivation</h3>
       <p id="motivationText">Every question you solve today brings you closer to success.</p>
@@ -711,10 +708,10 @@ body{
 </main>
 
 <nav class="home-bottom-nav">
-  <button class="active" type="button"><span>🏠</span>Home</button>
-  <button type="button" data-page="info.html"><span>ℹ️</span>Info</button>
-  <button type="button" data-page="learn.html"><span>📖</span>Learn</button>
-  <button type="button" data-page="profile.html"><span>👤</span>Profile</button>
+  <button class="active" type="button"><span>ðŸ </span>Home</button>
+  <button type="button" data-page="info.html"><span>â„¹ï¸</span>Info</button>
+  <button type="button" data-page="learn.html"><span>ðŸ“–</span>Learn</button>
+  <button type="button" data-page="profile.html"><span>ðŸ‘¤</span>Profile</button>
 </nav>
 
 <script src="config.js"></script>
@@ -951,7 +948,7 @@ async function loadTrialPremium(){
       return;
     }
 
-    statusBox.innerHTML = "Trial Version<small>Ends " + homeFormatDate(data?.trial_end_date || homeUser?.created_at) + "</small>";
+    statusBox.innerHTML = "";
 
   }catch(error){
     console.error("Trial premium error:",error);
@@ -1067,3 +1064,5 @@ function bindHomeEvents(){
 
 </body>
 </html>
+
+

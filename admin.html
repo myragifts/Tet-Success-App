@@ -37,6 +37,7 @@ button{border:0;cursor:pointer}
 .pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;background:#EEF5F1;color:var(--pd);margin:2px 4px 2px 0}.pill.green{background:#E6F2EA;color:#145337}.pill.amber{background:#FFF8E8;color:#7B5A25}
 .tabs{display:flex;gap:8px;margin:8px 0 14px;flex-wrap:wrap}.tabs button{border-radius:999px;padding:9px 12px;background:#F8FBF8;color:#374151;font-weight:900}.tabs button.active{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}
 .empty{padding:20px;text-align:center;color:var(--m);background:#F9FAFB;border:1px dashed #CBD5E1;border-radius:16px}
+.guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.guide-box{background:#F9FAFB;border:1px solid var(--b);border-radius:16px;padding:13px}.guide-box b{display:block;color:var(--pd);margin-bottom:5px}.guide-box code{display:block;white-space:normal;background:#EEF5F1;color:var(--pd);border-radius:10px;padding:8px;margin-top:6px;font-size:12px}.message-meta{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.whatsapp-btn:disabled{opacity:.62;cursor:not-allowed;background:#E5E7EB;color:#6B7280}
 @media(max-width:820px){.overview{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.menu{position:static}.row,.row3{grid-template-columns:1fr}.topbar-inner{align-items:flex-start}.brand h1{font-size:20px}}
 </style>
 </head>
@@ -138,6 +139,42 @@ button{border:0;cursor:pointer}
         <div class="list" id="textbookList"></div>
       </section>
 
+      <section class="section" data-section="infoContent">
+        <h2>Info Latest Content</h2><p>Guide for updating Info page subject-wise latest content by CSV.</p>
+        <div class="guide-grid">
+          <div class="guide-box"><b>Supabase Table</b><code>tet_learn_questions</code></div>
+          <div class="guide-box"><b>Upload Method</b><code>Import data from CSV</code></div>
+          <div class="guide-box"><b>Required Filter Values</b><code>group_name = Info<br>level_no = 1<br>status = active</code></div>
+          <div class="guide-box"><b>Subjects</b><code>Bengali, English, Mathematics, CDP, EVS<br>30 questions each</code></div>
+        </div>
+      </section>
+
+      <section class="section" data-section="mockQuestions">
+        <h2>Mock Test Questions</h2><p>Guide for updating Learn page Daily Mock Test questions by CSV.</p>
+        <div class="guide-grid">
+          <div class="guide-box"><b>Supabase Table</b><code>tet_mock_questions</code></div>
+          <div class="guide-box"><b>Upload Method</b><code>Import data from CSV</code></div>
+          <div class="guide-box"><b>Question Count</b><code>30 active questions for Daily Mock Test</code></div>
+          <div class="guide-box"><b>Rule</b><code>Keep status = active for questions used in the app</code></div>
+        </div>
+      </section>
+
+      <section class="section" data-section="smartNotes">
+        <h2>Smart Notes</h2><p>Guide for updating Profile page Smart Notes by CSV. This is not a data-entry tool.</p>
+        <div class="guide-grid">
+          <div class="guide-box"><b>Supabase Table</b><code>tet_smart_notes</code></div>
+          <div class="guide-box"><b>Upload Method</b><code>Import data from CSV</code></div>
+          <div class="guide-box"><b>Required Columns</b><code>subject, title, rule_text, example_text, status</code></div>
+          <div class="guide-box"><b>Example</b><code>English | Use of Articles | A, An, The rules | a book, an apple | active</code></div>
+        </div>
+      </section>
+
+      <section class="section" data-section="messages">
+        <h2>Message Center</h2><p>Open one user WhatsApp message at a time. Marked Sent resets after page refresh.</p>
+        <div class="tabs"><button class="active" data-message-tab="welcome">Welcome Message</button><button data-message-tab="trial">Trial / Go Premium</button><button data-message-tab="active">Premium Active</button><button data-message-tab="renew">Renew Reminder</button></div>
+        <div class="form"><div class="field"><label>Search Name or Phone</label><input id="messageSearch" type="search" /></div></div>
+        <div class="list" id="messageList"></div>
+      </section>
       <section class="section" data-section="issues">
         <h2>Issue Reports</h2><p>Review user reports and mark solved or unsolved.</p>
         <div class="list" id="issueList"></div>
@@ -173,13 +210,14 @@ button{border:0;cursor:pointer}
 (function(){
   const sections=[
     ["premium","Status Change"],["notice","Notice Board"],["motivation","Daily Motivation"],
-    ["issues","Issue Reports"],["settings","App Settings"],["users","User Management"]
+    ["infoContent","Info Latest Content"],["mockQuestions","Mock Test Questions"],["smartNotes","Smart Notes"],
+    ["messages","Message Center"],["issues","Issue Reports"],["settings","App Settings"],["users","User Management"]
   ];
   const groups=["Primary","Basic","Growth","Focus","Target","Advanced","Real Exam Test"];
   const subjects=["CDP","Bengali","English","Mathematics","EVS"];
   const languages=[["english","English"],["bengali","Bengali"],["hindi","Hindi"]];
   const difficulties=["Foundation","Basic Application","Moderate","Advanced","Exam Level"];
-  let activeSection="premium", premiumTab="trial", users=[], trial=[], progress=[], issues=[];
+  let activeSection="premium", premiumTab="trial", messageTab="welcome", users=[], trial=[], progress=[], issues=[], loginHistory=[], markedMessages=new Set();
   const $=s=>document.querySelector(s);
   const db=()=>window.tetSupabase||window.supabase;
   const session=()=>getAdminSession();
@@ -216,6 +254,7 @@ button{border:0;cursor:pointer}
     trial=await select("TRIAL_PREMIUM");
     progress=await select("USER_PROGRESS");
     try{issues=await select("ISSUE_REPORTS")}catch{issues=[]}
+    try{loginHistory=await select("LOGIN_HISTORY")}catch{loginHistory=[]}
     const activePremiumUsers=users.filter(isActivePremium).length;
     $("#totalUsers").textContent=users.length;
     $("#trialUsers").textContent=Math.max(users.length-activePremiumUsers,0);
@@ -299,6 +338,7 @@ button{border:0;cursor:pointer}
       if(id==="learn"){await renderLearnList()}
       if(id==="previous"){await renderPreviousList()}
       if(id==="textbook"){await renderTextbookList()}
+      if(id==="messages"){renderMessages()}
       if(id==="issues"){renderIssues()}
       if(id==="settings"){await loadSettings()}
       if(id==="users"){renderUsers()}
@@ -329,6 +369,59 @@ button{border:0;cursor:pointer}
     $("#textbookList").innerHTML=rows.length?rows.map(r=>`<article class="card"><h3>${esc(r.subject)} Â· ${esc(r.chapter_name)}</h3><p>${esc(r.concept)}</p><span class="pill">${esc(r.status)}</span></article>`).join(""):empty("No textbook chapters found");
   }
 
+  function recentDate(v,days){
+    const d=dateOnly(v); if(!d)return false;
+    const cutoff=new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate()-days);
+    return d.getTime()>=cutoff.getTime();
+  }
+  function expiringWithin(u,days){
+    const valid=dateOnly(premiumRow(u)?.premium_valid_until); if(!valid)return false;
+    const today=new Date(); today.setHours(0,0,0,0);
+    const limit=new Date(today); limit.setDate(limit.getDate()+days);
+    return valid.getTime()>=today.getTime() && valid.getTime()<=limit.getTime();
+  }
+  function hasRecentLogin(u){
+    return loginHistory.some(x=>x.user_id===u.id && recentDate(x.created_at||x.login_at,10)) || recentDate(u.created_at,10);
+  }
+  function validWhatsAppPhone(phone){
+    let digits=String(phone||"").replace(/\D/g,"");
+    if(digits.length===10)digits="91"+digits;
+    return digits.length>=11?digits:"";
+  }
+  function messageUsers(){
+    if(messageTab==="welcome")return users.filter(hasRecentLogin);
+    if(messageTab==="trial")return users.filter(u=>!isActivePremium(u));
+    if(messageTab==="active")return users.filter(isActivePremium);
+    if(messageTab==="renew")return users.filter(u=>isActivePremium(u)&&expiringWithin(u,15));
+    return [];
+  }
+  function messageText(type,u){
+    const name=u.full_name||"Student";
+    if(type==="welcome")return `Hello ${name},\n\nWelcome to TET Success.\n\nYour account is ready. Start your WB Primary TET preparation step by step with the app.\n\ninstall the App for get all benefits.. if already installed ignore this\n\nThank you.Team Tet-Success`;
+    if(type==="trial")return `Hello ${name},\n\nYour TET Success trial is ending soon \n\nTo continue full access, upgrade to Premium.\n\nPremium Plan:\n₹299 for 3 months\n\nThat means only ₹100 per month \n\nPayment Link:\nhttps://tinyurl.com/Tet-Success-Pay-now\n\nAfter payment, please send the screenshot here for confirmation.\n\nThank you.Team Tet-Success`;
+    if(type==="active")return `Hello ${name},\n\nYour TET Success Premium access is active.\n\nYou can now use all premium features until your valid date.\n\nPlease continue your preparation regularly.\n\nThank you.Team Tet-Success`;
+    return `Hello ${name},\n\nYour TET Success Premium plan is ending soon.\n\nPlease renew your plan to continue full premium access.\n\nRenewal Plan:\n₹299 for 3 months\n\nThat means only ₹100 per month.\n\nPayment Link:\nhttps://tinyurl.com/Tet-Success-Pay-now\n\nAfter payment, please send the screenshot here for confirmation.\n\nThank you.Team Tet-Success`;
+  }
+  function renderMessages(){
+    const search=($("#messageSearch")?.value||"").toLowerCase().trim();
+    let list=messageUsers();
+    if(search)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(search)||String(u.phone||"").includes(search));
+    $("#messageList").innerHTML=list.length?list.map(u=>{
+      const phone=validWhatsAppPhone(u.phone);
+      const key=`${messageTab}:${u.id}`;
+      const sent=markedMessages.has(key);
+      return `<article class="card"><h3>${esc(u.full_name||"Student")}</h3><p>${esc(u.phone||"Phone number missing")}</p><div class="message-meta"><span class="pill ${sent?"green":"amber"}">${sent?"Marked Sent":"Not Sent"}</span></div><div class="actions"><button class="btn green whatsapp-btn" data-message-user="${u.id}" ${phone?"":"disabled"}>${phone?"Send WhatsApp":"Phone number missing"}</button></div></article>`;
+    }).join(""):empty("No users found");
+    document.querySelectorAll("[data-message-user]").forEach(b=>b.onclick=()=>sendMessage(b.dataset.messageUser));
+  }
+  function sendMessage(userId){
+    const u=users.find(x=>x.id===userId); if(!u)return;
+    const phone=validWhatsAppPhone(u.phone); if(!phone){showToast("Phone number missing","warning");return;}
+    const text=encodeURIComponent(messageText(messageTab,u));
+    window.open(`https://wa.me/${phone}?text=${text}`,"_blank");
+    markedMessages.add(`${messageTab}:${userId}`);
+    renderMessages();
+  }
   function renderIssues(){
     $("#issueList").innerHTML=issues.length?issues.map(i=>`<article class="card"><h3>${esc(i.issue_category)}</h3><p>${esc(i.full_name)} Â· ${esc(i.phone)}</p><p>${esc(i.issue_text)}</p><span class="pill ${i.issue_status==="solved"?"green":"amber"}">${esc(i.issue_status)}</span><div class="actions"><button class="btn green" data-issue="${i.id}" data-status="solved">Mark Solved</button><button class="btn amber" data-issue="${i.id}" data-status="unsolved">Mark Unsolved</button></div></article>`).join(""):empty("No issue reports found");
     document.querySelectorAll("[data-issue]").forEach(b=>b.onclick=async()=>{await rpc("tet_admin_set_issue_status",{input_session_token:token(),input_issue_id:b.dataset.issue,input_status:b.dataset.status});showToast("Issue updated","success");await refreshBase();renderIssues()});
@@ -342,14 +435,14 @@ button{border:0;cursor:pointer}
   function renderUsers(){
     const q=($("#userSearch").value||"").toLowerCase().trim();
     let list=users; if(q)list=list.filter(u=>(u.full_name||"").toLowerCase().includes(q)||(u.phone||"").includes(q));
-    $("#userList").innerHTML=list.length?list.map(u=>{const p=progress.find(x=>x.user_id===u.id)||{};return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p><p>Current: ${esc(p.current_group||"Primary")} Level ${esc(p.current_level||1)} Â· Best Score ${esc(p.best_score||0)}%</p><span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial / Expired"}</span><div class="actions"><button class="btn green" data-upgrade="${u.id}">${userStatus(u)==="premium"?"Renew Premium":"Make Premium"}</button><button class="btn danger" data-reset="${u.id}">Reset Learn Progress</button></div></article>`}).join(""):empty("No users found");
+    $("#userList").innerHTML=list.length?list.map(u=>{const p=progress.find(x=>x.user_id===u.id)||{};return `<article class="card"><h3>${esc(u.full_name)}</h3><p>${esc(u.phone)}</p><p>Current: ${esc(p.current_group||"Primary")} Level ${esc(p.current_level||1)} Â· Best Score ${esc(p.best_score||0)}%</p><span class="pill ${userStatus(u)==="premium"?"green":"amber"}">${userStatus(u)==="premium"?"Premium Member":"Trial / Expired"}</span><div class="actions"><button class="btn green" data-upgrade="${u.id}">${userStatus(u)==="premium"?"Renew Premium":"Make Premium"}</button></div></article>`}).join(""):empty("No users found");
     document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>confirmUpgrade(b.dataset.upgrade));
-    document.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>showConfirmModal({title:"Reset Learn Progress?",message:"This keeps account and subscription unchanged.",confirmText:"Confirm Reset",onConfirm:async()=>{await rpc("tet_admin_reset_progress",{input_session_token:token(),input_user_id:b.dataset.reset});showToast("Learn progress reset","success");await refreshBase();renderUsers()}}));
   }
 
   function bindForms(){
     document.querySelectorAll("[data-premium-tab]").forEach(b=>b.onclick=()=>{premiumTab=b.dataset.premiumTab;document.querySelectorAll("[data-premium-tab]").forEach(x=>x.classList.toggle("active",x===b));renderPremium()});
-    $("#upgradeSearch").oninput=renderPremium; $("#learnSearch").oninput=renderLearnList; $("#previousSearch").oninput=renderPreviousList; $("#textbookSearch").oninput=renderTextbookList; $("#userSearch").oninput=renderUsers;
+    document.querySelectorAll("[data-message-tab]").forEach(b=>b.onclick=()=>{messageTab=b.dataset.messageTab;document.querySelectorAll("[data-message-tab]").forEach(x=>x.classList.toggle("active",x===b));renderMessages()});
+    $("#upgradeSearch").oninput=renderPremium; $("#messageSearch").oninput=renderMessages; $("#learnSearch").oninput=renderLearnList; $("#previousSearch").oninput=renderPreviousList; $("#textbookSearch").oninput=renderTextbookList; $("#userSearch").oninput=renderUsers;
     $("#noticeForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_update_notice",{input_session_token:token(),input_title:$("#noticeTitleInput").value,input_date:$("#noticeDateInput").value||null,input_message:$("#noticeMessageInput").value});showToast("Notice updated successfully","success");e.target.reset();$("#noticeTitleInput").value="NOTICE"};
     $("#motivationForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_update_motivation",{input_session_token:token(),input_text:$("#motivationTextInput").value});showToast("Motivation updated successfully","success");e.target.reset()};
     $("#settingsForm").onsubmit=async e=>{e.preventDefault();await rpc("tet_admin_save_settings",{input_session_token:token(),input_admin_whatsapp:$("#settingsWhatsapp").value,input_payment_link:$("#settingsPayment").value,input_app_version:$("#settingsVersion").value,input_github_link:$("#settingsGithub").value});showToast("Settings saved successfully","success")};
@@ -371,6 +464,7 @@ button{border:0;cursor:pointer}
 </script>
 </body>
 </html>
+
 
 
 

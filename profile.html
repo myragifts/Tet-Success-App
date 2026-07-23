@@ -50,9 +50,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
         <h1>My Profile</h1>
         <p>Your Personal Dashboard</p>
       </div>
-      <button id="profileBadge" class="profile-badge" type="button" aria-label="Premium status">
-        <b>Trial Version</b><small>Loading...</small>
-      </button>
+      <button id="profileBadge" class="profile-badge" type="button" aria-label="Premium status"></button>
     </div>
   </header>
 
@@ -218,7 +216,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
 
     if (isPremiumUser()) {
       badge.classList.add("premium");
-      badge.innerHTML = "<b>Premium Member</b><small>Valid Until 30 Sep 2028</small>";
+      badge.innerHTML = "<b>&#9818; Premium Member</b><small>Valid Until " + safe(trialStatus?.premium_valid_until || "") + "</small>";
       badge.onclick = null;
       return;
     }
@@ -230,7 +228,7 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
       badge.onclick = showPremiumFlow;
     } else {
       const endText = typeof formatDate === "function" ? formatDate(trialStatus?.trial_end_date) : "";
-      badge.innerHTML = "<b>Trial Version</b><small>Ends " + safe(endText || "Soon") + "</small>";
+      badge.innerHTML = "";
       badge.onclick = null;
     }
   }
@@ -516,6 +514,9 @@ button,input,textarea,select{font:inherit}button{border:none;cursor:pointer;back
 </script>
 </body>
 </html>
+
+
+
 
 
 

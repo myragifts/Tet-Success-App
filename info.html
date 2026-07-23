@@ -120,6 +120,16 @@ button{
     line-height:1.1;
 }
 
+.info-status-badge.premium{
+    border-color:rgba(255,255,255,.55);
+    background:linear-gradient(135deg,#EEF7F1,#FFFFFF);
+    color:#0F5132;
+    box-shadow:0 14px 28px rgba(15,81,50,.18);
+}
+
+.info-status-badge.premium small{
+    color:#315E4A;
+}
 .info-status-badge.expired{
     cursor:pointer;
 }
@@ -736,10 +746,7 @@ button{
                 <h1>Info</h1>
                 <p>Your TET Guru</p>
             </div>
-            <div id="infoStatusBadge" class="info-status-badge">
-                <b>Trial Version</b>
-                <small>Loading...</small>
-            </div>
+            <div id="infoStatusBadge" class="info-status-badge" aria-label="Premium status"></div>
         </div>
     </header>
 
@@ -1102,6 +1109,8 @@ button{
 </script>
 </body>
 </html>
+
+
 
 
 

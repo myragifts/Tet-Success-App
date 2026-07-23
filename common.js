@@ -929,6 +929,38 @@ function scheduleExpiredTrialReminder(status, user, options = {}) {
 
     return true;
 }
+const TET_PREMIUM_STATUS_CACHE_PREFIX = "tet_latest_premium_status_";
+
+function getPremiumStatusCacheUserKey(user) {
+    const activeUser = user || (typeof getUserSession === "function" ? getUserSession() : null) || {};
+    return String(activeUser.id || activeUser.user_id || activeUser.phone || activeUser.mobile || activeUser.phone_number || activeUser.user_phone || "guest");
+}
+
+function getPremiumStatusCacheKey(user) {
+    return TET_PREMIUM_STATUS_CACHE_PREFIX + getPremiumStatusCacheUserKey(user);
+}
+
+function saveCachedTrialPremiumStatus(user, status) {
+    try {
+        if (!user || !status) return;
+        localStorage.setItem(getPremiumStatusCacheKey(user), JSON.stringify({
+            saved_at: Date.now(),
+            status: status
+        }));
+    } catch {}
+}
+
+function getCachedTrialPremiumStatus(user) {
+    try {
+        if (!user) return null;
+        const raw = localStorage.getItem(getPremiumStatusCacheKey(user));
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && parsed.status ? parsed.status : null;
+    } catch {
+        return null;
+    }
+}
 function getStatusSortTime(status) {
     const date = parseAppDate(
         status?.updated_at ||
@@ -979,7 +1011,9 @@ async function fetchFreshTrialPremiumStatus(user) {
             return null;
         }
 
-        return chooseCurrentTrialPremiumStatus(data, user);
+        const freshStatus = chooseCurrentTrialPremiumStatus(data, user);
+        saveCachedTrialPremiumStatus(user, freshStatus);
+        return freshStatus;
     } catch (error) {
         console.warn("Trial/premium status refresh failed:", error?.message || error);
         return null;
@@ -997,6 +1031,7 @@ function normalizeSessionPremiumStatus(user, status) {
     });
 
     try { saveUserSession(nextUser); } catch {}
+    saveCachedTrialPremiumStatus(nextUser, status);
     return nextUser;
 }
 function getTrialPremiumModel(status, user, mode) {
@@ -1040,8 +1075,11 @@ function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
     const el = typeof elementOrId === "string" ? document.getElementById(elementOrId) : elementOrId;
     if (!el) return null;
 
-    let currentStatus = status;
     let currentUser = user;
+    let currentStatus = getCachedTrialPremiumStatus(currentUser) || status;
+    if (currentStatus !== status) {
+        currentUser = normalizeSessionPremiumStatus(currentUser, currentStatus);
+    }
     window.TETPremiumState = { status: currentStatus, user: currentUser };
 
     function applyBadge(nextStatus, nextUser) {
@@ -1331,6 +1369,9 @@ function initializeCommon() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeCommon);
+
+
+
 
 
 

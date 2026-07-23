@@ -1076,8 +1076,9 @@ function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
     if (!el) return null;
 
     let currentUser = user;
-    let currentStatus = getCachedTrialPremiumStatus(currentUser) || status;
-    if (currentStatus !== status) {
+    const cachedStatus = getCachedTrialPremiumStatus(currentUser);
+    let currentStatus = cachedStatus || status;
+    if (cachedStatus && currentStatus !== status) {
         currentUser = normalizeSessionPremiumStatus(currentUser, currentStatus);
     }
     window.TETPremiumState = { status: currentStatus, user: currentUser };
@@ -1110,9 +1111,19 @@ function renderTrialPremiumBadge(elementOrId, status, user, options = {}) {
         return model;
     }
 
-    const model = applyBadge(currentStatus, currentUser);
+    let model = null;
+    const shouldFetchFreshStatus = currentUser && !options.skipFreshStatus;
 
-    if (currentUser && !options.skipFreshStatus) {
+    if (!cachedStatus && shouldFetchFreshStatus) {
+        el.innerHTML = "";
+        el.classList.remove("premium", "expired");
+        delete el.dataset.subscriptionState;
+        model = getTrialPremiumModel(currentStatus, currentUser, options.mode || "end");
+    } else {
+        model = applyBadge(currentStatus, currentUser);
+    }
+
+    if (shouldFetchFreshStatus) {
         fetchFreshTrialPremiumStatus(currentUser).then(function (freshStatus) {
             if (!freshStatus) return;
             const freshUser = normalizeSessionPremiumStatus(currentUser, freshStatus);
@@ -1369,6 +1380,7 @@ function initializeCommon() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeCommon);
+
 
 
 
